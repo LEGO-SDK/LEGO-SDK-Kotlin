@@ -15,6 +15,7 @@ class LGOWebView @JvmOverloads constructor(
 ) : WebView(context, attrs, defStyleAttr) {
 
     init {
+        LGOCore.loadModules(context)
         setWebViewClient(object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 return true
@@ -22,7 +23,9 @@ class LGOWebView @JvmOverloads constructor(
         })
         settings.javaScriptEnabled = true
         addJavascriptInterface(this, "JSBridge")
-        setWebContentsDebuggingEnabled(true)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            setWebContentsDebuggingEnabled(true)
+        }
     }
 
     @android.webkit.JavascriptInterface
@@ -31,9 +34,9 @@ class LGOWebView @JvmOverloads constructor(
             JSONObject(it)?.let {
                 val callbackID = it.optInt("callbackID", -1)
                 val message = LGOJSMessage(
-                        it.optString("messageID"),
-                        it.optString("moduleName"),
-                        it.optJSONObject("requestParams"),
+                        it.optString("messageID") ?: "",
+                        it.optString("moduleName") ?: "",
+                        it.optJSONObject("requestParams") ?: JSONObject(),
                         it.optInt("callbackID", -1)
                 )
                 message.call({ metaData: HashMap<String, Any>, resData: HashMap<String, Any> ->
@@ -55,10 +58,14 @@ class LGOWebView @JvmOverloads constructor(
         "JSMessageCallbacks[$callbackID].call(" +
         "null, JSMetaParams, JSCallbackParams)})()"
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            evaluateJavascript(script, {})
+            post({
+                evaluateJavascript(script, {})
+            })
         }
         else {
-            loadUrl("javascript: " + script)
+            post {
+                loadUrl("javascript: " + script)
+            }
         }
     }
 

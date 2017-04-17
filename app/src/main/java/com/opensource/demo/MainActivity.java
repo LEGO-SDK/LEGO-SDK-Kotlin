@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.webkit.WebView;
 
 import com.opensource.legosdk.core.LGOWebView;
+import com.opensource.legosdk.nativemodules.device.LGODevice;
 
 public class MainActivity extends AppCompatActivity {
 

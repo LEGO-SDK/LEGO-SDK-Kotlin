@@ -3,7 +3,7 @@ package com.opensource.legosdk.core
 /**
  * Created by PonyCui_Home on 2017/4/9.
  */
-class LGOResponse {
+open class LGOResponse {
 
     var status = 0
         private set
