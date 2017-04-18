@@ -1,1 +1,1 @@
-include ':app', ':core', ':native.device', ':native.httprequest', ':native.userdefaults'
+include ':app', ':core', ':native.device', ':native.httprequest', ':native.userdefaults', ':native.pasteboard'
