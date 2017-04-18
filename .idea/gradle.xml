@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/native.device" />
             <option value="$PROJECT_DIR$/native.httprequest" />
+            <option value="$PROJECT_DIR$/native.userdefaults" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
