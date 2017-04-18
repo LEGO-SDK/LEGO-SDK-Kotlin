@@ -19,7 +19,7 @@ open class LGOModule {
         return null
     }
 
-    open fun synchronizeResponse(): LGOResponse? {
+    open fun synchronizeResponse(context: LGORequestContext): LGOResponse? {
         return null
     }
 

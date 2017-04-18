@@ -16,6 +16,10 @@ class LGODevice : LGOModule() {
         return LGORequestable.reject("LGODevice", -1, "cannot build with request.")
     }
 
+    override fun synchronizeResponse(context: LGORequestContext): LGOResponse? {
+        return LGODeviceOperation(context).requestSynchronize()
+    }
+
     companion object {
 
         init {

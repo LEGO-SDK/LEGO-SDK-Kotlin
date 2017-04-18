@@ -91,7 +91,17 @@ class LGOWebView @JvmOverloads constructor(
         "callback=='function'){JSMessageCallbacks.push(callback);this." +
         "callbackID=JSMessageCallbacks.length-1}JSBridge.exec(JSON." +
         "stringify(this));if(JSSynchronizeResponses[this.moduleName]!==" +
-        "undefined){return JSSynchronizeResponses[this.moduleName]}}}}};"
+        "undefined){return JSSynchronizeResponses[this.moduleName]}}}}};" + syncScript()
+    }
+
+    fun syncScript(): String {
+        return LGOCore.modules.items.mapNotNull {
+            val moduleName = it.key
+            it.value.synchronizeResponse(LGORequestContext(this, null))?.let {
+                val base64ResString = toBase64(toJSONString(it.resData()))
+                return@mapNotNull "JSSynchronizeResponses['$moduleName'] = JSON.parse(decodeURIComponent(atob('$base64ResString')))"
+            }
+        }.joinToString(";")
     }
 
 }
