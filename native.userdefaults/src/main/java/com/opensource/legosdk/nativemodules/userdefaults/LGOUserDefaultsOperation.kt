@@ -72,7 +72,11 @@ class LGOUserDefaultsOperation(val request: LGOUserDefaultsRequest): LGORequesta
 
         val memoryData: HashMap<String, Any> = hashMapOf()
 
-        val cacheData: LruCache<String, Any> = LruCache(4 * 1024 * 1024)
+        val cacheData: LruCache<String, Any> = object : LruCache<String, Any>(4 * 1024 * 1024) {
+            override fun sizeOf(key: String?, value: Any?): Int {
+                return (value as? String)?.toByteArray(Charsets.UTF_8)?.size ?: 0
+            }
+        }
 
     }
 

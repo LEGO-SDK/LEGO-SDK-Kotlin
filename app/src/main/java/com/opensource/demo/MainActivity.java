@@ -17,5 +17,4 @@ public class MainActivity extends AppCompatActivity {
         webView.loadUrl("https://www.baidu.com/");
     }
 
-
 }

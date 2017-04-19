@@ -23,8 +23,8 @@ class LGODeviceOperation(val context: LGORequestContext): LGORequestable() {
         response.deviceIDFV = IDFV()
         response.deviceScreenWidth = screenSize().x
         response.deviceScreenHeight = screenSize().y
-        response.appName = context.getString(context.getApplicationInfo().labelRes)
-        response.appBundleIdentifier = context.getApplicationInfo().packageName
+        response.appName = context.getString(context.applicationInfo.labelRes)
+        response.appBundleIdentifier = context.applicationInfo.packageName
         context.packageManager.getPackageInfo(context.packageName, 0)?.let {
             response.appShortVersion = it.versionName
             response.appBuildNumber = it.versionCode

@@ -5,8 +5,10 @@
       <module fileurl="file://$PROJECT_DIR$/LEGO-SDK-Kotlin.iml" filepath="$PROJECT_DIR$/LEGO-SDK-Kotlin.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/native.check/native.check.iml" filepath="$PROJECT_DIR$/native.check/native.check.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.device/native.device.iml" filepath="$PROJECT_DIR$/native.device/native.device.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.httprequest/native.httprequest.iml" filepath="$PROJECT_DIR$/native.httprequest/native.httprequest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/native.notification/native.notification.iml" filepath="$PROJECT_DIR$/native.notification/native.notification.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.pasteboard/native.pasteboard.iml" filepath="$PROJECT_DIR$/native.pasteboard/native.pasteboard.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.userdefaults/native.userdefaults.iml" filepath="$PROJECT_DIR$/native.userdefaults/native.userdefaults.iml" />
     </modules>
