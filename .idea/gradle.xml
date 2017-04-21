@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/native.check" />
             <option value="$PROJECT_DIR$/native.device" />
+            <option value="$PROJECT_DIR$/native.filemanager" />
             <option value="$PROJECT_DIR$/native.httprequest" />
             <option value="$PROJECT_DIR$/native.notification" />
             <option value="$PROJECT_DIR$/native.pasteboard" />
