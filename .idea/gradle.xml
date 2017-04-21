@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/native.filemanager" />
             <option value="$PROJECT_DIR$/native.httprequest" />
             <option value="$PROJECT_DIR$/native.notification" />
+            <option value="$PROJECT_DIR$/native.openintent" />
             <option value="$PROJECT_DIR$/native.pasteboard" />
             <option value="$PROJECT_DIR$/native.userdefaults" />
           </set>
