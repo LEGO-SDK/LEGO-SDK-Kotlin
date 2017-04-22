@@ -41,7 +41,7 @@ class LGOWebView @JvmOverloads constructor(
                 )
                 message.call({ metaData: HashMap<String, Any>, resData: HashMap<String, Any> ->
                     callback(callbackID, metaData, resData)
-                }, LGORequestContext(this, null))
+                }, LGORequestContext(this))
             }
         }
     }
@@ -97,7 +97,7 @@ class LGOWebView @JvmOverloads constructor(
     fun syncScript(): String {
         return LGOCore.modules.items.mapNotNull {
             val moduleName = it.key
-            it.value.synchronizeResponse(LGORequestContext(this, null))?.let {
+            it.value.synchronizeResponse(LGORequestContext(this))?.let {
                 val base64ResString = toBase64(toJSONString(it.resData()))
                 return@mapNotNull "JSSynchronizeResponses['$moduleName'] = JSON.parse(decodeURIComponent(atob('$base64ResString')))"
             }

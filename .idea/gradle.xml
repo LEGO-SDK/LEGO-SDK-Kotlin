@@ -18,6 +18,8 @@
             <option value="$PROJECT_DIR$/native.openintent" />
             <option value="$PROJECT_DIR$/native.pasteboard" />
             <option value="$PROJECT_DIR$/native.userdefaults" />
+            <option value="$PROJECT_DIR$/ui.actionsheet" />
+            <option value="$PROJECT_DIR$/ui.alertview" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
