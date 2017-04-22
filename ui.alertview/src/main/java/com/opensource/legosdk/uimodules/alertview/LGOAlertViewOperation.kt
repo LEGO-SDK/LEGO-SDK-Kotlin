@@ -11,21 +11,23 @@ import com.opensource.legosdk.core.LGOResponse
 class LGOAlertViewOperation(val request: LGOAlertViewRequest): LGORequestable() {
 
     override fun requestAsynchronize(callbackBlock: (LGOResponse) -> Unit) {
-        request.context?.requestContentContext()?.let {
-            val builder = AlertDialog.Builder(it)
-            builder.setTitle(request.title)
-            builder.setMessage(request.message)
-            if (0 < request.buttonTitles.size) {
-                builder.setNegativeButton(request.buttonTitles[0], { _, idx ->
-                    callbackBlock(LGOAlertViewResponse(0).accept(null))
-                })
+        request.context?.requestActivity()?.let {
+            it.runOnUiThread {
+                val builder = AlertDialog.Builder(it)
+                builder.setTitle(request.title)
+                builder.setMessage(request.message)
+                if (0 < request.buttonTitles.size) {
+                    builder.setNegativeButton(request.buttonTitles[0], { _, idx ->
+                        callbackBlock(LGOAlertViewResponse(0).accept(null))
+                    })
+                }
+                if (1 < request.buttonTitles.size) {
+                    builder.setPositiveButton(request.buttonTitles[1], { _, idx ->
+                        callbackBlock(LGOAlertViewResponse(1).accept(null))
+                    })
+                }
+                builder.create().show()
             }
-            if (1 < request.buttonTitles.size) {
-                builder.setPositiveButton(request.buttonTitles[1], { _, idx ->
-                    callbackBlock(LGOAlertViewResponse(1).accept(null))
-                })
-            }
-            builder.create().show()
         }
     }
 

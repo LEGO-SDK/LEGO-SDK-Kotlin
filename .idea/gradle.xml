@@ -20,6 +20,7 @@
             <option value="$PROJECT_DIR$/native.userdefaults" />
             <option value="$PROJECT_DIR$/ui.actionsheet" />
             <option value="$PROJECT_DIR$/ui.alertview" />
+            <option value="$PROJECT_DIR$/ui.refresh" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
