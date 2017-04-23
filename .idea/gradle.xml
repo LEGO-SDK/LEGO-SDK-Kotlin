@@ -20,6 +20,8 @@
             <option value="$PROJECT_DIR$/native.userdefaults" />
             <option value="$PROJECT_DIR$/ui.actionsheet" />
             <option value="$PROJECT_DIR$/ui.alertview" />
+            <option value="$PROJECT_DIR$/ui.imagepreviewer" />
+            <option value="$PROJECT_DIR$/ui.page" />
             <option value="$PROJECT_DIR$/ui.refresh" />
           </set>
         </option>

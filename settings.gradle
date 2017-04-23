@@ -1,1 +1,1 @@
-include ':app', ':core', ':native.device', ':native.httprequest', ':native.userdefaults', ':native.pasteboard', ':native.check', ':native.notification', ':native.filemanager', ':native.openintent', ':ui.actionsheet', ':ui.alertview', ':ui.refresh'
+include ':app', ':core', ':native.device', ':native.httprequest', ':native.userdefaults', ':native.pasteboard', ':native.check', ':native.notification', ':native.filemanager', ':native.openintent', ':ui.actionsheet', ':ui.alertview', ':ui.refresh', ':ui.imagepreviewer', ':ui.page'
