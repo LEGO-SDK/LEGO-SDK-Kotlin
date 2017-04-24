@@ -2,6 +2,7 @@ package com.opensource.demo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuInflater;
 import android.webkit.WebView;
 
 import com.opensource.legosdk.core.LGOWebView;

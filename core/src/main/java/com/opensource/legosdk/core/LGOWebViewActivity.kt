@@ -2,6 +2,8 @@ package com.opensource.legosdk.core
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -17,7 +19,10 @@ open class LGOWebViewActivity : AppCompatActivity() {
         title = null
         webView = LGOWebView(this)
         intent?.let {
-            urlString = intent.getStringExtra("LGONavigationController.RequestPath")
+            urlString = it.getStringExtra("LGONavigationController.RequestPath")
+            if (it.getBooleanExtra("LGONavigationController.Class", false)) {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            }
         }
         urlString?.let {
             webView.loadUrl(it)
@@ -40,6 +45,17 @@ open class LGOWebViewActivity : AppCompatActivity() {
                 it.invoke(module, this)
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == android.R.id.home) {
+            intent?.let {
+                if (it.getBooleanExtra("LGONavigationController.Class", false)) {
+                    finish()
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }
