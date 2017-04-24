@@ -39,4 +39,5 @@ dependencies {
     compile project(':ui.alertview')
     compile project(':ui.refresh')
     compile project(':ui.imagepreviewer')
+    compile project(':ui.page')
 }

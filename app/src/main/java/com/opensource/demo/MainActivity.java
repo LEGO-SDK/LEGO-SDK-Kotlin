@@ -5,16 +5,20 @@ import android.os.Bundle;
 import android.webkit.WebView;
 
 import com.opensource.legosdk.core.LGOWebView;
+import com.opensource.legosdk.core.LGOWebViewActivity;
 import com.opensource.legosdk.nativemodules.device.LGODevice;
 
-public class MainActivity extends AppCompatActivity {
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class MainActivity extends LGOWebViewActivity {
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        WebView webView = (WebView) findViewById(R.id.webView);
-        webView.loadUrl("https://www.baidu.com/");
+    public String getUrlString() {
+        return "http://3g.qq.com";
     }
 
 }
