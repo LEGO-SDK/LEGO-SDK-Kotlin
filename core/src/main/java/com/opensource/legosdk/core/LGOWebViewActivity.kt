@@ -14,7 +14,11 @@ open class LGOWebViewActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        title = null
         webView = LGOWebView(this)
+        intent?.let {
+            urlString = intent.getStringExtra("LGONavigationController.RequestPath")
+        }
         urlString?.let {
             webView.loadUrl(it)
             applyPageSetting()

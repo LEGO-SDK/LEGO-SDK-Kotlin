@@ -20,6 +20,15 @@ class LGOWebView @JvmOverloads constructor(
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 return true
             }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                (context as? LGOWebViewActivity)?.let {
+                    if (it.pageSetting == null) {
+                        it.title = view?.title
+                    }
+                }
+            }
         })
         settings.javaScriptEnabled = true
         addJavascriptInterface(this, "JSBridge")
