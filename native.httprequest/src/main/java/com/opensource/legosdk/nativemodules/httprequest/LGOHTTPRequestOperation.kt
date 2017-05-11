@@ -23,7 +23,6 @@ class LGOHTTPRequestOperation(val request: LGOHTTPRequestObject): LGORequestable
         val BUFFER_SIZE = 4096
         val thread = Thread({
             var statusCode = 0
-            var responseMessage = ""
             requestURL()?.let {
                 try {
                     (it.openConnection() as? HttpURLConnection)?.let {
@@ -54,11 +53,10 @@ class LGOHTTPRequestOperation(val request: LGOHTTPRequestObject): LGORequestable
                             }
                         }
                         statusCode = conn.responseCode
-                        responseMessage = conn.responseMessage
                         val inputStream = conn.inputStream
                         val outputStream = ByteArrayOutputStream()
                         val buffer = ByteArray(BUFFER_SIZE)
-                        var count: Int = 0
+                        var count: Int
                         while (true) {
                             count = inputStream.read(buffer, 0, BUFFER_SIZE)
                             if (count == -1) {

@@ -53,9 +53,9 @@ class LGONotificationOperation(val request: LGONotificationRequest): LGORequesta
                         val intent = Intent();
                         intent.addCategory(category());
                         intent.setAction(request.name);
-                        intent.putExtra("context", request.context?.requestContentContext()?.toString());
+                        intent.putExtra("context", request.context?.requestContentContext()?.toString())
                         intent.putExtra("remove", true);
-                        request.context?.requestContentContext()?.sendBroadcast(intent);
+                        request.context?.requestContentContext()?.sendBroadcast(intent)
                     }
                     return
                 }
@@ -63,9 +63,9 @@ class LGONotificationOperation(val request: LGONotificationRequest): LGORequesta
                     val intent = Intent()
                     intent.addCategory(category());
                     intent.action = it
-                    intent.putExtra("context", request.context?.requestContentContext()?.toString());
+                    intent.putExtra("context", request.context?.requestContentContext()?.toString())
                     intent.putExtra("remove", true);
-                    request.context?.requestContentContext()?.sendBroadcast(intent);
+                    request.context?.requestContentContext()?.sendBroadcast(intent)
                 }
             }
             "post" -> {

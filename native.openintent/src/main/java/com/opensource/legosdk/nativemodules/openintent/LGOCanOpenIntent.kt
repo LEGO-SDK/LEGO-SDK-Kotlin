@@ -13,7 +13,7 @@ import org.json.JSONObject
 class LGOCanOpenIntent: LGOModule() {
 
     override fun buildWithJSONObject(obj: JSONObject, context: LGORequestContext): LGORequestable? {
-        return LGOCanOpenIntentOperation(LGOCanOpenIntentRequest(obj.optString("name", ""), obj.optString("action", ""), context));
+        return LGOCanOpenIntentOperation(LGOCanOpenIntentRequest(obj.optString("name", ""), obj.optString("action", ""), context))
     }
 
     companion object {

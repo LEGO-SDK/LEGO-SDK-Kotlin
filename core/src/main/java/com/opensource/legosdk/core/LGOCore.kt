@@ -27,13 +27,15 @@ class LGOCore {
             if (moduleLoaded) {
                 return
             }
-            DexFile(context.packageCodePath)?.let {
-                for (item in it.entries()) {
-                    if (item.startsWith("com.opensource.legosdk.")) {
-                        Class.forName(item)
+            try {
+                DexFile(context.packageCodePath)?.let {
+                    for (item in it.entries()) {
+                        if (item.startsWith("com.opensource.legosdk.")) {
+                            Class.forName(item)
+                        }
                     }
                 }
-            }
+            } catch (e: Exception) {}
             moduleLoaded = true
         }
 

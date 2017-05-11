@@ -27,7 +27,7 @@ open class LGOResponse {
     fun accept(metaData: HashMap<String, Any>?): LGOResponse {
         assert(status == 0, {
             return@assert "Response has been accepted or rejected."
-        });
+        })
         metaData?.let { this.metaData = it }
         return this
     }

@@ -81,7 +81,9 @@ class LGOWebView @JvmOverloads constructor(
     fun toJSONString(map: HashMap<String, Any>): String {
         val obj = JSONObject()
         map.forEach {
-            obj.putOpt(it.key, it.value)
+            try {
+                obj.putOpt(it.key, it.value)
+            } catch (e: Exception) {}
         }
         return obj.toString(0)
     }

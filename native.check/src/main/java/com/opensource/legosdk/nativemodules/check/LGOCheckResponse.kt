@@ -16,7 +16,9 @@ class LGOCheckResponse: LGOResponse() {
     override fun resData(): HashMap<String, Any> {
         val checkResult = JSONObject()
         this.checkResult.forEach {
-            checkResult.putOpt(it.key, it.value)
+            try {
+                checkResult.putOpt(it.key, it.value)
+            } catch (e: Exception) {}
         }
         return hashMapOf(
                 Pair("SDKVersion", SDKVersion),

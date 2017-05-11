@@ -28,32 +28,37 @@ class LGODeviceResponse : LGOResponse() {
     var networkCellularType = 0
 
     override fun resData(): HashMap<String, Any> {
-        val device = JSONObject()
-        device.putOpt("name", deviceName)
-        device.putOpt("model", deviceModel)
-        device.putOpt("osName", deviceOSName)
-        device.putOpt("osVersion", deviceOSVersion)
-        device.putOpt("IDFV", deviceIDFV)
-        device.putOpt("screenWidth", deviceScreenWidth)
-        device.putOpt("screenHeight", deviceScreenHeight)
-        val app = JSONObject()
-        app.putOpt("name", appName)
-        app.putOpt("bundleIdentifier", appBundleIdentifier)
-        app.putOpt("shortVersion", appShortVersion)
-        app.putOpt("buildNumber", appBuildNumber)
-        val network = JSONObject()
-        network.putOpt("usingWIFI", networkUsingWIFI)
-        network.putOpt("cellularType", networkCellularType)
-        val custom = JSONObject()
-        LGODevice.custom.forEach {
-            custom.putOpt(it.key, it.value)
+        try {
+            val device = JSONObject()
+            device.putOpt("name", deviceName)
+            device.putOpt("model", deviceModel)
+            device.putOpt("osName", deviceOSName)
+            device.putOpt("osVersion", deviceOSVersion)
+            device.putOpt("IDFV", deviceIDFV)
+            device.putOpt("screenWidth", deviceScreenWidth)
+            device.putOpt("screenHeight", deviceScreenHeight)
+            val app = JSONObject()
+            app.putOpt("name", appName)
+            app.putOpt("bundleIdentifier", appBundleIdentifier)
+            app.putOpt("shortVersion", appShortVersion)
+            app.putOpt("buildNumber", appBuildNumber)
+            val network = JSONObject()
+            network.putOpt("usingWIFI", networkUsingWIFI)
+            network.putOpt("cellularType", networkCellularType)
+            val custom = JSONObject()
+            LGODevice.custom.forEach {
+                custom.putOpt(it.key, it.value)
+            }
+            return hashMapOf(
+                    Pair("device", device),
+                    Pair("application", app),
+                    Pair("network", network),
+                    Pair("custom", custom)
+            )
+        } catch (e: Exception) {
+            return hashMapOf()
         }
-        return hashMapOf(
-                Pair("device", device),
-                Pair("application", app),
-                Pair("network", network),
-                Pair("custom", custom)
-        )
+
     }
 
 }
