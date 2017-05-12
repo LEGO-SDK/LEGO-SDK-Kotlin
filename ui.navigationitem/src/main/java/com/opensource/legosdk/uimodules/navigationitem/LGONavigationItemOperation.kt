@@ -2,11 +2,13 @@ package com.opensource.legosdk.uimodules.navigationitem
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.webkit.WebView
 import com.opensource.legosdk.core.LGOActionBarController
 import com.opensource.legosdk.core.LGORequestable
 import com.opensource.legosdk.core.LGOResponse
 import com.opensource.legosdk.core.LGOWebViewActivity
 import java.net.HttpURLConnection
+import java.net.URI
 import java.net.URL
 
 /**
@@ -14,11 +16,21 @@ import java.net.URL
  */
 class LGONavigationItemOperation(val request: LGONavigationItemRequest): LGORequestable() {
 
+    fun requestURL(url: String): URL? {
+        var relativeURL = url
+        val webView = request.context?.sender as? WebView ?: return null
+        if (!relativeURL.startsWith("http://") && !relativeURL.startsWith("https://")) {
+            val uri = URI(webView.url)
+            relativeURL = uri.resolve(relativeURL).toString()
+        }
+        return URL(relativeURL)
+    }
+
     fun requestBitmap(url: String, completionBlock: (Bitmap?) -> Unit): Boolean {
-        if (url.startsWith("http://") || url.startsWith("https://")) {
+        if (url.contains(".png", false)) {
             Thread({
                 try {
-                    (URL(url).openConnection() as? HttpURLConnection)?.let { conn ->
+                    (requestURL(url)?.openConnection() as? HttpURLConnection)?.let { conn ->
                         conn.connectTimeout = 5000
                         conn.connect()
                         BitmapFactory.decodeStream(conn.inputStream)?.let { bitmap ->
