@@ -1,10 +1,8 @@
 package com.opensource.legosdk.core
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
+import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 
@@ -12,18 +10,18 @@ open class LGOWebViewActivity : AppCompatActivity() {
 
     open var urlString: String? = null
     var pageSetting: Any? = null
+    var navigationItems = LGOActionBarController()
     lateinit var webView: LGOWebView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        title = null
-        webView = LGOWebView(this)
+        navigationItems.activity = this
+        navigationItems.reload()
         intent?.let {
             urlString = it.getStringExtra("LGONavigationController.RequestPath")
-            if (it.getBooleanExtra("LGONavigationController.Class", false)) {
-                supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            }
         }
+        title = null
+        webView = LGOWebView(this)
         urlString?.let {
             webView.loadUrl(it)
             applyPageSetting()
@@ -31,6 +29,11 @@ open class LGOWebViewActivity : AppCompatActivity() {
         val relativeLayout = RelativeLayout(this)
         relativeLayout.addView(webView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         setContentView(relativeLayout)
+    }
+
+    override fun setTitle(title: CharSequence?) {
+        super.setTitle(title)
+        navigationItems.reload()
     }
 
     override fun onResume() {
@@ -41,9 +44,11 @@ open class LGOWebViewActivity : AppCompatActivity() {
     fun applyPageSetting() {
         LGOCore.modules.moduleWithName("UI.Page")?.let {
             val module = it
-            it::class.java.getDeclaredMethod("apply", LGOWebViewActivity::class.java)?.let {
-                it.invoke(module, this)
-            }
+            try {
+                it::class.java.getDeclaredMethod("apply", LGOWebViewActivity::class.java)?.let {
+                    it.invoke(module, this)
+                }
+            } catch (e: Exception) {}
         }
     }
 

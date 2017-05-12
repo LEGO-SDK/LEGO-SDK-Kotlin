@@ -83,12 +83,7 @@ class LGOPage: LGOModule() {
                     activity.supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor(it)))
                 }
                 it.navigationBarTintColor?.takeIf(String::isNotEmpty)?.let {
-                    val color = it
-                    activity.title?.let {
-                        val spannableString = SpannableString(it)
-                        spannableString.setSpan(ForegroundColorSpan(Color.parseColor(color)), 0, it.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        activity.title = spannableString
-                    }
+                    activity.navigationItems.tintColor = Color.parseColor(it)
                 }
                 if (it.fullScreenContent) {
                     activity.window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)

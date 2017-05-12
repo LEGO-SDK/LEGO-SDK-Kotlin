@@ -3,38 +3,22 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/LEGO-SDK-Kotlin.iml" filepath="$PROJECT_DIR$/LEGO-SDK-Kotlin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/LEGO-SDK-Kotlin.iml" filepath="$PROJECT_DIR$/LEGO-SDK-Kotlin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/native.check/native.check.iml" filepath="$PROJECT_DIR$/native.check/native.check.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.check/native.check.iml" filepath="$PROJECT_DIR$/native.check/native.check.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.device/native.device.iml" filepath="$PROJECT_DIR$/native.device/native.device.iml" />
-      <module fileurl="file://$PROJECT_DIR$/native.device/native.device.iml" filepath="$PROJECT_DIR$/native.device/native.device.iml" />
-      <module fileurl="file://$PROJECT_DIR$/native.filemanager/native.filemanager.iml" filepath="$PROJECT_DIR$/native.filemanager/native.filemanager.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.filemanager/native.filemanager.iml" filepath="$PROJECT_DIR$/native.filemanager/native.filemanager.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.httprequest/native.httprequest.iml" filepath="$PROJECT_DIR$/native.httprequest/native.httprequest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/native.httprequest/native.httprequest.iml" filepath="$PROJECT_DIR$/native.httprequest/native.httprequest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/native.notification/native.notification.iml" filepath="$PROJECT_DIR$/native.notification/native.notification.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.notification/native.notification.iml" filepath="$PROJECT_DIR$/native.notification/native.notification.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.openintent/native.openintent.iml" filepath="$PROJECT_DIR$/native.openintent/native.openintent.iml" />
-      <module fileurl="file://$PROJECT_DIR$/native.openintent/native.openintent.iml" filepath="$PROJECT_DIR$/native.openintent/native.openintent.iml" />
-      <module fileurl="file://$PROJECT_DIR$/native.pasteboard/native.pasteboard.iml" filepath="$PROJECT_DIR$/native.pasteboard/native.pasteboard.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.pasteboard/native.pasteboard.iml" filepath="$PROJECT_DIR$/native.pasteboard/native.pasteboard.iml" />
       <module fileurl="file://$PROJECT_DIR$/native.userdefaults/native.userdefaults.iml" filepath="$PROJECT_DIR$/native.userdefaults/native.userdefaults.iml" />
-      <module fileurl="file://$PROJECT_DIR$/native.userdefaults/native.userdefaults.iml" filepath="$PROJECT_DIR$/native.userdefaults/native.userdefaults.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ui.actionsheet/ui.actionsheet.iml" filepath="$PROJECT_DIR$/ui.actionsheet/ui.actionsheet.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.actionsheet/ui.actionsheet.iml" filepath="$PROJECT_DIR$/ui.actionsheet/ui.actionsheet.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.alertview/ui.alertview.iml" filepath="$PROJECT_DIR$/ui.alertview/ui.alertview.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ui.alertview/ui.alertview.iml" filepath="$PROJECT_DIR$/ui.alertview/ui.alertview.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ui.imagepreviewer/ui.imagepreviewer.iml" filepath="$PROJECT_DIR$/ui.imagepreviewer/ui.imagepreviewer.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.imagepreviewer/ui.imagepreviewer.iml" filepath="$PROJECT_DIR$/ui.imagepreviewer/ui.imagepreviewer.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.navigationcontroller/ui.navigationcontroller.iml" filepath="$PROJECT_DIR$/ui.navigationcontroller/ui.navigationcontroller.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ui.navigationcontroller/ui.navigationcontroller.iml" filepath="$PROJECT_DIR$/ui.navigationcontroller/ui.navigationcontroller.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ui.navigationitem/ui.navigationitem.iml" filepath="$PROJECT_DIR$/ui.navigationitem/ui.navigationitem.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.page/ui.page.iml" filepath="$PROJECT_DIR$/ui.page/ui.page.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ui.page/ui.page.iml" filepath="$PROJECT_DIR$/ui.page/ui.page.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ui.refresh/ui.refresh.iml" filepath="$PROJECT_DIR$/ui.refresh/ui.refresh.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.refresh/ui.refresh.iml" filepath="$PROJECT_DIR$/ui.refresh/ui.refresh.iml" />
     </modules>
   </component>

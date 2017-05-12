@@ -1,0 +1,75 @@
+package com.opensource.legosdk.uimodules.navigationitem
+
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import com.opensource.legosdk.core.LGOActionBarController
+import com.opensource.legosdk.core.LGORequestable
+import com.opensource.legosdk.core.LGOResponse
+import com.opensource.legosdk.core.LGOWebViewActivity
+import java.net.HttpURLConnection
+import java.net.URL
+
+/**
+ * Created by cuiminghui on 2017/5/11.
+ */
+class LGONavigationItemOperation(val request: LGONavigationItemRequest): LGORequestable() {
+
+    fun requestBitmap(url: String, completionBlock: (Bitmap?) -> Unit): Boolean {
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            Thread({
+                try {
+                    (URL(url).openConnection() as? HttpURLConnection)?.let { conn ->
+                        conn.connectTimeout = 5000
+                        conn.connect()
+                        BitmapFactory.decodeStream(conn.inputStream)?.let { bitmap ->
+                            if (url.contains("@3x.png", true) || url.contains("%403x.png", true)) {
+                                bitmap.density = 3
+                            }
+                            else {
+                                bitmap.density = 2
+                            }
+                            completionBlock(bitmap)
+                        }
+                        conn.inputStream.close()
+                    }
+                } catch (e: Exception) {}
+            }).start()
+            return true
+        }
+        return false
+    }
+
+    override fun requestAsynchronize(callbackBlock: (LGOResponse) -> Unit) {
+        request.context?.requestActivity()?.runOnUiThread {
+            request.leftItem?.takeIf { it.isNotEmpty() }?.let { leftItem ->
+                val activity = request.context?.requestActivity() as? LGOWebViewActivity ?: return@let
+                if (!requestBitmap(leftItem, { bitmap ->
+                    activity.runOnUiThread {
+                        activity.navigationItems.leftBarButtonItem = LGOActionBarController.LGOActionBarItem(null, bitmap, {
+                            callbackBlock(LGONavigationItemResponse(true, false).accept(null))
+                        })
+                    }
+                })) {
+                    activity.navigationItems.leftBarButtonItem = LGOActionBarController.LGOActionBarItem(leftItem, null, {
+                        callbackBlock(LGONavigationItemResponse(true, false).accept(null))
+                    })
+                }
+            }
+            request.rightItem?.takeIf { it.isNotEmpty() }?.let { rightItem ->
+                val activity = request.context?.requestActivity() as? LGOWebViewActivity ?: return@let
+                if (!requestBitmap(rightItem, { bitmap ->
+                    activity.runOnUiThread {
+                        activity.navigationItems.rightBarButtonItem = LGOActionBarController.LGOActionBarItem(null, bitmap, {
+                            callbackBlock(LGONavigationItemResponse(false, true).accept(null))
+                        })
+                    }
+                })) {
+                    activity.navigationItems.rightBarButtonItem = LGOActionBarController.LGOActionBarItem(rightItem, null, {
+                        callbackBlock(LGONavigationItemResponse(false, true).accept(null))
+                    })
+                }
+            }
+        }
+    }
+
+}
