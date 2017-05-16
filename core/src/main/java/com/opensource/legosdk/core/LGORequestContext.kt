@@ -10,6 +10,10 @@ import android.webkit.WebView
 
 open class LGORequestContext(val sender: Any?) {
 
+    fun runOnMainThread(action: () -> Unit) {
+        requestActivity()?.runOnUiThread(action)
+    }
+
     fun requestContentContext(): Context? {
         (sender as? WebView)?.let {
             return it.context

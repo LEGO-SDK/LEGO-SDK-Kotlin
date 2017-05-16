@@ -16,6 +16,7 @@
       <module fileurl="file://$PROJECT_DIR$/ui.actionsheet/ui.actionsheet.iml" filepath="$PROJECT_DIR$/ui.actionsheet/ui.actionsheet.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.alertview/ui.alertview.iml" filepath="$PROJECT_DIR$/ui.alertview/ui.alertview.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.imagepreviewer/ui.imagepreviewer.iml" filepath="$PROJECT_DIR$/ui.imagepreviewer/ui.imagepreviewer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ui.modalcontroller/ui.modalcontroller.iml" filepath="$PROJECT_DIR$/ui.modalcontroller/ui.modalcontroller.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.navigationcontroller/ui.navigationcontroller.iml" filepath="$PROJECT_DIR$/ui.navigationcontroller/ui.navigationcontroller.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.navigationitem/ui.navigationitem.iml" filepath="$PROJECT_DIR$/ui.navigationitem/ui.navigationitem.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.page/ui.page.iml" filepath="$PROJECT_DIR$/ui.page/ui.page.iml" />

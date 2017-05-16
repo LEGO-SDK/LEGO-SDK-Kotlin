@@ -3,7 +3,7 @@ package com.opensource.legosdk.uimodules.navigationitem
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.webkit.WebView
-import com.opensource.legosdk.core.LGOActionBarController
+import com.opensource.legosdk.core.LGONavigationItem
 import com.opensource.legosdk.core.LGORequestable
 import com.opensource.legosdk.core.LGOResponse
 import com.opensource.legosdk.core.LGOWebViewActivity
@@ -57,12 +57,12 @@ class LGONavigationItemOperation(val request: LGONavigationItemRequest): LGORequ
                 val activity = request.context?.requestActivity() as? LGOWebViewActivity ?: return@let
                 if (!requestBitmap(leftItem, { bitmap ->
                     activity.runOnUiThread {
-                        activity.navigationItems.leftBarButtonItem = LGOActionBarController.LGOActionBarItem(null, bitmap, {
+                        activity.navigationItems.leftBarButtonItem = LGONavigationItem.LGOBarButtonItem(null, bitmap, {
                             callbackBlock(LGONavigationItemResponse(true, false).accept(null))
                         })
                     }
                 })) {
-                    activity.navigationItems.leftBarButtonItem = LGOActionBarController.LGOActionBarItem(leftItem, null, {
+                    activity.navigationItems.leftBarButtonItem = LGONavigationItem.LGOBarButtonItem(leftItem, null, {
                         callbackBlock(LGONavigationItemResponse(true, false).accept(null))
                     })
                 }
@@ -71,12 +71,12 @@ class LGONavigationItemOperation(val request: LGONavigationItemRequest): LGORequ
                 val activity = request.context?.requestActivity() as? LGOWebViewActivity ?: return@let
                 if (!requestBitmap(rightItem, { bitmap ->
                     activity.runOnUiThread {
-                        activity.navigationItems.rightBarButtonItem = LGOActionBarController.LGOActionBarItem(null, bitmap, {
+                        activity.navigationItems.rightBarButtonItem = LGONavigationItem.LGOBarButtonItem(null, bitmap, {
                             callbackBlock(LGONavigationItemResponse(false, true).accept(null))
                         })
                     }
                 })) {
-                    activity.navigationItems.rightBarButtonItem = LGOActionBarController.LGOActionBarItem(rightItem, null, {
+                    activity.navigationItems.rightBarButtonItem = LGONavigationItem.LGOBarButtonItem(rightItem, null, {
                         callbackBlock(LGONavigationItemResponse(false, true).accept(null))
                     })
                 }

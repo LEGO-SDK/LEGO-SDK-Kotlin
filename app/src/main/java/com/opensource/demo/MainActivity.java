@@ -1,5 +1,6 @@
 package com.opensource.demo;
 
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuInflater;
@@ -20,6 +21,12 @@ public class MainActivity extends LGOWebViewActivity {
     @Override
     public String getUrlString() {
         return "http://3g.qq.com";
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        LGOWebViewActivity.Companion.setNavigationBarDrawable(new ColorDrawable(0xff277de2));
+        super.onCreate(savedInstanceState);
     }
 
 }

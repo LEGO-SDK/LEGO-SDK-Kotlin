@@ -35,11 +35,13 @@ class LGODeviceOperation(val context: LGORequestContext): LGORequestable() {
     }
 
     fun IDFV(): String {
-        val context = context.requestContentContext() ?: return ""
-        val deviceId = (context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).deviceId
-        deviceId?.let {
-            return UUID.nameUUIDFromBytes(it.toByteArray(charset("utf8"))).toString()
-        }
+        try {
+            val context = context.requestContentContext() ?: return ""
+            val deviceId = (context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).deviceId
+            deviceId?.let {
+                return UUID.nameUUIDFromBytes(it.toByteArray(charset("utf8"))).toString()
+            }
+        } catch (e: Exception) { }
         return ""
     }
 

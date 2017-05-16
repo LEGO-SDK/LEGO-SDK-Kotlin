@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/ui.actionsheet" />
             <option value="$PROJECT_DIR$/ui.alertview" />
             <option value="$PROJECT_DIR$/ui.imagepreviewer" />
+            <option value="$PROJECT_DIR$/ui.modalcontroller" />
             <option value="$PROJECT_DIR$/ui.navigationcontroller" />
             <option value="$PROJECT_DIR$/ui.navigationitem" />
             <option value="$PROJECT_DIR$/ui.page" />
