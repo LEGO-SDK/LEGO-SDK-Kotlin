@@ -17,6 +17,9 @@ class LGOModalOperation(val request: LGOModalRequest): LGORequestable() {
                     val intent = Intent(it, LGOModalWebViewActivity::class.java)
                     intent.putExtra("LGOModalController.RequestPath", request.path)
                     intent.putExtra("LGOModalController.Class", true)
+                    request.args?.let {
+                        intent.putExtra("LGOModalController.args", it.toString())
+                    }
                     intent.putExtra("LGOModalController.ModalType", request.modalStyle.type.ordinal)
                     intent.putExtra("LGOModalController.ModalWidth", request.modalStyle.modalWidth)
                     intent.putExtra("LGOModalController.ModalHeight", request.modalStyle.modalHeight)

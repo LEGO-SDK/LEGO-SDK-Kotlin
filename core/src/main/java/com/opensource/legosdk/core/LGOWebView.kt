@@ -102,7 +102,14 @@ class LGOWebView @JvmOverloads constructor(
         "callback=='function'){JSMessageCallbacks.push(callback);this." +
         "callbackID=JSMessageCallbacks.length-1}JSBridge.exec(JSON." +
         "stringify(this));if(JSSynchronizeResponses[this.moduleName]!==" +
-        "undefined){return JSSynchronizeResponses[this.moduleName]}}}}};" + syncScript()
+        "undefined){return JSSynchronizeResponses[this.moduleName]}}}}};" + argsScript() + syncScript()
+    }
+
+    fun argsScript(): String {
+        (context as? LGOWebViewActivity)?.args?.let {
+            return "window._args = {}; Object.assign(window._args, JSON.parse(decodeURIComponent(atob('" + toBase64(it.toString()) + "'))));"
+        }
+        return ""
     }
 
     fun syncScript(): String {

@@ -12,6 +12,7 @@ class LGOModalController: LGOModule() {
         val request = LGOModalRequest(context)
         request.opt = obj.optString("opt", "present")
         request.path = obj.optString("path") ?: return LGORequestable.reject("UI.ModalController", -1, "params 'path' required!")
+        request.args = obj.optJSONObject("args")
         request.animated = obj.optBoolean("animated", true)
         request.clearWebView = obj.optBoolean("clearWebView", false)
         request.clearMask = obj.optBoolean("clearMask", false)

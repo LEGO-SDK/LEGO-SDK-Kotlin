@@ -17,6 +17,9 @@ class LGONavigationOperation(val request: LGONavigationRequest): LGORequestable(
                     val intent = Intent(it, LGOWebViewActivity::class.java)
                     intent.putExtra("LGONavigationController.RequestPath", request.path)
                     intent.putExtra("LGONavigationController.Class", true)
+                    request.args?.let {
+                        intent.putExtra("LGONavigationController.args", it.toString())
+                    }
                     it.startActivity(intent)
                     return LGOResponse().accept(null)
                 }

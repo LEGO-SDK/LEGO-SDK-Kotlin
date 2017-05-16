@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
+import org.json.JSONObject
 
 open class LGOWebViewActivity : Activity() {
 
@@ -18,6 +19,7 @@ open class LGOWebViewActivity : Activity() {
     open var urlString: String? = null
     var pageSetting: Any? = null
     var navigationItems = LGONavigationItem()
+    var args: JSONObject? = null
     lateinit var navigationBar: LGONavigationBar
     lateinit var webView: LGOWebView
 
@@ -27,6 +29,11 @@ open class LGOWebViewActivity : Activity() {
         navigationItems.activity = this
         intent?.let {
             urlString = it.getStringExtra("LGONavigationController.RequestPath") ?: it.getStringExtra("LGOModalController.RequestPath")
+            (it.getStringExtra("LGONavigationController.args") ?: it.getStringExtra("LGOModalController.args"))?.let {
+                args = try {
+                    JSONObject(it)
+                } catch (e: Exception) { null }
+            }
         }
         title = null
         webView = LGOWebView(this)
