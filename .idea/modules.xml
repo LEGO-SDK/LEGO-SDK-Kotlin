@@ -20,6 +20,7 @@
       <module fileurl="file://$PROJECT_DIR$/ui.navigationcontroller/ui.navigationcontroller.iml" filepath="$PROJECT_DIR$/ui.navigationcontroller/ui.navigationcontroller.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.navigationitem/ui.navigationitem.iml" filepath="$PROJECT_DIR$/ui.navigationitem/ui.navigationitem.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.page/ui.page.iml" filepath="$PROJECT_DIR$/ui.page/ui.page.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ui.picker/ui.picker.iml" filepath="$PROJECT_DIR$/ui.picker/ui.picker.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.refresh/ui.refresh.iml" filepath="$PROJECT_DIR$/ui.refresh/ui.refresh.iml" />
     </modules>
   </component>

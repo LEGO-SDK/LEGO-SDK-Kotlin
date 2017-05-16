@@ -25,6 +25,7 @@
             <option value="$PROJECT_DIR$/ui.navigationcontroller" />
             <option value="$PROJECT_DIR$/ui.navigationitem" />
             <option value="$PROJECT_DIR$/ui.page" />
+            <option value="$PROJECT_DIR$/ui.picker" />
             <option value="$PROJECT_DIR$/ui.refresh" />
           </set>
         </option>
