@@ -1,6 +1,7 @@
 package com.opensource.legosdk.core
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.util.AttributeSet
 import android.util.Base64
@@ -16,11 +17,7 @@ class LGOWebView @JvmOverloads constructor(
 
     init {
         LGOCore.loadModules(context)
-        setWebViewClient(object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                return true
-            }
-
+        setWebViewClient(object : LGOWebViewHooker.WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 (context as? LGOWebViewActivity)?.let {
@@ -29,6 +26,9 @@ class LGOWebView @JvmOverloads constructor(
                     }
                 }
             }
+        })
+        setWebChromeClient(object : WebChromeClient() {
+
         })
         settings.javaScriptEnabled = true
         addJavascriptInterface(this, "JSBridge")
