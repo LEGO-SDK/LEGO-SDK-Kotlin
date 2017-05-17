@@ -1,15 +1,10 @@
 package com.opensource.legosdk.webview.pack
 
-import android.net.Uri
-import android.webkit.WebResourceRequest
+import android.util.Base64
 import android.webkit.WebView
 import com.opensource.legosdk.core.LGOCore
 import com.opensource.legosdk.core.LGOWebViewHooker
-import fi.iki.elonen.NanoHTTPD
-import java.io.BufferedInputStream
-import java.io.BufferedOutputStream
-import java.io.File
-import java.io.FileOutputStream
+import java.io.*
 import java.net.URI
 import java.security.MessageDigest
 import java.util.zip.ZipInputStream
@@ -83,6 +78,7 @@ class LGOPack {
                                         val count = zipInputStream.read(data, 0, 2048)
                                         if (count < 0) {
                                             break
+
                                         }
                                         bufferedOutputStream.write(data, 0, count)
                                     }
@@ -97,7 +93,36 @@ class LGOPack {
                     }
                 }
                 cachePath(url)?.let {
-
+                    val fileInputStream = FileInputStream(File(it))
+                    ZipInputStream(BufferedInputStream(fileInputStream))?.let { zipInputStream ->
+                        while (true) {
+                            val entry = zipInputStream.nextEntry ?: break
+                            val filePath = serverDocumentPath + File.separator + entry.name
+                            val file = File(filePath)
+                            mkdirs(file)
+                            if (entry.isDirectory) {
+                                file.mkdirs()
+                            } else {
+                                if (file.exists()) {
+                                    file.delete()
+                                }
+                                val bufferedOutputStream = BufferedOutputStream(FileOutputStream(file))
+                                val data = ByteArray(2048)
+                                while (true) {
+                                    val count = zipInputStream.read(data, 0, 2048)
+                                    if (count < 0) {
+                                        break
+                                    }
+                                    bufferedOutputStream.write(data, 0, count)
+                                }
+                                bufferedOutputStream.close()
+                            }
+                            zipInputStream.closeEntry()
+                        }
+                    }
+                    fileInputStream.close()
+                    val queryString = if (url.contains("?")) url.split("?").mapIndexedNotNull { index, s -> return@mapIndexedNotNull if (index > 0) s else null }.joinToString("?") else ""
+                    completionBlock("http://localhost:$serverPort/"+cacheKey(url)+"/"+queryString)
                 }
             }
         } catch (e: Exception) {
@@ -115,22 +140,31 @@ class LGOPack {
 
     companion object {
 
-        val instance = LGOPack()
+        val sharedInstance = LGOPack()
+        val sharedDownloader = LGOPackDownloader()
+
+        var sharedServer: LGOPackServer? = null
+            private set
 
         var serverPort = 10000
             private set
-        var server: LGOPackServer? = null
-            private set
+
+        var sharedPublicKeys: HashMap<String, String> = hashMapOf()
 
         init {
             startService()
             LGOWebViewHooker.WebViewClient.addHook(LGOWebViewHooker.HookEntity("shouldOverrideUrlLoading", null, { p0, p1, p2, p3 ->
                 val view = p0 as? WebView ?: return@HookEntity null
                 (p1 as? String)?.let { url ->
-                    if (url.contains(".zip") && instance.isLocalCached(url)) {
-                        instance.createFileServer(url, { it ->
-                            view.loadUrl(it)
-                        })
+                    if (url.contains(".zip") && sharedInstance.isLocalCached(url)) {
+                        Thread({
+                            sharedInstance.createFileServer(url, { it ->
+                                view.post {
+                                    view.loadUrl(it)
+                                }
+                            })
+                            sharedDownloader.updateFile(url)
+                        }).start()
                         return@HookEntity true
                     }
                 }
@@ -144,13 +178,27 @@ class LGOPack {
                 return
             }
             try {
-                server = LGOPackServer(null, serverPort)
-                server?.start()
+                sharedServer = LGOPackServer(null, serverPort)
+                sharedServer?.start()
             } catch (e: Exception) {
-                server = null
+                sharedServer = null
                 serverPort++
                 startService()
             }
+        }
+
+        fun setPublicKey(publicKey: String, uri: String) {
+            sharedPublicKeys.put(uri, publicKey)
+        }
+
+        fun setPublicKey(inputStream: InputStream, uri: String) {
+            try {
+                val buffer = ByteArray(inputStream.available())
+                inputStream.read(buffer, 0, inputStream.available())
+                inputStream.close()
+                sharedPublicKeys.put(uri, String(buffer, Charsets.UTF_8))
+            }
+            catch (e: Exception) { }
         }
 
     }

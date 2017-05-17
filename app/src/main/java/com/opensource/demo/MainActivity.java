@@ -9,9 +9,11 @@ import android.webkit.WebView;
 import com.opensource.legosdk.core.LGOWebView;
 import com.opensource.legosdk.core.LGOWebViewActivity;
 import com.opensource.legosdk.nativemodules.device.LGODevice;
+import com.opensource.legosdk.webview.pack.LGOPack;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,11 +22,16 @@ public class MainActivity extends LGOWebViewActivity {
     @Nullable
     @Override
     public String getUrlString() {
-        return "http://legox.yy.com/weui.zip";
+        return "https://github.com/LEGO-SDK/LEGO-SDK-OC/raw/master/Resources/weui.zip";
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        try {
+            LGOPack.Companion.setPublicKey(getAssets().open("weui.zip.pub"), "https://github.com/LEGO-SDK/");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         LGOWebViewActivity.Companion.setNavigationBarDrawable(new ColorDrawable(0xff277de2));
         super.onCreate(savedInstanceState);
     }

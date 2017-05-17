@@ -54,8 +54,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onPageStarted"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, url, favicon, null)
-                        return
+                        if (it.invoke(view, url, favicon, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, url, favicon, null)
@@ -69,8 +68,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onPageFinished"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, url, null, null)
-                        return
+                        if (it.invoke(view, url, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, url, null, null)
@@ -84,8 +82,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onLoadResource"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, url, null, null)
-                        return
+                        if (it.invoke(view, url, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, url, null, null)
@@ -99,8 +96,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onPageCommitVisible"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, url, null, null)
-                        return
+                        if (it.invoke(view, url, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, url, null, null)
@@ -146,8 +142,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onReceivedError"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, request, error, null)
-                        return
+                        if (it.invoke(view, request, error, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, request, error, null)
@@ -161,8 +156,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onReceivedError"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, request, errorResponse, null)
-                        return
+                        if (it.invoke(view, request, errorResponse, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, request, errorResponse, null)
@@ -176,8 +170,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onFormResubmission"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, dontResend, resend, null)
-                        return
+                        if (it.invoke(view, dontResend, resend, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, dontResend, resend, null)
@@ -191,8 +184,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["doUpdateVisitedHistory"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, url, isReload, null)
-                        return
+                        if (it.invoke(view, url, isReload, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, url, isReload, null)
@@ -206,8 +198,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onReceivedSslError"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, handler, error, null)
-                        return
+                        if (it.invoke(view, handler, error, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, handler, error, null)
@@ -221,8 +212,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onReceivedClientCertRequest"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, request, null, null)
-                        return
+                        if (it.invoke(view, request, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, request, null, null)
@@ -252,8 +242,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onUnhandledKeyEvent"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, event, null, null)
-                        return
+                        if (it.invoke(view, event, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, event, null, null)
@@ -267,8 +256,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onScaleChanged"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, oldScale, newScale, null)
-                        return
+                        if (it.invoke(view, oldScale, newScale, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, oldScale, newScale, null)
@@ -282,8 +270,7 @@ class LGOWebViewHooker {
             WebViewClient.hooks["onReceivedLoginRequest"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, realm, account, args)
-                        return
+                        if (it.invoke(view, realm, account, args) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, realm, account, args)
@@ -316,8 +303,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onProgressChanged"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, newProgress, null, null)
-                        return
+                        if (it.invoke(view, newProgress, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, newProgress, null, null)
@@ -331,8 +317,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onReceivedTitle"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, title, null, null)
-                        return
+                        if (it.invoke(view, title, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, title, null, null)
@@ -346,8 +331,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onReceivedTitle"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, icon, null, null)
-                        return
+                        if (it.invoke(view, icon, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, icon, null, null)
@@ -361,8 +345,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onReceivedTouchIconUrl"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, url, precomposed, null)
-                        return
+                        if (it.invoke(view, url, precomposed, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, url, precomposed, null)
@@ -376,8 +359,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onShowCustomView"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, callback, null, null)
-                        return
+                        if (it.invoke(view, callback, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, callback, null, null)
@@ -391,8 +373,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onShowCustomView"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, requestedOrientation, callback, null)
-                        return
+                        if (it.invoke(view, requestedOrientation, callback, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, requestedOrientation, callback, null)
@@ -406,8 +387,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onHideCustomView"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(null, null, null, null)
-                        return
+                        if (it.invoke(null, null, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(null, null, null, null)
@@ -437,8 +417,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onRequestFocus"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, null, null, null)
-                        return
+                        if (it.invoke(view, null, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(view, null, null, null)
@@ -452,8 +431,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onCloseWindow"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(window, null, null, null)
-                        return
+                        if (it.invoke(window, null, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(window, null, null, null)
@@ -531,8 +509,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onExceededDatabaseQuota"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(url, databaseIdentifier, quota, estimatedDatabaseSize)
-                        return
+                        if (it.invoke(url, databaseIdentifier, quota, estimatedDatabaseSize) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(url, databaseIdentifier, quota, estimatedDatabaseSize)
@@ -546,8 +523,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onReachedMaxAppCacheSize"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(requiredStorage, quota, quotaUpdater, null)
-                        return
+                        if (it.invoke(requiredStorage, quota, quotaUpdater, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(requiredStorage, quota, quotaUpdater, null)
@@ -561,8 +537,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onGeolocationPermissionsShowPrompt"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(origin, callback, null, null)
-                        return
+                        if (it.invoke(origin, callback, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(origin, callback, null, null)
@@ -576,8 +551,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onGeolocationPermissionsHidePrompt"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(null, null, null, null)
-                        return
+                        if (it.invoke(null, null, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(null, null, null, null)
@@ -591,8 +565,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onPermissionRequest"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(request, null, null, null)
-                        return
+                        if (it.invoke(request, null, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(request, null, null, null)
@@ -606,8 +579,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onPermissionRequestCanceled"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(request, null, null, null)
-                        return
+                        if (it.invoke(request, null, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(request, null, null, null)
@@ -653,8 +625,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onConsoleMessage"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(message, lineNumber, sourceID, null)
-                        return
+                        if (it.invoke(message, lineNumber, sourceID, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(message, lineNumber, sourceID, null)
@@ -700,8 +671,7 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["getVisitedHistory"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(callback, null, null, null)
-                        return
+                        if (it.invoke(callback, null, null, null) as? Boolean ?: false) return
                     }
                     it.hookBlock?.let {
                         it.invoke(callback, null, null, null)
