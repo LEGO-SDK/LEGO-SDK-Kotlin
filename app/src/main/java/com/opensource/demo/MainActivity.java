@@ -20,7 +20,7 @@ public class MainActivity extends LGOWebViewActivity {
     @Nullable
     @Override
     public String getUrlString() {
-        return "http://3g.qq.com";
+        return "http://legox.yy.com/weui.zip";
     }
 
     @Override

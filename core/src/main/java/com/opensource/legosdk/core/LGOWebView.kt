@@ -15,23 +15,32 @@ class LGOWebView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : WebView(context, attrs, defStyleAttr) {
 
-    init {
-        LGOCore.loadModules(context)
-        setWebViewClient(object : LGOWebViewHooker.WebViewClient() {})
-        setWebChromeClient(object : LGOWebViewHooker.WebChromeClient() {
-            override fun onReceivedTitle(view: WebView?, title: String?) {
-                super.onReceivedTitle(view, title)
-                (context as? LGOWebViewActivity)?.let {
-                    if (it.pageSetting == null) {
-                        it.title = view?.title
-                    }
+    val webClient = object : LGOWebViewHooker.WebViewClient() {}
+    val chromeClient = object : LGOWebViewHooker.WebChromeClient() {
+        override fun onReceivedTitle(view: WebView?, title: String?) {
+            super.onReceivedTitle(view, title)
+            (context as? LGOWebViewActivity)?.let {
+                if (it.pageSetting == null) {
+                    it.title = view?.title
                 }
             }
-        })
+        }
+    }
+
+    init {
+        LGOCore.loadModules(context)
+        setWebViewClient(webClient)
+        setWebChromeClient(chromeClient)
         settings.javaScriptEnabled = true
         addJavascriptInterface(this, "JSBridge")
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             setWebContentsDebuggingEnabled(true)
+        }
+    }
+
+    override fun loadUrl(url: String?) {
+        if (!webClient.shouldOverrideUrlLoading(this, url)) {
+            super.loadUrl(url)
         }
     }
 

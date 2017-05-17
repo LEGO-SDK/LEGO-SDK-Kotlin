@@ -10,6 +10,9 @@ class LGOCore {
 
     companion object {
 
+        var context: Context? = null
+            private set
+
         val SDKVersion = "0.3.0"
 
         var whiteList: MutableList<String> = mutableListOf()
@@ -24,6 +27,7 @@ class LGOCore {
             private set
 
         fun loadModules(context: Context) {
+            this.context = context
             if (moduleLoaded) {
                 return
             }

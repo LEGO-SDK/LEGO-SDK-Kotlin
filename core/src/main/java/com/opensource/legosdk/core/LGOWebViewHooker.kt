@@ -18,6 +18,22 @@ class LGOWebViewHooker {
 
     open class WebViewClient: android.webkit.WebViewClient() {
 
+        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+            WebViewClient.hooks["shouldOverrideUrlLoading"]?.let {
+                it.forEach {
+                    it.replaceBlock?.let {
+                        (it.invoke(view, url, null, null) as? Boolean)?.let {
+                            return it
+                        }
+                    }
+                    it.hookBlock?.let {
+                        it.invoke(view, url, null, null)
+                    }
+                }
+            }
+            return false
+        }
+
         override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
             WebViewClient.hooks["shouldOverrideUrlLoading"]?.let {
                 it.forEach {
@@ -31,7 +47,7 @@ class LGOWebViewHooker {
                     }
                 }
             }
-            return true
+            return false
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
