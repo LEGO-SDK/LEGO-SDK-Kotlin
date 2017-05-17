@@ -18,22 +18,6 @@ class LGOWebViewHooker {
 
     open class WebViewClient: android.webkit.WebViewClient() {
 
-        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-            WebViewClient.hooks["shouldOverrideUrlLoading"]?.let {
-                it.forEach {
-                    it.replaceBlock?.let {
-                        (it.invoke(view, url, null, null) as? Boolean)?.let {
-                            return it
-                        }
-                    }
-                    it.hookBlock?.let {
-                        it.invoke(view, url, null, null)
-                    }
-                }
-            }
-            return true
-        }
-
         override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
             WebViewClient.hooks["shouldOverrideUrlLoading"]?.let {
                 it.forEach {
@@ -110,7 +94,7 @@ class LGOWebViewHooker {
             super.onPageCommitVisible(view, url)
         }
 
-        override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse {
+        override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
             WebViewClient.hooks["shouldInterceptRequest"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
@@ -126,7 +110,7 @@ class LGOWebViewHooker {
             return super.shouldInterceptRequest(view, url)
         }
 
-        override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse {
+        override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
             WebViewClient.hooks["shouldInterceptRequest"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
@@ -421,8 +405,9 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onCreateWindow"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, isDialog, isUserGesture, resultMsg)
-                        return
+                        (it.invoke(view, isDialog, isUserGesture, resultMsg) as? Boolean)?.let {
+                            return it
+                        }
                     }
                     it.hookBlock?.let {
                         it.invoke(view, isDialog, isUserGesture, resultMsg)
@@ -451,11 +436,11 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onCloseWindow"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(window, null,, null, null)
+                        it.invoke(window, null, null, null)
                         return
                     }
                     it.hookBlock?.let {
-                        it.invoke(window, null,, null, null)
+                        it.invoke(window, null, null, null)
                     }
                 }
             }
@@ -466,8 +451,9 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onJsAlert"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(view, url, message, result)
-                        return
+                        (it.invoke(view, url, message, result) as? Boolean)?.let {
+                            return it
+                        }
                     }
                     it.hookBlock?.let {
                         it.invoke(view, url, message, result)
@@ -619,8 +605,9 @@ class LGOWebViewHooker {
             WebChromeClient.hooks["onJsTimeout"]?.let {
                 it.forEach {
                     it.replaceBlock?.let {
-                        it.invoke(null, null, null, null)
-                        return
+                        (it.invoke(null, null, null, null) as? Boolean)?.let {
+                            return it
+                        }
                     }
                     it.hookBlock?.let {
                         it.invoke(null, null, null, null)

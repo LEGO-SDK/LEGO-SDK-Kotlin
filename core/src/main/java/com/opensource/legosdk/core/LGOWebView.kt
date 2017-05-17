@@ -17,18 +17,16 @@ class LGOWebView @JvmOverloads constructor(
 
     init {
         LGOCore.loadModules(context)
-        setWebViewClient(object : LGOWebViewHooker.WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
+        setWebViewClient(object : LGOWebViewHooker.WebViewClient() {})
+        setWebChromeClient(object : LGOWebViewHooker.WebChromeClient() {
+            override fun onReceivedTitle(view: WebView?, title: String?) {
+                super.onReceivedTitle(view, title)
                 (context as? LGOWebViewActivity)?.let {
                     if (it.pageSetting == null) {
                         it.title = view?.title
                     }
                 }
             }
-        })
-        setWebChromeClient(object : WebChromeClient() {
-
         })
         settings.javaScriptEnabled = true
         addJavascriptInterface(this, "JSBridge")
