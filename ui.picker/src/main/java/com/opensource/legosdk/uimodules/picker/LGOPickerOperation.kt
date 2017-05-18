@@ -11,9 +11,9 @@ import com.opensource.legosdk.core.LGOResponse
 class LGOPickerOperation(val request: LGOPickerRequest): LGORequestable() {
 
     override fun requestAsynchronize(callbackBlock: (LGOResponse) -> Unit) {
-        request.context?.requestActivity()?.let { context ->
-            context.runOnUiThread {
-                val view = OptionsPickerView.Builder(context, OptionsPickerView.OnOptionsSelectListener { options1, options2, options3, v ->
+        request.context?.runOnMainThread {
+            request.context?.requestContentContext()?.let {
+                val view = OptionsPickerView.Builder(it, OptionsPickerView.OnOptionsSelectListener { options1, options2, options3, v ->
                     when(request.columns.size) {
                         1 -> {
                             if (options1 < request.columns[0].size) {

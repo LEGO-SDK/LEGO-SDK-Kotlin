@@ -12,8 +12,8 @@ import com.opensource.legosdk.core.LGOResponse
 class LGORefreshOperation(val request: LGORefreshRequest): LGORequestable() {
 
     override fun requestAsynchronize(callbackBlock: (LGOResponse) -> Unit) {
-        request.context?.requestActivity()?.let {
-            it.runOnUiThread {
+        request.context?.runOnMainThread {
+            request.context?.requestContentContext()?.let {
                 when (request.opt) {
                     "create" -> {
                         (request.context?.sender as? WebView)?.let {
@@ -21,7 +21,7 @@ class LGORefreshOperation(val request: LGORefreshRequest): LGORequestable() {
                             if (webViewParent is SwipeRefreshLayout) {
                                 webViewParent.isEnabled = true
                                 webViewParent.setOnRefreshListener { callbackBlock(LGOResponse().accept(null)) }
-                                return@runOnUiThread
+                                return@runOnMainThread
                             }
                             (webViewParent as ViewGroup).removeView(it)
                             val swipeRefreshLayout = SwipeRefreshLayout(it.context)
@@ -36,7 +36,7 @@ class LGORefreshOperation(val request: LGORefreshRequest): LGORequestable() {
                             if (webViewParent is SwipeRefreshLayout) webViewParent.isRefreshing = false
                         }
                     }
-
+                    else -> { }
                 }
             }
         }

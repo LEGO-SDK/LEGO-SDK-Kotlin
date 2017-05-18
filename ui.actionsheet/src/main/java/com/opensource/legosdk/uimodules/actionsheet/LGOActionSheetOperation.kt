@@ -12,8 +12,8 @@ import com.opensource.legosdk.core.LGOResponse
 class LGOActionSheetOperation(val request: LGOActionSheetRequest): LGORequestable() {
 
     override fun requestAsynchronize(callbackBlock: (LGOResponse) -> Unit) {
-        request.context?.requestActivity()?.let {
-            it.runOnUiThread {
+        request.context?.runOnMainThread {
+            request.context?.requestContentContext()?.let {
                 val builder = AlertDialog.Builder(it)
                 builder.setTitle(request.title)
                 builder.setItems(request.buttonTitles.toTypedArray(), { _, idx ->
