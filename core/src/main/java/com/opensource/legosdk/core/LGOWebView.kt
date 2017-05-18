@@ -15,6 +15,8 @@ class LGOWebView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : WebView(context, attrs, defStyleAttr) {
 
+    var primaryUrl: String? = null
+        private set
     val webClient = object : LGOWebViewHooker.WebViewClient() {}
     val chromeClient = object : LGOWebViewHooker.WebChromeClient() {
         override fun onReceivedTitle(view: WebView?, title: String?) {
@@ -39,6 +41,7 @@ class LGOWebView @JvmOverloads constructor(
     }
 
     override fun loadUrl(url: String?) {
+        primaryUrl = url
         if (!webClient.shouldOverrideUrlLoading(this, url)) {
             super.loadUrl(url)
         }
@@ -46,6 +49,10 @@ class LGOWebView @JvmOverloads constructor(
 
     @android.webkit.JavascriptInterface
     fun exec(body: String?) {
+        if (primaryUrl == null || !LGOWatchDog.checkURL(primaryUrl!!) || !LGOWatchDog.checkSSL(primaryUrl!!)) {
+            System.out.println("Received an JSMessage request. It's domain not in white list. Request Failed.")
+            return
+        }
         body?.let {
             JSONObject(it)?.let {
                 val callbackID = it.optInt("callbackID", -1)
@@ -55,6 +62,11 @@ class LGOWebView @JvmOverloads constructor(
                         it.optJSONObject("requestParams") ?: JSONObject(),
                         it.optInt("callbackID", -1)
                 )
+                if (primaryUrl == null || !LGOWatchDog.checkModule(primaryUrl!!, message.moduleName)) {
+                    val response = LGOResponse().reject("LEGO.SDK", -1, "Domain not in module white-list.")
+                    callback(message.callbackID, response.metaData, response.resData())
+                    return
+                }
                 message.call({ metaData: HashMap<String, Any>, resData: HashMap<String, Any> ->
                     callback(callbackID, metaData, resData)
                 }, LGORequestContext(this))
@@ -102,6 +114,9 @@ class LGOWebView @JvmOverloads constructor(
 
     @android.webkit.JavascriptInterface
     fun bridgeScript(): String {
+        if (primaryUrl == null || !LGOWatchDog.checkURL(primaryUrl!!) || !LGOWatchDog.checkSSL(primaryUrl!!)) {
+            return ""
+        }
         return "var JSMessageCallbacks=[];var JSSynchronizeResponses={};var " +
         "JSMessage={newMessage:function(name,requestParams){return{" +
         "messageID:'',moduleName:name,requestParams:requestParams," +

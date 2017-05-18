@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.MenuInflater;
 import android.webkit.WebView;
 
+import com.opensource.legosdk.core.LGOCore;
 import com.opensource.legosdk.core.LGOWebView;
 import com.opensource.legosdk.core.LGOWebViewActivity;
 import com.opensource.legosdk.nativemodules.device.LGODevice;
@@ -33,6 +34,7 @@ public class MainActivity extends LGOWebViewActivity {
             e.printStackTrace();
         }
         LGOWebViewActivity.Companion.setNavigationBarDrawable(new ColorDrawable(0xff277de2));
+        LGOCore.Companion.getWhiteList().add("github.com");
         super.onCreate(savedInstanceState);
     }
 

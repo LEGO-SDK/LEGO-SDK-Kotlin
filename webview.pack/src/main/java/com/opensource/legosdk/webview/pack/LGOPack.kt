@@ -2,8 +2,10 @@ package com.opensource.legosdk.webview.pack
 
 import android.app.Activity
 import android.util.Base64
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import com.opensource.legosdk.core.LGOCore
+import com.opensource.legosdk.core.LGOWatchDog
 import com.opensource.legosdk.core.LGOWebViewHooker
 import java.io.*
 import java.net.URI
@@ -162,10 +164,27 @@ class LGOPack {
 
         init {
             startService()
+            if (!LGOCore.whiteList.contains("localhost")) {
+                LGOCore.whiteList.add("localhost")
+            }
             LGOWebViewHooker.WebViewClient.addHook(LGOWebViewHooker.HookEntity("shouldOverrideUrlLoading", null, { p0, p1, p2, p3 ->
                 val view = p0 as? WebView ?: return@HookEntity null
                 (p1 as? String)?.let { url ->
-                    if (url.contains(".zip") && sharedInstance.isLocalCached(url)) {
+                    if (url.contains(".zip") && LGOWatchDog.checkURL(url) && LGOWatchDog.checkSSL(url) && sharedInstance.isLocalCached(url)) {
+                        Thread({
+                            sharedInstance.createFileServer(url, { it ->
+                                (view.context as? Activity)?.runOnUiThread {
+                                    view.loadUrl(it)
+                                }
+                            })
+                            sharedDownloader.updateFile(url)
+                        }).start()
+                        return@HookEntity true
+                    }
+                }
+                (p1 as? WebResourceRequest)?.let { request ->
+                    val url = request.url?.toString() ?: return@HookEntity null
+                    if (url.contains(".zip") && LGOWatchDog.checkURL(url) && LGOWatchDog.checkSSL(url) && sharedInstance.isLocalCached(url)) {
                         Thread({
                             sharedInstance.createFileServer(url, { it ->
                                 (view.context as? Activity)?.runOnUiThread {
