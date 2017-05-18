@@ -30,7 +30,7 @@ class LGOFileOperation(val request: LGOFileRequest): LGORequestable() {
 
     fun localFile(): File? {
         request.filePath?.let {
-            val components = it.split("/")
+            val components = it.replace("..", ".").split("/")
             var relativeDir = ""
             var filePath = "null.txt"
             var i = 0
