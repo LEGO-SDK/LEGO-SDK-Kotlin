@@ -1,5 +1,6 @@
 package com.opensource.legosdk.webview.pack
 
+import android.app.Activity
 import android.util.Base64
 import android.webkit.WebView
 import com.opensource.legosdk.core.LGOCore
@@ -58,9 +59,10 @@ class LGOPack {
             mkdirs(File(serverDocumentPath))
             val uri = URI(url)
             uri.path.split("/").last().takeIf { it.endsWith(".zip") }?.let { zipName ->
-                LGOCore.context?.assets?.list("")?.let {
-                    LGOCore.context?.assets?.open(zipName)?.let {
-                        ZipInputStream(BufferedInputStream(it))?.let { zipInputStream ->
+                try {
+                    cachePath(url)?.let {
+                        val fileInputStream = FileInputStream(File(it))
+                        ZipInputStream(BufferedInputStream(fileInputStream))?.let { zipInputStream ->
                             while (true) {
                                 val entry = zipInputStream.nextEntry ?: break
                                 val filePath = serverDocumentPath + File.separator + entry.name
@@ -78,7 +80,6 @@ class LGOPack {
                                         val count = zipInputStream.read(data, 0, 2048)
                                         if (count < 0) {
                                             break
-
                                         }
                                         bufferedOutputStream.write(data, 0, count)
                                     }
@@ -87,42 +88,50 @@ class LGOPack {
                                 zipInputStream.closeEntry()
                             }
                         }
-                        it.close()
+                        fileInputStream.close()
                         val queryString = if (url.contains("?")) url.split("?").mapIndexedNotNull { index, s -> return@mapIndexedNotNull if (index > 0) s else null }.joinToString("?") else ""
-                        completionBlock("http://localhost:$serverPort/"+cacheKey(url)+"/"+queryString)
+                        return completionBlock("http://localhost:$serverPort/"+cacheKey(url)+"/"+queryString)
                     }
+                } catch (e: Exception) {
+                    print(e)
                 }
-                cachePath(url)?.let {
-                    val fileInputStream = FileInputStream(File(it))
-                    ZipInputStream(BufferedInputStream(fileInputStream))?.let { zipInputStream ->
-                        while (true) {
-                            val entry = zipInputStream.nextEntry ?: break
-                            val filePath = serverDocumentPath + File.separator + entry.name
-                            val file = File(filePath)
-                            mkdirs(file)
-                            if (entry.isDirectory) {
-                                file.mkdirs()
-                            } else {
-                                if (file.exists()) {
-                                    file.delete()
-                                }
-                                val bufferedOutputStream = BufferedOutputStream(FileOutputStream(file))
-                                val data = ByteArray(2048)
+                try {
+                    LGOCore.context?.assets?.list("")?.let {
+                        LGOCore.context?.assets?.open(zipName)?.let {
+                            ZipInputStream(BufferedInputStream(it))?.let { zipInputStream ->
                                 while (true) {
-                                    val count = zipInputStream.read(data, 0, 2048)
-                                    if (count < 0) {
-                                        break
+                                    val entry = zipInputStream.nextEntry ?: break
+                                    val filePath = serverDocumentPath + File.separator + entry.name
+                                    val file = File(filePath)
+                                    mkdirs(file)
+                                    if (entry.isDirectory) {
+                                        file.mkdirs()
+                                    } else {
+                                        if (file.exists()) {
+                                            file.delete()
+                                        }
+                                        val bufferedOutputStream = BufferedOutputStream(FileOutputStream(file))
+                                        val data = ByteArray(2048)
+                                        while (true) {
+                                            val count = zipInputStream.read(data, 0, 2048)
+                                            if (count < 0) {
+                                                break
+
+                                            }
+                                            bufferedOutputStream.write(data, 0, count)
+                                        }
+                                        bufferedOutputStream.close()
                                     }
-                                    bufferedOutputStream.write(data, 0, count)
+                                    zipInputStream.closeEntry()
                                 }
-                                bufferedOutputStream.close()
                             }
-                            zipInputStream.closeEntry()
+                            it.close()
+                            val queryString = if (url.contains("?")) url.split("?").mapIndexedNotNull { index, s -> return@mapIndexedNotNull if (index > 0) s else null }.joinToString("?") else ""
+                            return completionBlock("http://localhost:$serverPort/"+cacheKey(url)+"/"+queryString)
                         }
                     }
-                    fileInputStream.close()
-                    val queryString = if (url.contains("?")) url.split("?").mapIndexedNotNull { index, s -> return@mapIndexedNotNull if (index > 0) s else null }.joinToString("?") else ""
-                    completionBlock("http://localhost:$serverPort/"+cacheKey(url)+"/"+queryString)
+                } catch (e: Exception) {
+                    print(e)
                 }
             }
         } catch (e: Exception) {
@@ -159,7 +168,7 @@ class LGOPack {
                     if (url.contains(".zip") && sharedInstance.isLocalCached(url)) {
                         Thread({
                             sharedInstance.createFileServer(url, { it ->
-                                view.post {
+                                (view.context as? Activity)?.runOnUiThread {
                                     view.loadUrl(it)
                                 }
                             })
