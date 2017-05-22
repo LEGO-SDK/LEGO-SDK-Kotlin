@@ -1,9 +1,6 @@
 package com.opensource.legosdk.uimodules.picker
 
-import com.opensource.legosdk.core.LGOCore
-import com.opensource.legosdk.core.LGOModule
-import com.opensource.legosdk.core.LGORequestContext
-import com.opensource.legosdk.core.LGORequestable
+import com.opensource.legosdk.core.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -35,6 +32,11 @@ class LGOPicker: LGOModule() {
                 return@map it.optString(idx, "")
             }
         }
+        return LGOPickerOperation(request)
+    }
+
+    override fun buildWithRequest(request: LGORequest): LGORequestable? {
+        val request = request as? LGOPickerRequest ?: return null
         return LGOPickerOperation(request)
     }
 

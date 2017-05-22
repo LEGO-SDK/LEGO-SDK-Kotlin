@@ -1,9 +1,6 @@
 package com.opensource.legosdk.uimodules.actionsheet
 
-import com.opensource.legosdk.core.LGOCore
-import com.opensource.legosdk.core.LGOModule
-import com.opensource.legosdk.core.LGORequestContext
-import com.opensource.legosdk.core.LGORequestable
+import com.opensource.legosdk.core.*
 import org.json.JSONObject
 import org.json.JSONArray
 
@@ -22,6 +19,11 @@ class LGOActionSheet: LGOModule() {
             return LGOActionSheetOperation(LGOActionSheetRequest(obj.optString("title"), buttonTitles.toList(), context))
         }
         return null
+    }
+
+    override fun buildWithRequest(request: LGORequest): LGORequestable? {
+        val request = request as? LGOActionSheetRequest ?: return null
+        return LGOActionSheetOperation(request)
     }
 
     companion object {

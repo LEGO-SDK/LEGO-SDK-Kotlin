@@ -16,6 +16,11 @@ class LGOCanOpenIntent: LGOModule() {
         return LGOCanOpenIntentOperation(LGOCanOpenIntentRequest(obj.optString("name", ""), obj.optString("action", ""), context))
     }
 
+    override fun buildWithRequest(request: LGORequest): LGORequestable? {
+        val request = request as? LGOCanOpenIntentRequest ?: return null
+        return LGOCanOpenIntentOperation(request)
+    }
+
     companion object {
 
         init {

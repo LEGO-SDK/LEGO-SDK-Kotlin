@@ -29,6 +29,11 @@ class LGOModalController: LGOModule() {
         return LGOModalOperation(request)
     }
 
+    override fun buildWithRequest(request: LGORequest): LGORequestable? {
+        val request = request as? LGOModalRequest ?: return null
+        return LGOModalOperation(request)
+    }
+
     companion object {
 
         init {

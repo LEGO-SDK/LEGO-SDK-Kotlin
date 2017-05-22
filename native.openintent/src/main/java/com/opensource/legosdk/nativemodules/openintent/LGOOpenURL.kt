@@ -17,6 +17,11 @@ class LGOOpenURL: LGOModule() {
         return LGOOpenURLOperation(LGOOpenURLRequest(obj.optString("URL", ""), context))
     }
 
+    override fun buildWithRequest(request: LGORequest): LGORequestable? {
+        val request = request as? LGOOpenURLRequest ?: return null
+        return LGOOpenURLOperation(request)
+    }
+
     companion object {
 
         init {

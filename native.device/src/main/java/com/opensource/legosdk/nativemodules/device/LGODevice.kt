@@ -13,7 +13,8 @@ class LGODevice : LGOModule() {
     }
 
     override fun buildWithRequest(request: LGORequest): LGORequestable? {
-        return LGORequestable.reject("LGODevice", -1, "cannot build with request.")
+        val context = request.context ?: return null
+        return LGODeviceOperation(context)
     }
 
     override fun synchronizeResponse(context: LGORequestContext): LGOResponse? {

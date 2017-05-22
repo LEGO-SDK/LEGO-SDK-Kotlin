@@ -30,6 +30,11 @@ class LGOPage: LGOModule() {
         return LGOPageOperation(request)
     }
 
+    override fun buildWithRequest(request: LGORequest): LGORequestable? {
+        val request = request as? LGOPageRequest ?: return null
+        return LGOPageOperation(request)
+    }
+
     fun apply(activity: LGOWebViewActivity) {
         activity.runOnUiThread {
             activity.webView.url?.let {

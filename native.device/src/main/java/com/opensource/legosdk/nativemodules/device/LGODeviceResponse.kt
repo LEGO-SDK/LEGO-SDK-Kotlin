@@ -34,7 +34,7 @@ class LGODeviceResponse : LGOResponse() {
             device.putOpt("model", deviceModel)
             device.putOpt("osName", deviceOSName)
             device.putOpt("osVersion", deviceOSVersion)
-            device.putOpt("IDFV", deviceIDFV)
+            device.putOpt("identifierForVendor", deviceIDFV)
             device.putOpt("screenWidth", deviceScreenWidth)
             device.putOpt("screenHeight", deviceScreenHeight)
             val app = JSONObject()

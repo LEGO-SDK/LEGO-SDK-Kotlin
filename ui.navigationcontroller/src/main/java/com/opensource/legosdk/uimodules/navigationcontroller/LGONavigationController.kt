@@ -17,6 +17,11 @@ class LGONavigationController: LGOModule() {
         return LGONavigationOperation(request)
     }
 
+    override fun buildWithRequest(request: LGORequest): LGORequestable? {
+        val request = request as? LGONavigationRequest ?: return null
+        return LGONavigationOperation(request)
+    }
+
     companion object {
 
         init {

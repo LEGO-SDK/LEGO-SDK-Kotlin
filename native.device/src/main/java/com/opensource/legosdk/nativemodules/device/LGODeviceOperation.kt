@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Point
 import android.net.ConnectivityManager
+import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.view.WindowManager
 import com.opensource.legosdk.core.LGORequestContext
 import com.opensource.legosdk.core.LGORequestable
 import com.opensource.legosdk.core.LGOResponse
-import java.util.*
 
 
 /**
@@ -20,7 +20,7 @@ class LGODeviceOperation(val context: LGORequestContext): LGORequestable() {
     override fun requestSynchronize(): LGOResponse {
         val context = context.requestContentContext() ?: return LGOResponse().reject("LGODevice", -2, "no context.")
         val response = LGODeviceResponse()
-        response.deviceIDFV = IDFV()
+        response.deviceIDFV = identifierForVendor()
         response.deviceScreenWidth = screenSize().x
         response.deviceScreenHeight = screenSize().y
         response.appName = context.getString(context.applicationInfo.labelRes)
@@ -34,15 +34,9 @@ class LGODeviceOperation(val context: LGORequestContext): LGORequestable() {
         return response.accept(null)
     }
 
-    fun IDFV(): String {
-        try {
-            val context = context.requestContentContext() ?: return ""
-            val deviceId = (context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).deviceId
-            deviceId?.let {
-                return UUID.nameUUIDFromBytes(it.toByteArray(charset("utf8"))).toString()
-            }
-        } catch (e: Exception) { }
-        return ""
+    fun identifierForVendor(): String {
+        val context = context.requestContentContext() ?: return ""
+        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
     }
 
     fun screenSize(): Point {

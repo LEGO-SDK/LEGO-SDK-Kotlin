@@ -12,6 +12,11 @@ class LGORefresh: LGOModule() {
         return LGORefreshOperation(LGORefreshRequest(obj.optString("opt", ""), context))
     }
 
+    override fun buildWithRequest(request: LGORequest): LGORequestable? {
+        val request = request as? LGORefreshRequest ?: return null
+        return LGORefreshOperation(request)
+    }
+
     companion object {
 
         init {

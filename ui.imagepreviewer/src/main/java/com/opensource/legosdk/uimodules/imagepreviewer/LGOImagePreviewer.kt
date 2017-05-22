@@ -1,9 +1,6 @@
 package com.opensource.legosdk.uimodules.imagepreviewer
 
-import com.opensource.legosdk.core.LGOCore
-import com.opensource.legosdk.core.LGOModule
-import com.opensource.legosdk.core.LGORequestContext
-import com.opensource.legosdk.core.LGORequestable
+import com.opensource.legosdk.core.*
 import org.json.JSONObject
 
 /**
@@ -18,6 +15,11 @@ class LGOImagePreviewer: LGOModule() {
             (0..length - 1).mapTo(URLs) { i -> it.optString(i, "") }
         }
         return LGOImagePreviewerOperation(LGOImagePreviewerRequest(URLs.toList(), obj.optString("currentURL"), context))
+    }
+
+    override fun buildWithRequest(request: LGORequest): LGORequestable? {
+        val request = request as? LGOImagePreviewerRequest ?: return null
+        return LGOImagePreviewerOperation(request)
     }
 
     companion object {

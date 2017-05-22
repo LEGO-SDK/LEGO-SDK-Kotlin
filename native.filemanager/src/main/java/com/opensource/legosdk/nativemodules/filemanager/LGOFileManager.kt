@@ -1,9 +1,6 @@
 package com.opensource.legosdk.nativemodules.filemanager
 
-import com.opensource.legosdk.core.LGOCore
-import com.opensource.legosdk.core.LGOModule
-import com.opensource.legosdk.core.LGORequestContext
-import com.opensource.legosdk.core.LGORequestable
+import com.opensource.legosdk.core.*
 import org.json.JSONObject
 
 
@@ -21,6 +18,11 @@ class LGOFileManager: LGOModule() {
             request.filePath = it.replace("..", ".")
         }
         request.fileContents = obj.optString("fileContents")
+        return LGOFileOperation(request)
+    }
+
+    override fun buildWithRequest(request: LGORequest): LGORequestable? {
+        val request = request as? LGOFileRequest ?: return null
         return LGOFileOperation(request)
     }
 
