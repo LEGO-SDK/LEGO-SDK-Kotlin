@@ -36,6 +36,7 @@ class LGOWebView @JvmOverloads constructor(
         settings.javaScriptEnabled = true
         settings.allowFileAccess = false
         settings.allowFileAccessFromFileURLs = false
+        settings.useWideViewPort = true
         addJavascriptInterface(this, "JSBridge")
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             setWebContentsDebuggingEnabled(true)
