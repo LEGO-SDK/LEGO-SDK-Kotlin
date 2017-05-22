@@ -1,6 +1,7 @@
 package com.opensource.legosdk.webview.pack
 
 import android.app.Activity
+import android.os.Build
 import android.util.Base64
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -182,18 +183,20 @@ class LGOPack {
                         return@HookEntity true
                     }
                 }
-                (p1 as? WebResourceRequest)?.let { request ->
-                    val url = request.url?.toString() ?: return@HookEntity null
-                    if (url.contains(".zip") && LGOWatchDog.checkURL(url) && LGOWatchDog.checkSSL(url) && sharedInstance.isLocalCached(url)) {
-                        Thread({
-                            sharedInstance.createFileServer(url, { it ->
-                                (view.context as? Activity)?.runOnUiThread {
-                                    view.loadUrl(it)
-                                }
-                            })
-                            sharedDownloader.updateFile(url)
-                        }).start()
-                        return@HookEntity true
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    (p1 as? WebResourceRequest)?.let { request ->
+                        val url = request.url?.toString() ?: return@HookEntity null
+                        if (url.contains(".zip") && LGOWatchDog.checkURL(url) && LGOWatchDog.checkSSL(url) && sharedInstance.isLocalCached(url)) {
+                            Thread({
+                                sharedInstance.createFileServer(url, { it ->
+                                    (view.context as? Activity)?.runOnUiThread {
+                                        view.loadUrl(it)
+                                    }
+                                })
+                                sharedDownloader.updateFile(url)
+                            }).start()
+                            return@HookEntity true
+                        }
                     }
                 }
                 return@HookEntity null

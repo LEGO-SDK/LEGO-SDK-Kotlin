@@ -119,7 +119,7 @@ class LGOWebView @JvmOverloads constructor(
         if (primaryUrl == null || !LGOWatchDog.checkURL(primaryUrl!!) || !LGOWatchDog.checkSSL(primaryUrl!!)) {
             return ""
         }
-        return "var JSMessageCallbacks=[];var JSSynchronizeResponses={};var " +
+        return "window.JSMessageCallbacks=[];window.JSSynchronizeResponses={};window." +
         "JSMessage={newMessage:function(name,requestParams){return{" +
         "messageID:'',moduleName:name,requestParams:requestParams," +
         "callbackID:-1,call:function(callback){if(typeof " +
