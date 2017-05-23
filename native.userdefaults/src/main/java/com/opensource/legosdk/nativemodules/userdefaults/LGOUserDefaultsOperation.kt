@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.LruCache
 import com.opensource.legosdk.core.LGORequestable
 import com.opensource.legosdk.core.LGOResponse
+import org.json.JSONObject
 
 /**
  * Created by PonyCui_Home on 2017/4/18.
@@ -41,7 +42,17 @@ class LGOUserDefaultsOperation(val request: LGOUserDefaultsRequest): LGORequesta
                 else {
                     val preferences = request.context?.requestContentContext()?.getSharedPreferences(request.suite, Context.MODE_PRIVATE)
                     preferences?.let {
-                        return LGOUserDefaultsResponse(it.getString(aKey, null)).accept(null)
+                        it.getString(aKey, null)?.let { value ->
+                            if (value.startsWith("Object>>>")) {
+                                return LGOUserDefaultsResponse(try {
+                                    JSONObject(value.replace("Object>>>", ""))
+                                } catch (e: Exception) {value} ).accept(null)
+                            }
+                            else {
+                                return LGOUserDefaultsResponse(value).accept(null)
+                            }
+                        }
+                        return LGOUserDefaultsResponse(null).reject("Native.UserDefaults", -1, "value not exists.")
                     }
                 }
             }

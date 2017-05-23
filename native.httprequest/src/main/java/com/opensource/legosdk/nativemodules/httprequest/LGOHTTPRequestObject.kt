@@ -19,4 +19,16 @@ class LGOHTTPRequestObject(context: LGORequestContext?): LGORequest(context) {
 
     var data: String? = null
 
+    fun requestHeaders(): Map<String, String> {
+        val mutableMap = mutableMapOf<String, String>()
+        this.headers?.let { headers ->
+            headers.keys().forEach { aKey ->
+                headers.optString(aKey)?.let { aValue ->
+                    mutableMap.put(aKey, aValue)
+                }
+            }
+        }
+        return mutableMap.toMap()
+    }
+
 }

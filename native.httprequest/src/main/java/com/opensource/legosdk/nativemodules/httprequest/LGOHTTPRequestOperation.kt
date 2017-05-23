@@ -5,6 +5,7 @@ import android.util.Base64
 import android.webkit.WebView
 import com.opensource.legosdk.core.LGORequestable
 import com.opensource.legosdk.core.LGOResponse
+import okhttp3.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -20,64 +21,42 @@ import java.nio.charset.Charset
 class LGOHTTPRequestOperation(val request: LGOHTTPRequestObject): LGORequestable() {
 
     override fun requestAsynchronize(callbackBlock: (LGOResponse) -> Unit) {
-        val BUFFER_SIZE = 4096
-        val thread = Thread({
-            var statusCode = 0
-            requestURL()?.let {
-                try {
-                    (it.openConnection() as? HttpURLConnection)?.let {
-                        val conn = it
-                        conn.connectTimeout = request.timeout * 1000
-                        request.data?.let {
-                            if (it.length > 0) {
-                                conn.requestMethod = "POST"
+        val client = OkHttpClient()
+        try {
+            var reqBody: RequestBody? = null
+            request.data?.let {
+                if (it.length > 0) {
+                    try {
+                        val bytes = Base64.decode(it.toByteArray(), 0)
+                        reqBody = RequestBody.create(null, bytes)
+                    } catch (e: IllegalArgumentException) {
+                        val reqBodyBuilder = FormBody.Builder()
+                        it.split("&").forEach {
+                            val components = it.split("=")
+                            if (components.size == 2) {
+                                reqBodyBuilder.addEncoded(components[0], components[1])
                             }
                         }
-                        request.headers?.let {
-                            it.keys().forEach {
-                                conn.setRequestProperty(it, request.headers?.optString(it))
-                            }
-                        }
-                        conn.connect()
-                        request.data?.let {
-                            if (it.length > 0) {
-                                try {
-                                    val os = conn.outputStream
-                                    os.write(Base64.decode(it.toByteArray(), 0))
-                                    os.close()
-                                } catch (e: IllegalArgumentException) {
-                                    val os = conn.outputStream
-                                    os.write(it.toByteArray())
-                                    os.close()
-                                }
-                            }
-                        }
-                        statusCode = conn.responseCode
-                        val inputStream = conn.inputStream
-                        val outputStream = ByteArrayOutputStream()
-                        val buffer = ByteArray(BUFFER_SIZE)
-                        var count: Int
-                        while (true) {
-                            count = inputStream.read(buffer, 0, BUFFER_SIZE)
-                            if (count == -1) {
-                                break
-                            }
-                            outputStream.write(buffer, 0, count)
-                        }
-                        val response = LGOHTTPResponseObject()
-                        response.responseText = if(isValidUTF8(outputStream.toByteArray())) String(outputStream.toByteArray(), Charsets.UTF_8) else ""
-                        response.responseData = outputStream.toByteArray()
-                        response.statusCode = statusCode
-                        callbackBlock(response.accept(null))
-                        inputStream.close()
+                        reqBody = reqBodyBuilder.build()
                     }
                 }
-                catch (e: IOException) {
-                    callbackBlock(LGOResponse().reject("Native.HTTPRequest", -statusCode, e.localizedMessage))
-                }
             }
-        })
-        thread.start()
+            val request = Request.Builder()
+                    .url(request.URL)
+                    .method(if (request.data?.length ?: 0 > 0) "POST" else "GET", reqBody)
+                    .headers(Headers.of(request.requestHeaders()))
+                    .build()
+            Thread({
+                val webResponse = client.newCall(request).execute()
+                val response = LGOHTTPResponseObject()
+                response.responseText = webResponse.body().string()
+                response.responseData = webResponse.body().bytes()
+                response.statusCode = webResponse.code()
+                callbackBlock(response.accept(null))
+            }).start()
+        } catch (e: Exception) {
+            callbackBlock(LGOResponse().reject("Native.HTTPRequest", e.hashCode(), e.localizedMessage))
+        }
     }
 
     fun requestURL(): URL? {

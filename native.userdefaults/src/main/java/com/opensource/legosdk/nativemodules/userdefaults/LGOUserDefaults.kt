@@ -13,7 +13,12 @@ class LGOUserDefaults: LGOModule() {
         request.opt = obj.optString("opt", "read")
         request.suite = obj.optString("suite", "default")
         request.key = obj.optString("key")
-        request.value = obj.optString("value", "")
+        obj.optJSONObject("value")?.let {
+            request.value = "Object>>>" + it.toString()
+        }
+        obj.optString("value")?.let {
+            request.value = it
+        }
         return LGOUserDefaultsOperation(request)
     }
 

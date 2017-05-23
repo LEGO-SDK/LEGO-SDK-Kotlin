@@ -8,7 +8,7 @@ import org.json.JSONObject
 /**
  * Created by PonyCui_Home on 2017/4/18.
  */
-class LGOUserDefaultsResponse(val value: String?): LGOResponse() {
+class LGOUserDefaultsResponse(val value: Any?): LGOResponse() {
 
     override fun resData(): HashMap<String, Any> {
         value?.let {
