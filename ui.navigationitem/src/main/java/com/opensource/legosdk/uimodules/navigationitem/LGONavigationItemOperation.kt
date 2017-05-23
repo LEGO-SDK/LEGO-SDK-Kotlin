@@ -54,6 +54,9 @@ class LGONavigationItemOperation(val request: LGONavigationItemRequest): LGORequ
     override fun requestAsynchronize(callbackBlock: (LGOResponse) -> Unit) {
         request.context?.requestActivity()?.runOnUiThread {
             request.leftItem?.takeIf { it.isNotEmpty() }?.let { leftItem ->
+                if (leftItem.equals("null") || leftItem.equals("undefined")) {
+                    return@let
+                }
                 val activity = request.context?.requestActivity() as? LGOWebViewActivity ?: return@let
                 if (!requestBitmap(leftItem, { bitmap ->
                     activity.runOnUiThread {
@@ -68,6 +71,9 @@ class LGONavigationItemOperation(val request: LGONavigationItemRequest): LGORequ
                 }
             }
             request.rightItem?.takeIf { it.isNotEmpty() }?.let { rightItem ->
+                if (rightItem.equals("null") || rightItem.equals("undefined")) {
+                    return@let
+                }
                 val activity = request.context?.requestActivity() as? LGOWebViewActivity ?: return@let
                 if (!requestBitmap(rightItem, { bitmap ->
                     activity.runOnUiThread {

@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.support.v7.app.ActionBar
 import android.view.WindowManager
 import com.opensource.legosdk.core.*
+import org.json.JSONArray
 import org.json.JSONObject
 
 
@@ -13,26 +14,48 @@ import org.json.JSONObject
  */
 class LGOPage: LGOModule() {
 
-    val settings: HashMap<String, LGOPageRequest> = hashMapOf()
+    var settings: Map<String, LGOPageRequest> = mapOf()
 
     override fun buildWithJSONObject(obj: JSONObject, context: LGORequestContext): LGORequestable? {
-        val request = LGOPageRequest(context)
-        request.urlPattern = obj.optString("urlPattern")
-        request.title = obj.optString("title")
-        request.backgroundColor = obj.optString("backgroundColor")
-        request.statusBarHidden = obj.optBoolean("statusBarHidden", false)
-        request.navigationBarHidden = obj.optBoolean("navigationBarHidden", false)
-        request.navigationBarSeparatorHidden = obj.optBoolean("navigationBarSeparatorHidden", false)
-        request.navigationBarBackgroundColor = obj.optString("navigationBarBackgroundColor")
-        request.navigationBarTintColor = obj.optString("navigationBarTintColor")
-        request.fullScreenContent = obj.optBoolean("fullScreenContent", false)
-        request.showsIndicator = obj.optBoolean("showsIndicator", true)
-        return LGOPageOperation(request)
+        val items = obj.optJSONArray("items")
+        if (items != null) {
+            return LGOPageOperation((0 until items.length()).mapNotNull { idx ->
+                items.optJSONObject(idx)?.let { obj ->
+                    val request = LGOPageRequest(context)
+                    request.urlPattern = obj.optString("urlPattern")
+                    request.title = obj.optString("title")
+                    request.backgroundColor = obj.optString("backgroundColor")
+                    request.statusBarHidden = obj.optBoolean("statusBarHidden", false)
+                    request.navigationBarHidden = obj.optBoolean("navigationBarHidden", false)
+                    request.navigationBarSeparatorHidden = obj.optBoolean("navigationBarSeparatorHidden", false)
+                    request.navigationBarBackgroundColor = obj.optString("navigationBarBackgroundColor")
+                    request.navigationBarTintColor = obj.optString("navigationBarTintColor")
+                    request.fullScreenContent = obj.optBoolean("fullScreenContent", false)
+                    request.showsIndicator = obj.optBoolean("showsIndicator", true)
+                    return@mapNotNull request
+                }
+                return@mapNotNull null
+            })
+        }
+        else {
+            val request = LGOPageRequest(context)
+            request.urlPattern = obj.optString("urlPattern")
+            request.title = obj.optString("title")
+            request.backgroundColor = obj.optString("backgroundColor")
+            request.statusBarHidden = obj.optBoolean("statusBarHidden", false)
+            request.navigationBarHidden = obj.optBoolean("navigationBarHidden", false)
+            request.navigationBarSeparatorHidden = obj.optBoolean("navigationBarSeparatorHidden", false)
+            request.navigationBarBackgroundColor = obj.optString("navigationBarBackgroundColor")
+            request.navigationBarTintColor = obj.optString("navigationBarTintColor")
+            request.fullScreenContent = obj.optBoolean("fullScreenContent", false)
+            request.showsIndicator = obj.optBoolean("showsIndicator", true)
+            return LGOPageOperation(listOf(request))
+        }
     }
 
     override fun buildWithRequest(request: LGORequest): LGORequestable? {
         val request = request as? LGOPageRequest ?: return null
-        return LGOPageOperation(request)
+        return LGOPageOperation(listOf(request))
     }
 
     fun apply(activity: LGOWebViewActivity) {
@@ -79,7 +102,7 @@ class LGOPage: LGOModule() {
                 it.navigationBarTintColor?.takeIf(String::isNotEmpty)?.let {
                     activity.navigationBar.tintColor = Color.parseColor(it)
                 }
-                activity.navigationBar.translucent = it.fullScreenContent
+                activity.navigationBar.statusBarTranslucent = it.fullScreenContent
             }
         }
     }

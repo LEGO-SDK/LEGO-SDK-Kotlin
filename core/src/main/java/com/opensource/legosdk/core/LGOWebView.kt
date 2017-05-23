@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.util.AttributeSet
 import android.util.Base64
+import android.view.View
 import android.webkit.*
 import org.json.JSONObject
 
@@ -132,7 +133,7 @@ class LGOWebView @JvmOverloads constructor(
 
     fun argsScript(): String {
         (context as? LGOWebViewActivity)?.args?.let {
-            return "window._args = {}; Object.assign(window._args, JSON.parse(decodeURIComponent(atob('" + toBase64(it.toString()) + "'))));"
+            return "window._args = {}; try { JSON.parse(decodeURIComponent(atob('" + toBase64(it.toString()) + "'))); }catch(e){}"
         }
         return ""
     }

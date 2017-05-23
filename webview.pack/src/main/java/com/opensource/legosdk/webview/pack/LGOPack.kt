@@ -171,14 +171,22 @@ class LGOPack {
             LGOWebViewHooker.WebViewClient.addHook(LGOWebViewHooker.HookEntity("shouldOverrideUrlLoading", null, { p0, p1, p2, p3 ->
                 val view = p0 as? WebView ?: return@HookEntity null
                 (p1 as? String)?.let { url ->
-                    if (url.contains(".zip") && LGOWatchDog.checkURL(url) && LGOWatchDog.checkSSL(url) && sharedInstance.isLocalCached(url)) {
+                    if (url.contains(".zip") && LGOWatchDog.checkURL(url) && LGOWatchDog.checkSSL(url)) {
                         Thread({
                             sharedInstance.createFileServer(url, { it ->
                                 (view.context as? Activity)?.runOnUiThread {
                                     view.loadUrl(it)
                                 }
                             })
+                            val noCache = !sharedInstance.isLocalCached(url)
                             sharedDownloader.updateFile(url)
+                            if (noCache) {
+                                sharedInstance.createFileServer(url, { it ->
+                                    (view.context as? Activity)?.runOnUiThread {
+                                        view.loadUrl(it)
+                                    }
+                                })
+                            }
                         }).start()
                         return@HookEntity true
                     }
@@ -186,14 +194,22 @@ class LGOPack {
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     (p1 as? WebResourceRequest)?.let { request ->
                         val url = request.url?.toString() ?: return@HookEntity null
-                        if (url.contains(".zip") && LGOWatchDog.checkURL(url) && LGOWatchDog.checkSSL(url) && sharedInstance.isLocalCached(url)) {
+                        if (url.contains(".zip") && LGOWatchDog.checkURL(url) && LGOWatchDog.checkSSL(url)) {
                             Thread({
                                 sharedInstance.createFileServer(url, { it ->
                                     (view.context as? Activity)?.runOnUiThread {
                                         view.loadUrl(it)
                                     }
                                 })
+                                val noCache = !sharedInstance.isLocalCached(url)
                                 sharedDownloader.updateFile(url)
+                                if (noCache) {
+                                    sharedInstance.createFileServer(url, { it ->
+                                        (view.context as? Activity)?.runOnUiThread {
+                                            view.loadUrl(it)
+                                        }
+                                    })
+                                }
                             }).start()
                             return@HookEntity true
                         }

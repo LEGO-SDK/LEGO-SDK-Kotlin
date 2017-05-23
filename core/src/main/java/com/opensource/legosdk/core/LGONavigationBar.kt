@@ -43,7 +43,7 @@ class LGONavigationBar @JvmOverloads constructor(
 
     var barTintColor: Int = Color.BLACK
 
-    var translucent: Boolean = false
+    var statusBarTranslucent: Boolean = false
         set(value) {
             if (field == value) {
                 return
@@ -77,21 +77,21 @@ class LGONavigationBar @JvmOverloads constructor(
         this.removeAllViews()
         activity?.navigationItems?.rightBarButtonItem?.let {
             resetRightView()?.let {
-                if (translucent) {
+                if (statusBarTranslucent) {
                     it.setPadding(it.paddingLeft, (20 * context.resources.displayMetrics.density).toInt(), it.paddingRight, it.paddingBottom)
                 }
                 this.addView(it, 0, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.0f))
             }
         }
         resetTitleView()?.let {
-            if (translucent) {
+            if (statusBarTranslucent) {
                 it.setPadding(it.paddingLeft, (20 * context.resources.displayMetrics.density).toInt(), it.paddingRight, it.paddingBottom)
             }
             this.addView(it, 0, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f))
         }
         activity?.navigationItems?.leftBarButtonItem?.let {
             resetLeftView()?.let {
-                if (translucent) {
+                if (statusBarTranslucent) {
                     it.setPadding(it.paddingLeft, (20 * context.resources.displayMetrics.density).toInt(), it.paddingRight, it.paddingBottom)
                 }
                 this.addView(it, 0, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.0f))
@@ -99,7 +99,7 @@ class LGONavigationBar @JvmOverloads constructor(
         }
         if (activity?.navigationItems?.leftBarButtonItem == null) {
             resetBackView()?.let {
-                if (translucent) {
+                if (statusBarTranslucent) {
                     it.setPadding(it.paddingLeft, (20 * context.resources.displayMetrics.density).toInt(), it.paddingRight, it.paddingBottom)
                 }
                 this.addView(it, 0, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.0f))

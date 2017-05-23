@@ -4,9 +4,12 @@ import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import org.json.JSONObject
 
 open class LGOWebViewActivity : Activity() {
@@ -47,33 +50,42 @@ open class LGOWebViewActivity : Activity() {
     fun resetLayouts() {
         contentView?.removeAllViews()
         if (!navigationBar.hidden) {
-            if (navigationBar.translucent) {
+            if (navigationBar.statusBarTranslucent) {
                 window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-                val linearLayout = LinearLayout(this)
-                linearLayout.orientation = LinearLayout.VERTICAL
-                linearLayout.addView(webView, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f))
-                contentView = linearLayout
-                setContentView(linearLayout)
-                addContentView(navigationBar, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+                val layout = RelativeLayout(this)
+                val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+                layout.addView(webView, webViewParams)
+                val navigationBarParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (68 * resources.displayMetrics.density).toInt())
+                layout.addView(navigationBar, navigationBarParams)
+                contentView = layout
             }
             else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-                val linearLayout = LinearLayout(this)
-                linearLayout.orientation = LinearLayout.VERTICAL
-                linearLayout.addView(navigationBar, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.0f))
-                linearLayout.addView(webView, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f))
-                contentView = linearLayout
-                setContentView(linearLayout)
+                val layout = RelativeLayout(this)
+                val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+                webViewParams.topMargin = (48 * resources.displayMetrics.density).toInt()
+                layout.addView(webView, webViewParams)
+                val navigationBarParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (48 * resources.displayMetrics.density).toInt())
+                layout.addView(navigationBar, navigationBarParams)
+                contentView = layout
             }
         }
         else {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            val linearLayout = LinearLayout(this)
-            linearLayout.orientation = LinearLayout.VERTICAL
-            linearLayout.addView(webView, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f))
-            contentView = linearLayout
-            setContentView(linearLayout)
+            if (navigationBar.statusBarTranslucent) {
+                window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+                val layout = RelativeLayout(this)
+                val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+                layout.addView(webView, webViewParams)
+                contentView = layout
+            }
+            else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+                val layout = RelativeLayout(this)
+                layout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                contentView = layout
+            }
         }
+        setContentView(contentView)
     }
 
     override fun setTitle(title: CharSequence?) {

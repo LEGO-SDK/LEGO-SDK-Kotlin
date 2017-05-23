@@ -87,7 +87,9 @@ class LGONotificationOperation(val request: LGONotificationRequest): LGORequesta
                 context.unregisterReceiver(this)
                 return
             }
-            callbackBlock(LGONotificationResponse(intent.getStringExtra("aPostObject"), JSONObject(intent.getStringExtra("aPostUserInfo"))).accept(null))
+            callbackBlock(LGONotificationResponse(intent.getStringExtra("aPostObject"), try {
+                JSONObject(intent.getStringExtra("aPostUserInfo"))
+            } catch (e: Exception) { null }).accept(null))
         }
 
     }
