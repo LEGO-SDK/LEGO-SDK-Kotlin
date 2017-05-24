@@ -3,6 +3,7 @@ package com.opensource.legosdk.core
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.util.AttributeSet
 import android.util.Base64
 import android.view.View
@@ -39,7 +40,7 @@ class LGOWebView @JvmOverloads constructor(
         settings.allowFileAccessFromFileURLs = false
         settings.useWideViewPort = true
         addJavascriptInterface(this, "JSBridge")
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && BuildConfig.DEBUG) {
             setWebContentsDebuggingEnabled(true)
         }
     }

@@ -191,7 +191,7 @@ class LGOPack {
                         return@HookEntity true
                     }
                 }
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     (p1 as? WebResourceRequest)?.let { request ->
                         val url = request.url?.toString() ?: return@HookEntity null
                         if (url.contains(".zip") && LGOWatchDog.checkURL(url) && LGOWatchDog.checkSSL(url)) {
