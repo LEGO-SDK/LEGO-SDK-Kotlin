@@ -43,6 +43,9 @@ class LGOPackDownloader {
                 if (!serverMD5.equals(localMD5, true)) {
                     return downloadFile(url)
                 }
+                else {
+                    return
+                }
             }
             return downloadFile(url)
         }
@@ -59,7 +62,6 @@ class LGOPackDownloader {
                             val count = it.read(data, 0, 2048)
                             if (count < 0) {
                                 break
-
                             }
                             byteArrayOutputStream.write(data, 0, count)
                         }
