@@ -133,7 +133,7 @@ class LGOWebView @JvmOverloads constructor(
 
     fun argsScript(): String {
         (context as? LGOWebViewActivity)?.args?.let {
-            return "window._args = {}; try { JSON.parse(decodeURIComponent(atob('" + toBase64(it.toString()) + "'))); }catch(e){}"
+            return "window._args = {}; try { window._args = JSON.parse(decodeURIComponent(atob('" + toBase64(it.toString()) + "'))); }catch(e){}"
         }
         return ""
     }
