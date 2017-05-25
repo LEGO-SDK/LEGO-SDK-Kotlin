@@ -14,6 +14,7 @@ import java.util.*
 import javax.crypto.Cipher
 import java.util.logging.Level.SEVERE
 import java.util.logging.Logger
+import kotlin.collections.HashMap
 
 
 /**
@@ -41,13 +42,13 @@ class LGOPackDownloader {
         requestServerMD5(url)?.let { serverMD5 ->
             requestLocalMD5(url)?.let { localMD5 ->
                 if (!serverMD5.equals(localMD5, true)) {
-                    return downloadFile(url)
+                    return downloadFile(url, serverMD5)
                 }
                 else {
                     return
                 }
             }
-            return downloadFile(url)
+            return downloadFile(url, serverMD5)
         }
     }
 
@@ -153,7 +154,11 @@ class LGOPackDownloader {
         return null
     }
 
-    fun downloadFile(url: String) {
+    fun downloadFile(url: String, checksum: String) {
+        if (downloadOnce[url] ?: false) {
+            return
+        }
+        addOnce(url)
         try {
             URL(url).openConnection()?.let {
                 it.connect()
@@ -168,15 +173,18 @@ class LGOPackDownloader {
                     val count = it.getInputStream().read(data, 0, 2048)
                     if (count < 0) {
                         break
-
                     }
                     bufferedOutputStream.write(data, 0, count)
                 }
                 bufferedOutputStream.close()
+                // valid checksum again
+                requestLocalMD5(url)?.let { localMD5 ->
+                    if (!localMD5.equals(checksum)) {
+                        file.delete()
+                    }
+                }
             }
-        } catch (e: Exception) {
-            print(e)
-        }
+        } catch (e: Exception) { }
     }
 
     private fun mkdirs(file: File) {
@@ -185,6 +193,19 @@ class LGOPackDownloader {
             mkdirs(parentFile)
             parentFile.mkdir()
         }
+    }
+
+    companion object {
+
+        var downloadOnce: Map<String, Boolean> = mapOf()
+            private set
+
+        fun addOnce(url: String) {
+            val mutable = downloadOnce.toMutableMap()
+            mutable.put(url, true)
+            downloadOnce = mutable.toMap()
+        }
+
     }
 
 }
