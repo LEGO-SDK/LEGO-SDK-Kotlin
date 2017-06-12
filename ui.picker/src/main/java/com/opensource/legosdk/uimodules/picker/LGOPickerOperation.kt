@@ -22,12 +22,26 @@ class LGOPickerOperation(val request: LGOPickerRequest): LGORequestable() {
                     }).setTitleText(request.title).setCancelText("取消").setSubmitText("确定").build()
                     if (!request.isEmptyRelativeColumnsB() && !request.isEmptyRelativeColumnsC()) {
                         view.setPicker(request.relativeColumnsA, request.relativeColumnsB, request.relativeColumnsC)
+                        if (2 < request.defaultValues.size) {
+                            val idxA = request.relativeColumnsA.indexOf(request.defaultValues[0])
+                            val idxB = if (idxA >= 0 && idxA < request.relativeColumnsB.size) request.relativeColumnsB[idxA].indexOf(request.defaultValues[1]) else 0
+                            val idxC = if (idxA >= 0 && idxA < request.relativeColumnsC.size && idxB >= 0 && idxB < request.relativeColumnsC[idxA].size) request.relativeColumnsC[idxA][idxB].indexOf(request.defaultValues[2]) else 0
+                            view.setSelectOptions(Math.max(0, idxA), Math.max(0, idxB), Math.max(0, idxC))
+                        }
                     }
                     else if (!request.isEmptyRelativeColumnsC()) {
                         view.setPicker(request.relativeColumnsA, request.relativeColumnsB)
+                        if (1 < request.defaultValues.size) {
+                            val idxA = request.relativeColumnsA.indexOf(request.defaultValues[0])
+                            val idxB = if (idxA >= 0 && idxA < request.relativeColumnsB.size) request.relativeColumnsB[idxA].indexOf(request.defaultValues[1]) else 0
+                            view.setSelectOptions(Math.max(0, idxA), Math.max(0, idxB))
+                        }
                     }
                     else {
                         view.setPicker(request.relativeColumnsA)
+                        if (0 < request.defaultValues.size) {
+                            view.setSelectOptions(Math.max(0, request.relativeColumnsA.indexOf(request.defaultValues[0])))
+                        }
                     }
                     view.show()
                 }
