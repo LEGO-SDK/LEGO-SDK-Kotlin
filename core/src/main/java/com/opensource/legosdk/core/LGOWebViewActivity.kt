@@ -24,8 +24,17 @@ open class LGOWebViewActivity : Activity() {
     var pageSetting: Any? = null
     var navigationItems = LGONavigationItem()
     var args: JSONObject? = null
+    private var hooks: Map<String, List<() -> Unit>> = hashMapOf()
     lateinit var navigationBar: LGONavigationBar
     lateinit var webView: LGOWebView
+
+    fun addHook(hookBlock: () -> Unit, forMethod: String) {
+        val mutableHooks = hooks.toMutableMap()
+        val hookTarget = mutableHooks[forMethod]?.toMutableList() ?: mutableListOf()
+        hookTarget.add(hookBlock)
+        mutableHooks[forMethod] = hookTarget.toList()
+        hooks = mutableHooks.toMap()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +55,7 @@ open class LGOWebViewActivity : Activity() {
             applyPageSetting()
         }
         resetLayouts()
+        hooks["onCreate"]?.forEach { it.invoke() }
     }
 
     fun resetLayouts() {
@@ -97,6 +107,22 @@ open class LGOWebViewActivity : Activity() {
     override fun onResume() {
         super.onResume()
         applyPageSetting()
+        hooks["onResume"]?.forEach { it.invoke() }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        hooks["onPause"]?.forEach { it.invoke() }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        hooks["onStop"]?.forEach { it.invoke() }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        hooks["onDestroy"]?.forEach { it.invoke() }
     }
 
     fun applyPageSetting() {

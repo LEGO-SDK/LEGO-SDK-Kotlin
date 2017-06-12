@@ -47,4 +47,5 @@ dependencies {
     compile project(':ui.picker')
     compile project(':webview.pack')
     compile project(':ui.toast')
+    compile project(':ui.pagestate')
 }
