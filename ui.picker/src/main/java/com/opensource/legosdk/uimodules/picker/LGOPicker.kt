@@ -32,6 +32,54 @@ class LGOPicker: LGOModule() {
                 return@map it.optString(idx, "")
             }
         }
+        request.isColumnsRelated = obj.optBoolean("isColumnsRelated", false)
+        if (request.isColumnsRelated) {
+            obj.optJSONArray("columns")?.let { columns ->
+                request.relativeColumnsA = (0 until columns.length()).map {
+                    columns.optJSONObject(it)?.let {
+                        return@map it.optString("title", "/")
+                    }
+                    return@map columns.optString(it, "/")
+                }
+                request.relativeColumnsB = (0 until columns.length()).map {
+                    columns.optJSONObject(it)?.let {
+                        it.optJSONArray("item")?.let { item ->
+                            return@map (0 until item.length())?.map {
+                                item.optJSONObject(it)?.let {
+                                    it.optString("title")?.let {
+                                        return@map it
+                                    }
+                                }
+                                return@map "/"
+                            }
+                        }
+                    }
+                    return@map listOf<String>()
+                }
+                request.relativeColumnsC = (0 until columns.length()).map {
+                    columns.optJSONObject(it)?.let {
+                        it.optJSONArray("item")?.let { item ->
+                            return@map (0 until item.length())?.map {
+                                item.optJSONObject(it)?.let {
+                                    it.optJSONArray("item")?.let { subItem ->
+                                        return@map (0 until subItem.length()).map {
+                                            subItem.optJSONObject(it)?.let {
+                                                it.optString("title")?.let {
+                                                    return@map it
+                                                }
+                                            }
+                                            return@map subItem.optString(it, "/")
+                                        }
+                                    }
+                                }
+                                return@map listOf("")
+                            }
+                        }
+                    }
+                    return@map listOf(listOf(""))
+                }
+            }
+        }
         return LGOPickerOperation(request)
     }
 
