@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Base64
+import android.view.MotionEvent
 import android.view.View
 import android.webkit.*
 import org.json.JSONObject
@@ -43,6 +44,8 @@ class LGOWebView @JvmOverloads constructor(
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && BuildConfig.DEBUG) {
             setWebContentsDebuggingEnabled(true)
         }
+        isFocusable = true
+        isFocusableInTouchMode = true
     }
 
     override fun loadUrl(url: String?) {
