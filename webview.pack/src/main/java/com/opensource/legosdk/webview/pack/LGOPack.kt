@@ -36,6 +36,7 @@ class LGOPack {
     }
 
     fun cacheKey(url: String): String {
+        val url = url.split("?").first()
         val messageDigest = MessageDigest.getInstance("MD5")
         messageDigest.update(url.toByteArray(charset("UTF-8")))
         val digest = messageDigest.digest()

@@ -46,4 +46,5 @@ dependencies {
     compile project(':ui.modalcontroller')
     compile project(':ui.picker')
     compile project(':webview.pack')
+    compile project(':ui.toast')
 }

@@ -22,6 +22,7 @@
       <module fileurl="file://$PROJECT_DIR$/ui.page/ui.page.iml" filepath="$PROJECT_DIR$/ui.page/ui.page.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.picker/ui.picker.iml" filepath="$PROJECT_DIR$/ui.picker/ui.picker.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.refresh/ui.refresh.iml" filepath="$PROJECT_DIR$/ui.refresh/ui.refresh.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ui.toast/ui.toast.iml" filepath="$PROJECT_DIR$/ui.toast/ui.toast.iml" />
       <module fileurl="file://$PROJECT_DIR$/webview.pack/webview.pack.iml" filepath="$PROJECT_DIR$/webview.pack/webview.pack.iml" />
     </modules>
   </component>

@@ -27,6 +27,7 @@
             <option value="$PROJECT_DIR$/ui.page" />
             <option value="$PROJECT_DIR$/ui.picker" />
             <option value="$PROJECT_DIR$/ui.refresh" />
+            <option value="$PROJECT_DIR$/ui.toast" />
             <option value="$PROJECT_DIR$/webview.pack" />
           </set>
         </option>
