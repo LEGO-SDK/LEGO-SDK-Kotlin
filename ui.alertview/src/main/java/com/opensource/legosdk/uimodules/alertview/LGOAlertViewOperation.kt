@@ -16,6 +16,9 @@ class LGOAlertViewOperation(val request: LGOAlertViewRequest): LGORequestable() 
                 val builder = AlertDialog.Builder(it)
                 builder.setTitle(request.title)
                 builder.setMessage(request.message)
+                if (request.buttonTitles.size == 0) {
+                    builder.setNegativeButton("OK", { _, idx -> })
+                }
                 if (0 < request.buttonTitles.size) {
                     builder.setNegativeButton(request.buttonTitles[0], { _, idx ->
                         callbackBlock(LGOAlertViewResponse(0).accept(null))
@@ -26,6 +29,7 @@ class LGOAlertViewOperation(val request: LGOAlertViewRequest): LGORequestable() 
                         callbackBlock(LGOAlertViewResponse(1).accept(null))
                     })
                 }
+                builder.setCancelable(false)
                 builder.create().show()
             }
         }

@@ -29,7 +29,7 @@ class LGOPickerOperation(val request: LGOPickerRequest): LGORequestable() {
                             view.setSelectOptions(Math.max(0, idxA), Math.max(0, idxB), Math.max(0, idxC))
                         }
                     }
-                    else if (!request.isEmptyRelativeColumnsC()) {
+                    else if (request.isEmptyRelativeColumnsC()) {
                         view.setPicker(request.relativeColumnsA, request.relativeColumnsB)
                         if (1 < request.defaultValues.size) {
                             val idxA = request.relativeColumnsA.indexOf(request.defaultValues[0])
