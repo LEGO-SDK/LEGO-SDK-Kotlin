@@ -19,6 +19,10 @@ class LGOActionSheetOperation(val request: LGOActionSheetRequest): LGORequestabl
                 builder.setItems(request.buttonTitles.toTypedArray(), { _, idx ->
                     callbackBlock(LGOActionSheetResponse(idx).accept(null))
                 })
+                builder.setCancelable(true)
+                builder.setOnCancelListener {
+                    callbackBlock(LGOActionSheetResponse(request.buttonTitles.size).accept(null))
+                }
                 builder.create().show()
             }
         }

@@ -17,7 +17,9 @@ class LGOAlertViewOperation(val request: LGOAlertViewRequest): LGORequestable() 
                 builder.setTitle(request.title)
                 builder.setMessage(request.message)
                 if (request.buttonTitles.size == 0) {
-                    builder.setNegativeButton("OK", { _, idx -> })
+                    builder.setNegativeButton("OK", { _, idx ->
+                        callbackBlock(LGOAlertViewResponse(0).accept(null))
+                    })
                 }
                 if (0 < request.buttonTitles.size) {
                     builder.setNegativeButton(request.buttonTitles[0], { _, idx ->
