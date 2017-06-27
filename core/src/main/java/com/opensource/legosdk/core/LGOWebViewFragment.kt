@@ -13,7 +13,7 @@ import org.json.JSONObject
 /**
  * Created by cuiminghui on 2017/6/27.
  */
-class LGOWebViewFragment: Fragment() {
+open class LGOWebViewFragment: Fragment() {
 
     companion object {
         var navigationBarDrawable: Drawable? = null
