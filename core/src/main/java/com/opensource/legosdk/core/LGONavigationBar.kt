@@ -29,6 +29,8 @@ class LGONavigationBar @JvmOverloads constructor(
             return context as? LGOWebViewActivity
         }
 
+    var fragment: LGOWebViewFragment? = null
+
     var titleView: View? = null
 
     var leftView: View? = null
@@ -56,6 +58,7 @@ class LGONavigationBar @JvmOverloads constructor(
                 minimumHeight = (68.0 * context.resources.displayMetrics.density).toInt()
             }
             activity?.resetLayouts()
+            fragment?.resetLayouts()
         }
 
     var hidden: Boolean = false
@@ -65,17 +68,21 @@ class LGONavigationBar @JvmOverloads constructor(
             }
             field = value
             activity?.resetLayouts()
+            fragment?.resetLayouts()
         }
 
     fun reload() {
         if (LGOWebViewActivity.navigationBarDrawable != null) {
             this.background = LGOWebViewActivity.navigationBarDrawable
         }
+        else if (LGOWebViewFragment.navigationBarDrawable != null) {
+            this.background = LGOWebViewFragment.navigationBarDrawable
+        }
         else {
             this.setBackgroundColor(barTintColor)
         }
         this.removeAllViews()
-        activity?.navigationItems?.rightBarButtonItem?.let {
+        (activity?.navigationItems ?: fragment?.navigationItems)?.rightBarButtonItem?.let {
             resetRightView()?.let {
                 if (statusBarTranslucent) {
                     it.setPadding(it.paddingLeft, (20 * context.resources.displayMetrics.density).toInt(), it.paddingRight, it.paddingBottom)
@@ -89,7 +96,7 @@ class LGONavigationBar @JvmOverloads constructor(
             }
             this.addView(it, 0, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f))
         }
-        activity?.navigationItems?.leftBarButtonItem?.let {
+        (activity?.navigationItems ?: fragment?.navigationItems)?.leftBarButtonItem?.let {
             resetLeftView()?.let {
                 if (statusBarTranslucent) {
                     it.setPadding(it.paddingLeft, (20 * context.resources.displayMetrics.density).toInt(), it.paddingRight, it.paddingBottom)
@@ -97,7 +104,7 @@ class LGONavigationBar @JvmOverloads constructor(
                 this.addView(it, 0, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.0f))
             }
         }
-        if (activity?.navigationItems?.leftBarButtonItem == null) {
+        if ((activity?.navigationItems ?: fragment?.navigationItems)?.leftBarButtonItem == null) {
             resetBackView()?.let {
                 if (statusBarTranslucent) {
                     it.setPadding(it.paddingLeft, (20 * context.resources.displayMetrics.density).toInt(), it.paddingRight, it.paddingBottom)
@@ -160,12 +167,72 @@ class LGONavigationBar @JvmOverloads constructor(
         return contentView
     }
 
+    fun requestNavigationItemContentView(fragment: LGOWebViewFragment, item: LGONavigationItem.LGOBarButtonItem): View {
+        val contentView = LinearLayout(fragment.context)
+        item.title?.let {
+            val textView = TextView(fragment.context)
+            textView.setSingleLine(true)
+            textView.text = it
+            textView.textSize = 16.0f
+            textView.setTextColor(tintColor)
+            textView.gravity = Gravity.CENTER_VERTICAL
+            contentView.addView(textView, 0, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.0f))
+        }
+        item.image?.let {
+            val imageView = ImageView(fragment.context)
+            imageView.setImageBitmap(it)
+            imageView.setColorFilter(tintColor)
+            contentView.addView(imageView, 0, LinearLayout.LayoutParams((it.width / it.density * fragment.resources.displayMetrics.density).toInt(), LinearLayout.LayoutParams.MATCH_PARENT))
+        }
+        contentView.setOnTouchListener { view, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    view.alpha = 0.25f
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (motionEvent.x / fragment.resources.displayMetrics.scaledDensity < -44.0 ||
+                            motionEvent.x / fragment.resources.displayMetrics.scaledDensity > view.width + 44.0 ||
+                            motionEvent.y / fragment.resources.displayMetrics.scaledDensity < -44.0 ||
+                            motionEvent.y / fragment.resources.displayMetrics.scaledDensity > view.height + 44.0) {
+                        view.alpha = 1.0f
+                    }
+                    else {
+                        view.alpha = 0.25f
+                    }
+                }
+                MotionEvent.ACTION_UP -> {
+                    if (motionEvent.x / fragment.resources.displayMetrics.scaledDensity < -44.0 ||
+                            motionEvent.x / fragment.resources.displayMetrics.scaledDensity > view.width + 44.0 ||
+                            motionEvent.y / fragment.resources.displayMetrics.scaledDensity < -44.0 ||
+                            motionEvent.y / fragment.resources.displayMetrics.scaledDensity > view.height + 44.0) {
+                    }
+                    else {
+                        item.triggerBlock?.invoke()
+                    }
+                    view.alpha = 1.0f
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    view.alpha = 1.0f
+                }
+            }
+            return@setOnTouchListener true
+        }
+        return contentView
+    }
+
     fun resetBackView(): View? {
-        if (activity?.navigationItems?.hasBackStack ?: false) {
+        if ((activity?.navigationItems ?: fragment?.navigationItems)?.hasBackStack ?: false) {
             activity?.let { activity ->
-                activity?.navigationItems.backBarButtonItem?.let {
+                activity.navigationItems.backBarButtonItem?.let {
                     val contentView = requestNavigationItemContentView(activity, it)
                     contentView.setPadding((12 * (activity.resources.displayMetrics.density)).toInt(), 0, (12 * (activity.resources.displayMetrics.density)).toInt(), 0)
+                    return contentView
+                }
+            }
+            fragment?.let { fragment ->
+                fragment.navigationItems.backBarButtonItem?.let {
+                    val contentView = requestNavigationItemContentView(fragment, it)
+                    contentView.setPadding((12 * (fragment.resources.displayMetrics.density)).toInt(), 0, (12 * (fragment.resources.displayMetrics.density)).toInt(), 0)
                     return contentView
                 }
             }
@@ -181,6 +248,13 @@ class LGONavigationBar @JvmOverloads constructor(
                 leftView = contentView
             }
         }
+        fragment?.let { fragment ->
+            fragment.navigationItems.leftBarButtonItem?.let {
+                val contentView = requestNavigationItemContentView(fragment, it)
+                contentView.setPadding((12 * (fragment.resources.displayMetrics.density)).toInt(), 0, (12 * (fragment.resources.displayMetrics.density)).toInt(), 0)
+                leftView = contentView
+            }
+        }
         return leftView
     }
 
@@ -189,6 +263,13 @@ class LGONavigationBar @JvmOverloads constructor(
             activity.navigationItems.rightBarButtonItem?.let {
                 val contentView = requestNavigationItemContentView(activity, it)
                 contentView.setPadding((12 * (activity.resources.displayMetrics.density)).toInt(), 0, (12 * (activity.resources.displayMetrics.density)).toInt(), 0)
+                rightView = contentView
+            }
+        }
+        fragment?.let { fragment ->
+            fragment.navigationItems.rightBarButtonItem?.let {
+                val contentView = requestNavigationItemContentView(fragment, it)
+                contentView.setPadding((12 * (fragment.resources.displayMetrics.density)).toInt(), 0, (12 * (fragment.resources.displayMetrics.density)).toInt(), 0)
                 rightView = contentView
             }
         }
@@ -202,6 +283,19 @@ class LGONavigationBar @JvmOverloads constructor(
                 contentView.setSingleLine(true)
                 contentView.ellipsize = TextUtils.TruncateAt.END
                 contentView.setPadding(if (activity.navigationItems.leftBarButtonItem != null) 0 else (12 * (activity.resources.displayMetrics.density)).toInt(), 0, 0, 0)
+                contentView.textSize = 18.0f
+                contentView.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
+                contentView.setTextColor(tintColor)
+                contentView.setBackgroundColor(Color.TRANSPARENT)
+                titleView = contentView
+            }
+        }
+        fragment?.let { fragment ->
+            ((titleView as? TextView) ?: TextView(fragment.context))?.let { contentView ->
+                contentView.text = fragment.title
+                contentView.setSingleLine(true)
+                contentView.ellipsize = TextUtils.TruncateAt.END
+                contentView.setPadding(if (fragment.navigationItems.leftBarButtonItem != null) 0 else (12 * (fragment.resources.displayMetrics.density)).toInt(), 0, 0, 0)
                 contentView.textSize = 18.0f
                 contentView.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
                 contentView.setTextColor(tintColor)

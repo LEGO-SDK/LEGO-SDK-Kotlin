@@ -64,7 +64,10 @@ class LGOPage: LGOModule() {
                 val url = it
                 settings.entries.forEach {
                     val request = it.value
-                    if (it.key.equals(url)) {
+                    if (request.urlPattern == null || request.urlPattern?.isBlank() ?: false) {
+                        activity.pageSetting = request
+                    }
+                    else if (it.key.equals(url)) {
                         activity.pageSetting = request
                     }
                     else {
@@ -90,12 +93,6 @@ class LGOPage: LGOModule() {
                     activity.window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 }
                 activity.navigationBar.hidden = it.navigationBarHidden
-//                if (it.navigationBarSeparatorHidden) {
-//                    activity.supportActionBar?.elevation = 0f
-//                }
-//                else {
-//                    activity.supportActionBar?.elevation = 5f
-//                }
                 it.navigationBarBackgroundColor?.takeIf(String::isNotEmpty)?.let {
                     activity.navigationBar.barTintColor = Color.parseColor(it)
                 }
@@ -103,6 +100,52 @@ class LGOPage: LGOModule() {
                     activity.navigationBar.tintColor = Color.parseColor(it)
                 }
                 activity.navigationBar.statusBarTranslucent = it.fullScreenContent
+            }
+        }
+    }
+
+    fun apply(fragment: LGOWebViewFragment) {
+        fragment.activity.runOnUiThread {
+            fragment.webView.url?.let {
+                val url = it
+                settings.entries.forEach {
+                    val request = it.value
+                    if (request.urlPattern == null || request.urlPattern?.isBlank() ?: false) {
+                        fragment.pageSetting = request
+                    }
+                    else if (it.key.equals(url)) {
+                        fragment.pageSetting = request
+                    }
+                    else {
+                        Regex(it.key)?.let {
+                            it.matchEntire(url)?.let {
+                                if (it.range.start == 0 && it.range.endInclusive == url.length - 1) {
+                                    fragment.pageSetting = request
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            (fragment.pageSetting as? LGOPageRequest)?.let {
+                fragment.title = it.title
+                it.backgroundColor?.takeIf(String::isNotEmpty)?.let {
+                    fragment.webView.setBackgroundColor(Color.parseColor(it))
+                }
+                if (it.statusBarHidden) {
+                    fragment.activity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                }
+                else {
+                    fragment.activity.window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                }
+                fragment.navigationBar.hidden = it.navigationBarHidden
+                it.navigationBarBackgroundColor?.takeIf(String::isNotEmpty)?.let {
+                    fragment.navigationBar.barTintColor = Color.parseColor(it)
+                }
+                it.navigationBarTintColor?.takeIf(String::isNotEmpty)?.let {
+                    fragment.navigationBar.tintColor = Color.parseColor(it)
+                }
+                fragment.navigationBar.statusBarTranslucent = it.fullScreenContent
             }
         }
     }

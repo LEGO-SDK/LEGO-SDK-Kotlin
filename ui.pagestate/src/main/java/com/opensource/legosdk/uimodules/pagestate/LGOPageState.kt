@@ -23,6 +23,16 @@ class LGOPageState: LGOModule() {
                     }, "onPause")
                 }
             }
+            request.context?.requestWebView()?.fragment?.let { fragment ->
+                fragment.addHook({
+                    callbackBlock(LGOPageStateResponse("active"))
+                    callbackBlock(LGOPageStateResponse("appear"))
+                }, "onResume")
+                fragment.addHook({
+                    callbackBlock(LGOPageStateResponse("disappear"))
+                    callbackBlock(LGOPageStateResponse("inactive"))
+                }, "onPause")
+            }
         }
 
     }

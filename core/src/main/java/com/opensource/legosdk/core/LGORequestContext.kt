@@ -28,4 +28,11 @@ open class LGORequestContext(val sender: Any?) {
         return null
     }
 
+    fun requestWebView(): LGOWebView? {
+        (sender as? LGOWebView)?.let {
+            return it
+        }
+        return null
+    }
+
 }

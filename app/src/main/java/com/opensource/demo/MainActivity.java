@@ -13,6 +13,7 @@ import com.opensource.legosdk.core.LGORequestContext;
 import com.opensource.legosdk.core.LGOWebView;
 import com.opensource.legosdk.core.LGOWebViewActivity;
 import com.opensource.legosdk.nativemodules.device.LGODevice;
+import com.opensource.legosdk.nativemodules.httprequest.LGOHTTPRequestOperation;
 import com.opensource.legosdk.uimodules.page.LGOPageRequest;
 import com.opensource.legosdk.webview.pack.LGOPack;
 

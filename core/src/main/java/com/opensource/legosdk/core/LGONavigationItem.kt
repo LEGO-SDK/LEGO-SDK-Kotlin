@@ -25,10 +25,11 @@ class LGONavigationItem {
     class LGOBarButtonItem(val title: String?, val image: Bitmap?, val triggerBlock: (() -> Unit)?)
 
     var activity: LGOWebViewActivity? = null
+    var fragment: LGOWebViewFragment? = null
 
     var hasBackStack: Boolean = false
         get() {
-            activity?.let {
+            (activity ?: fragment?.activity)?.let {
                 it.intent?.let {
                     return it.getBooleanExtra("LGONavigationController.Class", false)
                 }
@@ -38,10 +39,12 @@ class LGONavigationItem {
 
     var backBarButtonItem: LGOBarButtonItem = LGOBarButtonItem(null, requestBackButtonBitmap(), {
         activity?.finish()
+        fragment?.activity?.finish()
     })
         set(value) {
             field = value
             activity?.navigationBar?.reload()
+            fragment?.navigationBar?.reload()
         }
 
 
@@ -49,12 +52,14 @@ class LGONavigationItem {
         set(value) {
             field = value
             activity?.navigationBar?.reload()
+            fragment?.navigationBar?.reload()
         }
 
     var rightBarButtonItem: LGOBarButtonItem? = null
         set(value) {
             field = value
             activity?.navigationBar?.reload()
+            fragment?.navigationBar?.reload()
         }
 
 }

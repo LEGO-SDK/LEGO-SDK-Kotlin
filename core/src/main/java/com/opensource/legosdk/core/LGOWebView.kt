@@ -18,6 +18,8 @@ class LGOWebView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : WebView(context, attrs, defStyleAttr) {
 
+    var fragment: LGOWebViewFragment? = null
+        internal set
     var primaryUrl: String? = null
         private set
     val webClient = object : LGOWebViewHooker.WebViewClient() {}

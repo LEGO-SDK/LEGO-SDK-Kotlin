@@ -19,8 +19,11 @@ class LGOPageOperation(val requests: List<LGOPageRequest>): LGORequestable() {
             }
             if (request.urlPattern == null) {
                 (request.context?.requestActivity() as? LGOWebViewActivity)?.pageSetting = request
+                request.context?.requestWebView()?.fragment?.pageSetting = request
+
             }
             (request.context?.requestActivity() as? LGOWebViewActivity)?.applyPageSetting()
+            request.context?.requestWebView()?.fragment?.applyPageSetting()
         }
         return LGOResponse().accept(null)
     }
