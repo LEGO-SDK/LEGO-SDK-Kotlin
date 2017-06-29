@@ -60,21 +60,20 @@ class LGOPage: LGOModule() {
 
     fun apply(activity: LGOWebViewActivity) {
         activity.runOnUiThread {
-            activity.webView.url?.let {
-                val url = it
-                settings.entries.forEach {
-                    val request = it.value
-                    if (request.urlPattern == null || request.urlPattern?.isBlank() ?: false) {
-                        activity.pageSetting = request
-                    }
-                    else if (it.key.equals(url)) {
-                        activity.pageSetting = request
-                    }
-                    else {
-                        Regex(it.key)?.let {
-                            it.matchEntire(url)?.let {
-                                if (it.range.start == 0 && it.range.endInclusive == url.length - 1) {
-                                    activity.pageSetting = request
+            if (!activity.usingCustomPageSetting) {
+                activity.webView.url?.let {
+                    val url = it
+                    settings.entries.forEach {
+                        val request = it.value
+                        if (it.key.equals(url)) {
+                            activity.pageSetting = request
+                        }
+                        else {
+                            Regex(it.key)?.let {
+                                it.matchEntire(url)?.let {
+                                    if (it.range.start == 0 && it.range.endInclusive == url.length - 1) {
+                                        activity.pageSetting = request
+                                    }
                                 }
                             }
                         }
@@ -106,21 +105,20 @@ class LGOPage: LGOModule() {
 
     fun apply(fragment: LGOWebViewFragment) {
         fragment.activity.runOnUiThread {
-            fragment.webView.url?.let {
-                val url = it
-                settings.entries.forEach {
-                    val request = it.value
-                    if (request.urlPattern == null || request.urlPattern?.isBlank() ?: false) {
-                        fragment.pageSetting = request
-                    }
-                    else if (it.key.equals(url)) {
-                        fragment.pageSetting = request
-                    }
-                    else {
-                        Regex(it.key)?.let {
-                            it.matchEntire(url)?.let {
-                                if (it.range.start == 0 && it.range.endInclusive == url.length - 1) {
-                                    fragment.pageSetting = request
+            if (!fragment.usingCustomPageSetting) {
+                fragment.webView.url?.let {
+                    val url = it
+                    settings.entries.forEach {
+                        val request = it.value
+                        if (it.key.equals(url)) {
+                            fragment.pageSetting = request
+                        }
+                        else {
+                            Regex(it.key)?.let {
+                                it.matchEntire(url)?.let {
+                                    if (it.range.start == 0 && it.range.endInclusive == url.length - 1) {
+                                        fragment.pageSetting = request
+                                    }
                                 }
                             }
                         }

@@ -21,6 +21,7 @@ open class LGOWebViewActivity : Activity() {
 
     var contentView: ViewGroup? = null
     open var urlString: String? = null
+    var usingCustomPageSetting: Boolean = false
     var pageSetting: Any? = null
     var navigationItems = LGONavigationItem()
     var args: JSONObject? = null

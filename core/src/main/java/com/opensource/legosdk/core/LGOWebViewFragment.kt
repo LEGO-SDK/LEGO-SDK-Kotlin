@@ -81,6 +81,7 @@ open class LGOWebViewFragment: Fragment() {
             }
         }
 
+    var usingCustomPageSetting: Boolean = false
     var pageSetting: Any? = null
 
     fun applyPageSetting() {
