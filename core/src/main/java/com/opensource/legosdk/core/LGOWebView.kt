@@ -46,7 +46,7 @@ class LGOWebView @JvmOverloads constructor(
         removeJavascriptInterface("searchBoxJavaBridge_")
         removeJavascriptInterface("accessibility")
         removeJavascriptInterface("accessibilityTraversal")
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && BuildConfig.DEBUG) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && isDebug(context)) {
             setWebContentsDebuggingEnabled(true)
         }
         isFocusable = true
@@ -155,6 +155,15 @@ class LGOWebView @JvmOverloads constructor(
                 return@mapNotNull "JSSynchronizeResponses['$moduleName'] = JSON.parse(decodeURIComponent(atob('$base64ResString')))"
             }
         }.joinToString(";")
+    }
+
+    fun isDebug(context: Context): Boolean {
+        try {
+            val clazz = Class.forName(context.packageName + ".BuildConfig")
+            val field = clazz.getField("DEBUG")
+            return field.get(null) as? Boolean ?: false
+        } catch (e: Exception) { }
+        return false
     }
 
 }

@@ -17,7 +17,7 @@ class LGOPageOperation(val requests: List<LGOPageRequest>): LGORequestable() {
                     it.settings = mutableMap.toMap()
                 }
             }
-            if (request.urlPattern == null) {
+            if (request.urlPattern == null || request.urlPattern?.length == 0) {
                 (request.context?.requestActivity() as? LGOWebViewActivity)?.usingCustomPageSetting = true
                 (request.context?.requestActivity() as? LGOWebViewActivity)?.pageSetting = request
                 request.context?.requestWebView()?.fragment?.usingCustomPageSetting = true
