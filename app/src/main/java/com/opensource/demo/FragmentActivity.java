@@ -22,6 +22,7 @@ public class FragmentActivity extends AppCompatActivity {
         }
         LGOWebViewActivity.Companion.setNavigationBarDrawable(new ColorDrawable(0xff277de2));
         LGOCore.Companion.getWhiteList().add("githubusercontent.com");
+        LGOCore.Companion.getWhiteList().add("google.com.hk");
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_fragment);

@@ -2,6 +2,7 @@ package com.opensource.legosdk.core
 
 import android.app.Activity
 import android.content.Context
+import android.view.View
 import android.webkit.WebView
 
 /**
@@ -23,7 +24,7 @@ open class LGORequestContext(val sender: Any?) {
 
     fun requestActivity(): Activity? {
         (sender as? WebView)?.let {
-            return it.context as? Activity
+            return (it.parent as? View)?.context as? Activity
         }
         return null
     }
