@@ -18,6 +18,37 @@ class LGOWebView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : WebView(context, attrs, defStyleAttr) {
 
+    companion object {
+
+        var poolSize = 2
+
+        var pool: List<LGOWebView> = listOf()
+
+        fun requestWebViewFromPool(context: Context): LGOWebView? {
+            if (pool.size > 0) {
+                val mutable = pool.toMutableList()
+                val webView = mutable.first()
+                mutable.removeAt(0)
+                pool = mutable.toList()
+                refillPool(context)
+                return webView
+            }
+            else {
+                refillPool(context)
+                return null
+            }
+        }
+
+        fun refillPool(context: Context) {
+            if (poolSize - pool.size > 0) {
+                val mutable = pool.toMutableList()
+                mutable.add(LGOWebView(context))
+                pool = mutable.toList()
+            }
+        }
+
+    }
+
     var fragment: LGOWebViewFragment? = null
         internal set
     var primaryUrl: String? = null
@@ -51,6 +82,18 @@ class LGOWebView @JvmOverloads constructor(
         }
         isFocusable = true
         isFocusableInTouchMode = true
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        setWebChromeClient(null)
+        setWebChromeClient(null)
+        removeAllViews()
+        clearHistory()
+        clearCache(true)
+        loadUrl("about:blank")
+        destroyDrawingCache()
+        destroy()
     }
 
     override fun loadUrl(url: String?) {

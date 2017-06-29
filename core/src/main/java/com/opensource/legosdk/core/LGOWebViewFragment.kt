@@ -39,7 +39,7 @@ open class LGOWebViewFragment: Fragment() {
         navigationBar.fragment = this
         navigationItems.fragment = this
         navigationBar.reload()
-        webView = LGOWebView(context)
+        webView = LGOWebView.requestWebViewFromPool(context) ?:LGOWebView(context)
         webView.fragment = this
         resetLayouts()
         hooks["onCreate"]?.forEach { it.invoke() }
