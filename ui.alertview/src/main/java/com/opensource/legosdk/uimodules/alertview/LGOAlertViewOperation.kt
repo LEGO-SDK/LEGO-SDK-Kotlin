@@ -11,9 +11,9 @@ import com.opensource.legosdk.core.LGOResponse
 class LGOAlertViewOperation(val request: LGOAlertViewRequest): LGORequestable() {
 
     override fun requestAsynchronize(callbackBlock: (LGOResponse) -> Unit) {
-        request.context?.runOnMainThread {
-            request.context?.requestContentContext()?.let {
-                val builder = AlertDialog.Builder(it)
+        request.context?.requestActivity()?.let { activity ->
+            activity.runOnUiThread {
+                val builder = AlertDialog.Builder(activity)
                 builder.setTitle(request.title)
                 builder.setMessage(request.message)
                 if (request.buttonTitles.size == 0) {
