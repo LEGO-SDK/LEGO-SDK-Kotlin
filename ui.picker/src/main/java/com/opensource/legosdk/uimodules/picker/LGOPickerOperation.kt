@@ -11,10 +11,10 @@ import com.opensource.legosdk.core.LGOResponse
 class LGOPickerOperation(val request: LGOPickerRequest): LGORequestable() {
 
     override fun requestAsynchronize(callbackBlock: (LGOResponse) -> Unit) {
-        request.context?.runOnMainThread {
-            request.context?.requestContentContext()?.let {
+        request.context?.requestActivity()?.let { activity ->
+            activity.runOnUiThread {
                 if (request.isColumnsRelated) {
-                    val view = OptionsPickerView.Builder(it, OptionsPickerView.OnOptionsSelectListener { options1, options2, options3, _ ->
+                    val view = OptionsPickerView.Builder(activity, OptionsPickerView.OnOptionsSelectListener { options1, options2, options3, _ ->
                         val value1 = if (options1 < request.relativeColumnsA.size) request.relativeColumnsA[options1] else ""
                         val value2 = if (options1 < request.relativeColumnsB.size && options2 < request.relativeColumnsB[options1].size) request.relativeColumnsB[options1][options2] else ""
                         val value3 = if (options1 < request.relativeColumnsC.size && options2 < request.relativeColumnsC[options1].size && options3 < request.relativeColumnsC[options1][options2].size) request.relativeColumnsC[options1][options2][options3] else ""
@@ -46,7 +46,7 @@ class LGOPickerOperation(val request: LGOPickerRequest): LGORequestable() {
                     view.show()
                 }
                 else {
-                    val view = OptionsPickerView.Builder(it, OptionsPickerView.OnOptionsSelectListener { options1, options2, options3, v ->
+                    val view = OptionsPickerView.Builder(activity, OptionsPickerView.OnOptionsSelectListener { options1, options2, options3, v ->
                         when(request.columns.size) {
                             1 -> {
                                 if (options1 < request.columns[0].size) {
