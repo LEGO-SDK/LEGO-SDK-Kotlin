@@ -38,7 +38,7 @@ class LGOOpenIntent: LGOModule() {
             intent.addCategory(Intent.CATEGORY_LAUNCHER)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.component = cmp
-            (request.context?.requestContentContext() as? Activity)?.startActivity(intent)
+            request.context?.requestActivity()?.startActivity(intent)
             return LGOResponse().accept(null)
         }
 

@@ -1,5 +1,6 @@
 package com.opensource.legosdk.core
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
@@ -49,6 +50,7 @@ class LGOWebView @JvmOverloads constructor(
 
     }
 
+    var activity: Activity? = null
     var fragment: LGOWebViewFragment? = null
         internal set
     var primaryUrl: String? = null
@@ -184,7 +186,7 @@ class LGOWebView @JvmOverloads constructor(
     }
 
     fun argsScript(): String {
-        (context as? LGOWebViewActivity)?.args?.let {
+        (activity as? LGOWebViewActivity)?.args?.let {
             return "window._args = {}; try { window._args = JSON.parse(decodeURIComponent(atob('" + toBase64(it.toString()) + "'))); }catch(e){}"
         }
         return ""

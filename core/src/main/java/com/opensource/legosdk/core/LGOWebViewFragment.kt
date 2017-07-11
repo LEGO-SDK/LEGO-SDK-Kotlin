@@ -41,6 +41,7 @@ open class LGOWebViewFragment: Fragment() {
         navigationBar.reload()
         webView = LGOWebView.requestWebViewFromPool(context) ?:LGOWebView(context)
         webView.fragment = this
+        webView.activity = this.activity
         resetLayouts()
         hooks["onCreate"]?.forEach { it.invoke() }
         return contentView

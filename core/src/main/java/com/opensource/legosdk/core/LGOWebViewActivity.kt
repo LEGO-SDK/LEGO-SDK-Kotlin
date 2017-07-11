@@ -52,6 +52,7 @@ open class LGOWebViewActivity : Activity() {
         }
         title = null
         webView = LGOWebView.requestWebViewFromPool(this) ?: LGOWebView(this)
+        webView.activity = this
         urlString?.let {
             webView.loadUrl(it)
             applyPageSetting()

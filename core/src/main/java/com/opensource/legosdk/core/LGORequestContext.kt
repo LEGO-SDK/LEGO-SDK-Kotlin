@@ -23,6 +23,14 @@ open class LGORequestContext(val sender: Any?) {
     }
 
     fun requestActivity(): Activity? {
+        (sender as? LGOWebView)?.let {
+            it.activity?.let {
+                return it
+            }
+            it.fragment?.activity?.let {
+                return it
+            }
+        }
         (sender as? WebView)?.let {
             return (it.parent as? View)?.context as? Activity
         }
