@@ -39,6 +39,7 @@ class LGOPackDownloader {
     }
 
     fun updateFile(url: String) {
+        val url = url.split("?").first()
         requestServerMD5(url)?.let { serverMD5 ->
             requestLocalMD5(url)?.let { localMD5 ->
                 if (!serverMD5.equals(localMD5, true)) {
