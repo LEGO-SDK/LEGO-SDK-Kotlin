@@ -30,6 +30,7 @@
             <option value="$PROJECT_DIR$/ui.refresh" />
             <option value="$PROJECT_DIR$/ui.toast" />
             <option value="$PROJECT_DIR$/webview.pack" />
+            <option value="$PROJECT_DIR$/webview.skeleton" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

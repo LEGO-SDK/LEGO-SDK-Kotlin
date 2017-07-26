@@ -10,7 +10,7 @@ open class LGORequestable {
     }
 
     open fun requestSynchronize(): LGOResponse {
-        return LGOResponse()
+        return LGOResponse().accept(null)
     }
 
     companion object {

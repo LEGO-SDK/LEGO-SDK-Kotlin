@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.util.Base64
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.*
 import org.json.JSONObject
 
@@ -55,7 +56,18 @@ class LGOWebView @JvmOverloads constructor(
         internal set
     var primaryUrl: String? = null
         private set
-    val webClient = object : LGOWebViewHooker.WebViewClient() {}
+    val webClient = object : LGOWebViewHooker.WebViewClient() {
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+            LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
+                try {
+                    module::class.java.getDeclaredMethod("dismiss")?.let {
+                        it.invoke(module)
+                    }
+                } catch (e: Exception) {}
+            }
+        }
+    }
     val chromeClient = object : LGOWebViewHooker.WebChromeClient() {
         override fun onReceivedTitle(view: WebView?, title: String?) {
             super.onReceivedTitle(view, title)

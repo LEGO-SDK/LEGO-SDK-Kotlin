@@ -46,6 +46,7 @@ dependencies {
     compile project(':webview.pack')
     compile project(':ui.toast')
     compile project(':ui.pagestate')
+    compile project(':webview.skeleton')
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'

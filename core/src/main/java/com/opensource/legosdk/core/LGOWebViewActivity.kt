@@ -69,6 +69,13 @@ open class LGOWebViewActivity : Activity() {
                 val layout = RelativeLayout(this)
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 layout.addView(webView, webViewParams)
+                LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
+                    try {
+                        module::class.java.getDeclaredMethod("attachSkeleton", ViewGroup::class.java, ViewGroup.LayoutParams::class.java, String::class.java)?.let {
+                            it.invoke(module, layout, webViewParams, this.urlString ?: "")
+                        }
+                    } catch (e: Exception) {}
+                }
                 val navigationBarParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (68 * resources.displayMetrics.density).toInt())
                 layout.addView(navigationBar, navigationBarParams)
                 contentView = layout
@@ -79,6 +86,13 @@ open class LGOWebViewActivity : Activity() {
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 webViewParams.topMargin = (48 * resources.displayMetrics.density).toInt()
                 layout.addView(webView, webViewParams)
+                LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
+                    try {
+                        module::class.java.getDeclaredMethod("attachSkeleton", ViewGroup::class.java, ViewGroup.LayoutParams::class.java, String::class.java)?.let {
+                            it.invoke(module, layout, webViewParams, this.urlString ?: "")
+                        }
+                    } catch (e: Exception) {}
+                }
                 val navigationBarParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (48 * resources.displayMetrics.density).toInt())
                 layout.addView(navigationBar, navigationBarParams)
                 contentView = layout
@@ -90,12 +104,26 @@ open class LGOWebViewActivity : Activity() {
                 val layout = RelativeLayout(this)
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 layout.addView(webView, webViewParams)
+                LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
+                    try {
+                        module::class.java.getDeclaredMethod("attachSkeleton", ViewGroup::class.java, ViewGroup.LayoutParams::class.java, String::class.java)?.let {
+                            it.invoke(module, layout, webViewParams, this.urlString ?: "")
+                        }
+                    } catch (e: Exception) {}
+                }
                 contentView = layout
             }
             else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 val layout = RelativeLayout(this)
                 layout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
+                    try {
+                        module::class.java.getDeclaredMethod("attachSkeleton", ViewGroup::class.java, ViewGroup.LayoutParams::class.java, String::class.java)?.let {
+                            it.invoke(module, layout, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT), this.urlString ?: "")
+                        }
+                    } catch (e: Exception) {}
+                }
                 contentView = layout
             }
         }
