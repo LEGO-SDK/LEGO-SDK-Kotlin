@@ -1,10 +1,7 @@
 package com.opensource.legosdk.webview.pack
 
-import android.app.Activity
 import android.os.Build
-import android.util.Base64
 import android.webkit.WebResourceRequest
-import android.webkit.WebView
 import com.opensource.legosdk.core.LGOCore
 import com.opensource.legosdk.core.LGOWatchDog
 import com.opensource.legosdk.core.LGOWebView
