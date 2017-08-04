@@ -47,7 +47,13 @@ class LGOPack {
 
     fun cachePath(url: String): String? {
         val baseDir = LGOCore.context?.cacheDir?.absolutePath ?: return null
-        return "$baseDir/LGOPack/"+cacheKey(url)+".zip"
+        var versionString = ""
+        LGOCore.context?.let { context ->
+            context.packageManager.getPackageInfo(context.packageName, 0)?.let {
+                versionString = "." + it.versionName + "." + it.versionCode
+            }
+        }
+        return "$baseDir/LGOPack/" + cacheKey(url) + versionString +  ".zip"
     }
 
     fun serverDocumentPath(url: String): String? {
