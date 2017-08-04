@@ -10,8 +10,12 @@ import android.util.Base64
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.webkit.*
 import org.json.JSONObject
+import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
+
+
 
 /**
  * Created by PonyCui_Home on 2017/4/16.
@@ -221,6 +225,13 @@ class LGOWebView @JvmOverloads constructor(
             return field.get(null) as? Boolean ?: false
         } catch (e: Exception) { }
         return false
+    }
+
+    @android.webkit.JavascriptInterface
+    fun showKeyboard() {
+        (LGOCore.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.let {
+            it.showSoftInput(this, InputMethodManager.HIDE_NOT_ALWAYS)
+        }
     }
 
 }
