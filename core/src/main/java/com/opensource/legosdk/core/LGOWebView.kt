@@ -20,7 +20,7 @@ import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
 /**
  * Created by PonyCui_Home on 2017/4/16.
  */
-class LGOWebView @JvmOverloads constructor(
+open class LGOWebView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : WebView(context, attrs, defStyleAttr) {
 

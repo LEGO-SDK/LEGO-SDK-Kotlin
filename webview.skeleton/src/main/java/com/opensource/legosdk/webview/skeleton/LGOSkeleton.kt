@@ -4,7 +4,11 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.webkit.WebView
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import com.opensource.legosdk.core.LGOCore
 import com.opensource.legosdk.core.LGOModule
 import com.opensource.legosdk.core.LGORequestContext
@@ -19,6 +23,7 @@ class LGOSkeleton: LGOModule() {
     var skeletonNotExists = false
     var skeletonLoaded = false
     var webView: WebView? = null
+    var snapshotImageView: ImageView? = null
     var handleDismiss: Boolean = false
 
     fun loadSkeleton(context: Context) {
@@ -43,6 +48,22 @@ class LGOSkeleton: LGOModule() {
     }
 
     fun attachSkeleton(toViewGroup: ViewGroup, layoutParams: ViewGroup.LayoutParams, URL: String) {
+        if (LGOSnapshot.snapshotExists(URL)) {
+            LGOSnapshot.fetchSnapshot(URL)?.let {
+                val imageView = ImageView(toViewGroup.context)
+                imageView.scaleType = ImageView.ScaleType.FIT_START
+                imageView.setImageBitmap(it)
+                var newLayoutParams = layoutParams
+                (layoutParams as? RelativeLayout.LayoutParams)?.let {
+                    newLayoutParams = RelativeLayout.LayoutParams(layoutParams.width, layoutParams.height)
+                    (newLayoutParams as RelativeLayout.LayoutParams).topMargin = it.topMargin
+                    (newLayoutParams as RelativeLayout.LayoutParams).bottomMargin = -it.topMargin
+                }
+                toViewGroup.addView(imageView, newLayoutParams)
+                snapshotImageView = imageView
+                return
+            }
+        }
         if (skeletonNotExists) {
             return
         }
@@ -78,7 +99,23 @@ class LGOSkeleton: LGOModule() {
         if (!force && handleDismiss) {
             return
         }
-        (webView?.parent as? ViewGroup)?.let { it.removeView(webView) }
+        val animation = AlphaAnimation(1.0f, 0.0f)
+        animation.duration = 500
+        animation.fillAfter = true
+        webView?.let {
+            it.startAnimation(animation)
+        }
+        snapshotImageView?.let {
+            it.startAnimation(animation)
+        }
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) {}
+            override fun onAnimationEnd(animation: Animation?) {
+                (webView?.parent as? ViewGroup)?.let { it.removeView(webView) }
+                (snapshotImageView?.parent as? ViewGroup)?.let { it.removeView(snapshotImageView) }
+            }
+            override fun onAnimationStart(animation: Animation?) {}
+        })
     }
 
     override fun buildWithJSONObject(obj: JSONObject, context: LGORequestContext): LGORequestable? {
@@ -87,6 +124,11 @@ class LGOSkeleton: LGOModule() {
                 context.requestActivity()?.runOnUiThread {
                     dismiss(true)
                 }
+            }
+            if (it.equals("snapshot")) {
+                val targetURL = obj.optString("targetURL") ?: return LGORequestable.reject("WebView.Skeleton", -1, "targetURL required.")
+                val snapshotURL = obj.optString("snapshotURL") ?: return LGORequestable.reject("WebView.Skeleton", -1, "snapshotURL required.")
+                LGOSnapshotOperation(LGOSnapshotRequest(targetURL, snapshotURL, context)).start()
             }
         }
         return LGORequestable()
