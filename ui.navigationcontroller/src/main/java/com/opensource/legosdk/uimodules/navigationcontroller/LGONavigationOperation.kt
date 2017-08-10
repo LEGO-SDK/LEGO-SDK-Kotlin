@@ -20,6 +20,9 @@ class LGONavigationOperation(val request: LGONavigationRequest): LGORequestable(
                     request.args?.let {
                         intent.putExtra("LGONavigationController.args", it.toString())
                     }
+                    request.preloadToken?.let {
+                        intent.putExtra("LGONavigationController.preloadToken", it)
+                    }
                     it.startActivity(intent)
                     return LGOResponse().accept(null)
                 }

@@ -75,7 +75,7 @@ open class LGOWebView @JvmOverloads constructor(
     val chromeClient = object : LGOWebViewHooker.WebChromeClient() {
         override fun onReceivedTitle(view: WebView?, title: String?) {
             super.onReceivedTitle(view, title)
-            (context as? LGOWebViewActivity)?.let {
+            ((view?.parent as? View)?.context as? LGOWebViewActivity)?.let {
                 if (it.pageSetting == null) {
                     it.title = view?.title
                 }

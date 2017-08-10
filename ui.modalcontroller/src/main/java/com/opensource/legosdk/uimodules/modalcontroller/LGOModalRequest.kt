@@ -28,5 +28,6 @@ class LGOModalRequest(context: LGORequestContext?) : LGORequest(context) {
     var nonMask: Boolean = false
     var args: JSONObject? = null
     var modalStyle: LGOModalStyle = LGOModalStyle()
+    var preloadToken: String? = null
 
 }

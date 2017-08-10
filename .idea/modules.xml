@@ -25,6 +25,7 @@
       <module fileurl="file://$PROJECT_DIR$/ui.refresh/ui.refresh.iml" filepath="$PROJECT_DIR$/ui.refresh/ui.refresh.iml" />
       <module fileurl="file://$PROJECT_DIR$/ui.toast/ui.toast.iml" filepath="$PROJECT_DIR$/ui.toast/ui.toast.iml" />
       <module fileurl="file://$PROJECT_DIR$/webview.pack/webview.pack.iml" filepath="$PROJECT_DIR$/webview.pack/webview.pack.iml" />
+      <module fileurl="file://$PROJECT_DIR$/webview.preload/webview.preload.iml" filepath="$PROJECT_DIR$/webview.preload/webview.preload.iml" />
       <module fileurl="file://$PROJECT_DIR$/webview.skeleton/webview.skeleton.iml" filepath="$PROJECT_DIR$/webview.skeleton/webview.skeleton.iml" />
     </modules>
   </component>

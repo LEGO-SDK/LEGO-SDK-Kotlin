@@ -26,6 +26,7 @@ class LGOModalController: LGOModule() {
         }
         request.modalStyle.modalWidth = obj.optInt("modalWidth", -1)
         request.modalStyle.modalHeight = obj.optInt("modalHeight", -1)
+        request.preloadToken = obj.optString("preloadToken")
         return LGOModalOperation(request)
     }
 

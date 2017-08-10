@@ -14,6 +14,7 @@ class LGONavigationController: LGOModule() {
         request.path = obj.optString("path")
         request.animated = obj.optBoolean("animated", true)
         request.args = obj.optJSONObject("args")
+        request.preloadToken = obj.optString("preloadToken")
         return LGONavigationOperation(request)
     }
 

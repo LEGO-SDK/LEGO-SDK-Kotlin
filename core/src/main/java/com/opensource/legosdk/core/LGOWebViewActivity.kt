@@ -51,10 +51,27 @@ open class LGOWebViewActivity : Activity() {
             }
         }
         title = null
-        webView = LGOWebView.requestWebViewFromPool(this) ?: LGOWebView(this)
+        var preloadWebView: LGOWebView? = null
+        (intent?.getStringExtra("LGONavigationController.preloadToken") ?: intent?.getStringExtra("LGOModalController.preloadToken"))?.let { preloadToken ->
+            LGOCore.modules.moduleWithName("WebView.Preload")?.let { module ->
+                try {
+                    module::class.java.getDeclaredMethod("fetchWebView", String::class.java)?.let {
+                        (it.invoke(module, preloadToken) as? LGOWebView)?.let {
+                            preloadWebView = it
+                        }
+                    }
+                } catch (e: Exception) {}
+            }
+        }
+        webView = preloadWebView ?: LGOWebView.requestWebViewFromPool(this) ?: LGOWebView(this)
         webView.activity = this
         urlString?.let {
-            webView.loadUrl(it)
+            if (preloadWebView == null) {
+                webView.loadUrl(it)
+            }
+            else {
+                webView.loadUrl("javascript: window.location.href = '$it'")
+            }
             applyPageSetting()
         }
         resetLayouts()

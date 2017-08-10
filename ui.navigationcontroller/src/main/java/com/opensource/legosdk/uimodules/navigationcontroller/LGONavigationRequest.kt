@@ -17,4 +17,6 @@ class LGONavigationRequest(context: LGORequestContext?) : LGORequest(context) {
 
     var args: JSONObject? = null
 
+    var preloadToken: String? = null
+
 }
