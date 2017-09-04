@@ -66,12 +66,7 @@ open class LGOWebViewActivity : Activity() {
         webView = preloadWebView ?: LGOWebView.requestWebViewFromPool(this) ?: LGOWebView(this)
         webView.activity = this
         urlString?.let {
-            if (preloadWebView == null) {
-                webView.loadUrl(it)
-            }
-            else {
-                webView.loadUrl("javascript: window.location.href = '$it'")
-            }
+            webView.loadUrl(it)
             applyPageSetting()
         }
         resetLayouts()

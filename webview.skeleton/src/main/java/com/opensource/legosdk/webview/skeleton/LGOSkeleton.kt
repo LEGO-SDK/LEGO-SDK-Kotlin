@@ -99,23 +99,8 @@ class LGOSkeleton: LGOModule() {
         if (!force && handleDismiss) {
             return
         }
-        val animation = AlphaAnimation(1.0f, 0.0f)
-        animation.duration = 500
-        animation.fillAfter = true
-        webView?.let {
-            it.startAnimation(animation)
-        }
-        snapshotImageView?.let {
-            it.startAnimation(animation)
-        }
-        animation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) {}
-            override fun onAnimationEnd(animation: Animation?) {
-                (webView?.parent as? ViewGroup)?.let { it.removeView(webView) }
-                (snapshotImageView?.parent as? ViewGroup)?.let { it.removeView(snapshotImageView) }
-            }
-            override fun onAnimationStart(animation: Animation?) {}
-        })
+        (webView?.parent as? ViewGroup)?.let { it.removeView(webView) }
+        (snapshotImageView?.parent as? ViewGroup)?.let { it.removeView(snapshotImageView) }
     }
 
     override fun buildWithJSONObject(obj: JSONObject, context: LGORequestContext): LGORequestable? {
