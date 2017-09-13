@@ -2,12 +2,17 @@ package com.opensource.legosdk.core
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.net.Uri
 import android.util.AttributeSet
 import android.util.Base64
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import org.json.JSONObject
 
 /**
@@ -49,13 +54,15 @@ open class LGOWebView @JvmOverloads constructor(
     }
 
     var activity: Activity? = null
+    var loadingIndicator = ProgressBar(context)
     var fragment: LGOWebViewFragment? = null
         internal set
     var primaryUrl: String? = null
         private set
-    val webClient = object : LGOWebViewHooker.WebViewClient() {
+    private val webClient = object : LGOWebViewHooker.WebViewClient() {
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
+            removeView(loadingIndicator)
             LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
                 try {
                     module::class.java.getDeclaredMethod("dismiss")?.let {
@@ -65,7 +72,7 @@ open class LGOWebView @JvmOverloads constructor(
             }
         }
     }
-    val chromeClient = object : LGOWebViewHooker.WebChromeClient() {
+    private val chromeClient = object : LGOWebViewHooker.WebChromeClient() {
         override fun onReceivedTitle(view: WebView?, title: String?) {
             super.onReceivedTitle(view, title)
             ((view?.parent as? View)?.context as? LGOWebViewActivity)?.let {
@@ -93,6 +100,16 @@ open class LGOWebView @JvmOverloads constructor(
         }
         isFocusable = true
         isFocusableInTouchMode = true
+        loadingIndicator.isIndeterminate = true
+        addView(loadingIndicator)
+    }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        super.onLayout(changed, l, t, r, b)
+        if (changed) {
+            loadingIndicator.x = ((this.width.toFloat() - loadingIndicator.width.toFloat()) / 2.0).toFloat()
+            loadingIndicator.y = ((this.height.toFloat() - loadingIndicator.height.toFloat()) / 2.0).toFloat()
+        }
     }
 
     override fun onDetachedFromWindow() {
