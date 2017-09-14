@@ -54,7 +54,6 @@ open class LGOWebView @JvmOverloads constructor(
     }
 
     var activity: Activity? = null
-    var loadingIndicator = ProgressBar(context)
     var fragment: LGOWebViewFragment? = null
         internal set
     var primaryUrl: String? = null
@@ -62,7 +61,6 @@ open class LGOWebView @JvmOverloads constructor(
     private val webClient = object : LGOWebViewHooker.WebViewClient() {
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            removeView(loadingIndicator)
             LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
                 try {
                     module::class.java.getDeclaredMethod("dismiss")?.let {
@@ -100,16 +98,7 @@ open class LGOWebView @JvmOverloads constructor(
         }
         isFocusable = true
         isFocusableInTouchMode = true
-        loadingIndicator.isIndeterminate = true
-        addView(loadingIndicator)
-    }
 
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        super.onLayout(changed, l, t, r, b)
-        if (changed) {
-            loadingIndicator.x = ((this.width.toFloat() - loadingIndicator.width.toFloat()) / 2.0).toFloat()
-            loadingIndicator.y = ((this.height.toFloat() - loadingIndicator.height.toFloat()) / 2.0).toFloat()
-        }
     }
 
     override fun onDetachedFromWindow() {
