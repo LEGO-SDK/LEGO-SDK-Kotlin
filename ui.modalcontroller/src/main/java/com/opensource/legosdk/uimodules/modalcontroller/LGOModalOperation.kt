@@ -13,14 +13,14 @@ import java.net.URL
  */
 class LGOModalOperation(val request: LGOModalRequest): LGORequestable() {
 
-    fun requestURL(url: String): URL? {
+    private fun requestURL(url: String): String {
         var relativeURL = url
-        val webView = request.context?.sender as? WebView ?: return null
+        val webView = request.context?.sender as? WebView ?: return relativeURL
         if (!relativeURL.startsWith("http://") && !relativeURL.startsWith("https://") && !relativeURL.startsWith("content://")) {
             val uri = URI(webView.url)
             relativeURL = uri.resolve(relativeURL).toString()
         }
-        return URL(relativeURL)
+        return relativeURL
     }
 
     override fun requestSynchronize(): LGOResponse {

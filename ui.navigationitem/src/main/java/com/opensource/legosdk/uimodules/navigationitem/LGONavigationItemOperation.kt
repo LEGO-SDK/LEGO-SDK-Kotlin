@@ -2,6 +2,7 @@ package com.opensource.legosdk.uimodules.navigationitem
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.webkit.WebView
 import com.opensource.legosdk.core.LGONavigationItem
 import com.opensource.legosdk.core.LGORequestable
@@ -14,38 +15,58 @@ import java.net.URL
 /**
  * Created by cuiminghui on 2017/5/11.
  */
-class LGONavigationItemOperation(val request: LGONavigationItemRequest): LGORequestable() {
+class LGONavigationItemOperation(private val request: LGONavigationItemRequest): LGORequestable() {
 
-    fun requestURL(url: String): URL? {
+    private fun requestURL(url: String): String? {
         var relativeURL = url
         val webView = request.context?.sender as? WebView ?: return null
         if (!relativeURL.startsWith("http://") && !relativeURL.startsWith("https://") && !relativeURL.startsWith("content://")) {
             val uri = URI(webView.url)
             relativeURL = uri.resolve(relativeURL).toString()
         }
-        return URL(relativeURL)
+        return relativeURL
     }
 
     fun requestBitmap(url: String, completionBlock: (Bitmap?) -> Unit): Boolean {
         if (url.contains(".png", false)) {
-            Thread({
-                try {
-                    (requestURL(url)?.openConnection() as? HttpURLConnection)?.let { conn ->
-                        conn.connectTimeout = 5000
-                        conn.connect()
-                        BitmapFactory.decodeStream(conn.inputStream)?.let { bitmap ->
-                            if (url.contains("@3x.png", true) || url.contains("%403x.png", true)) {
-                                bitmap.density = 3
+            request.context?.runOnMainThread {
+                val URLString = requestURL(url) ?: return@runOnMainThread
+                if (URLString.startsWith("content://")) {
+                    try {
+                        request.context.requestContentContext()?.contentResolver?.openInputStream(Uri.parse(URLString))?.let { inputStream ->
+                            BitmapFactory.decodeStream(inputStream)?.let { bitmap ->
+                                if (url.contains("@3x.png", true) || url.contains("%403x.png", true)) {
+                                    bitmap.density = 3
+                                }
+                                else {
+                                    bitmap.density = 2
+                                }
+                                completionBlock(bitmap)
                             }
-                            else {
-                                bitmap.density = 2
-                            }
-                            completionBlock(bitmap)
+                            inputStream.close()
                         }
-                        conn.inputStream.close()
-                    }
-                } catch (e: Exception) {}
-            }).start()
+                    } catch (e: Exception) {}
+                    return@runOnMainThread
+                }
+                Thread({
+                    try {
+                        (URL(URLString).openConnection() as? HttpURLConnection)?.let { conn ->
+                            conn.connectTimeout = 5000
+                            conn.connect()
+                            BitmapFactory.decodeStream(conn.inputStream)?.let { bitmap ->
+                                if (url.contains("@3x.png", true) || url.contains("%403x.png", true)) {
+                                    bitmap.density = 3
+                                }
+                                else {
+                                    bitmap.density = 2
+                                }
+                                completionBlock(bitmap)
+                            }
+                            conn.inputStream.close()
+                        }
+                    } catch (e: Exception) {}
+                }).start()
+            }
             return true
         }
         return false

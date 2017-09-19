@@ -2,6 +2,8 @@ package com.opensource.legosdk.core
 
 import android.app.Activity
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.webkit.WebView
 
@@ -12,7 +14,7 @@ import android.webkit.WebView
 open class LGORequestContext(val sender: Any?) {
 
     fun runOnMainThread(action: () -> Unit) {
-        requestActivity()?.runOnUiThread(action)
+        Handler(requestContentContext()?.mainLooper).post(action)
     }
 
     fun requestContentContext(): Context? {
