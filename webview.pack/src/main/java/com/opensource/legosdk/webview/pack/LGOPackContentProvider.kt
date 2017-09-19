@@ -1,7 +1,9 @@
 package com.opensource.legosdk.webview.pack
 
+import android.app.Application
 import android.content.ContentProvider
 import android.content.ContentValues
+import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.ParcelFileDescriptor
@@ -13,6 +15,23 @@ import java.io.File
  */
 
 class LGOPackContentProvider: ContentProvider() {
+
+    companion object {
+
+        fun serverDomain(context: Context): String {
+            return "com.opensource.legosdk.webview.pack.contents." + applicationID(context)
+        }
+
+        fun applicationID(context: Context): String {
+            try {
+                val clazz = Class.forName(context.packageName + ".BuildConfig")
+                val field = clazz.getField("APPLICATION_ID")
+                return field.get(null) as? String ?: ""
+            } catch (e: Exception) { }
+            return ""
+        }
+
+    }
 
     private fun filePath(uri: Uri): String {
         return LGOCore.context?.cacheDir?.absolutePath + "/LGOPack_Server/" + uri.path

@@ -2,17 +2,12 @@ package com.opensource.legosdk.core
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
 import android.net.Uri
 import android.util.AttributeSet
 import android.util.Base64
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
 import org.json.JSONObject
 
 /**

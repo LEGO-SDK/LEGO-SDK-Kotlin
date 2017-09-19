@@ -63,6 +63,9 @@ class LGOPack {
 
     fun createFileServer(url: String, completionBlock:(localUrl: String) -> Unit) {
         try {
+            if (!LGOCore.whiteList.contains(LGOPackContentProvider.serverDomain(LGOCore.context!!))) {
+                LGOCore.whiteList.add(LGOPackContentProvider.serverDomain(LGOCore.context!!))
+            }
             val serverDocumentPath = serverDocumentPath(url) ?: return
             mkdirs(File(serverDocumentPath))
             val uri = URI(url)
@@ -98,7 +101,7 @@ class LGOPack {
                         }
                         fileInputStream.close()
                         val queryString = if (url.contains("?")) url.split("?").mapIndexedNotNull { index, s -> return@mapIndexedNotNull if (index > 0) s else null }.joinToString("?") else ""
-                        return completionBlock("content://com.opensource.legosdk.webview.pack.contents/"+cacheKey(url)+"/"+queryString)
+                        return completionBlock("content://" + LGOPackContentProvider.serverDomain(LGOCore.context!!) + "/"+cacheKey(url)+"/"+queryString)
                     }
                 } catch (e: Exception) {
                     print(e)
@@ -135,7 +138,7 @@ class LGOPack {
                             }
                             it.close()
                             val queryString = if (url.contains("?")) url.split("?").mapIndexedNotNull { index, s -> return@mapIndexedNotNull if (index > 0) s else null }.joinToString("?") else ""
-                            return completionBlock("content://com.opensource.legosdk.webview.pack.contents/"+cacheKey(url)+"/"+queryString)
+                            return completionBlock("content://" + LGOPackContentProvider.serverDomain(LGOCore.context!!) + "/"+cacheKey(url)+"/"+queryString)
                         }
                     }
                 } catch (e: Exception) {
@@ -160,15 +163,9 @@ class LGOPack {
         val sharedInstance = LGOPack()
         val sharedDownloader = LGOPackDownloader()
 
-        var serverPort = 10000
-            private set
-
         var sharedPublicKeys: HashMap<String, String> = hashMapOf()
 
         init {
-            if (!LGOCore.whiteList.contains("com.opensource.legosdk.webview.pack.contents")) {
-                LGOCore.whiteList.add("com.opensource.legosdk.webview.pack.contents")
-            }
             LGOWebViewHooker.WebViewClient.addHook(LGOWebViewHooker.HookEntity("shouldOverrideUrlLoading", null, { p0, p1, p2, p3 ->
                 val view = p0 as? LGOWebView ?: return@HookEntity null
                 (p1 as? String)?.let { url ->

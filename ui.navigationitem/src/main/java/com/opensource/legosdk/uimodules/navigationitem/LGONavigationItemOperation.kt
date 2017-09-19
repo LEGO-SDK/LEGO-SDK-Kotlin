@@ -19,7 +19,7 @@ class LGONavigationItemOperation(val request: LGONavigationItemRequest): LGORequ
     fun requestURL(url: String): URL? {
         var relativeURL = url
         val webView = request.context?.sender as? WebView ?: return null
-        if (!relativeURL.startsWith("http://") && !relativeURL.startsWith("https://")) {
+        if (!relativeURL.startsWith("http://") && !relativeURL.startsWith("https://") && !relativeURL.startsWith("content://")) {
             val uri = URI(webView.url)
             relativeURL = uri.resolve(relativeURL).toString()
         }
