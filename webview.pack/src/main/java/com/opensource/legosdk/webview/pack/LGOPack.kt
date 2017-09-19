@@ -98,7 +98,7 @@ class LGOPack {
                         }
                         fileInputStream.close()
                         val queryString = if (url.contains("?")) url.split("?").mapIndexedNotNull { index, s -> return@mapIndexedNotNull if (index > 0) s else null }.joinToString("?") else ""
-                        return completionBlock("http://localhost:$serverPort/"+cacheKey(url)+"/"+queryString)
+                        return completionBlock("content://com.opensource.legosdk.webview.pack.contents/"+cacheKey(url)+"/"+queryString)
                     }
                 } catch (e: Exception) {
                     print(e)
@@ -135,7 +135,7 @@ class LGOPack {
                             }
                             it.close()
                             val queryString = if (url.contains("?")) url.split("?").mapIndexedNotNull { index, s -> return@mapIndexedNotNull if (index > 0) s else null }.joinToString("?") else ""
-                            return completionBlock("http://localhost:$serverPort/"+cacheKey(url)+"/"+queryString)
+                            return completionBlock("content://com.opensource.legosdk.webview.pack.contents/"+cacheKey(url)+"/"+queryString)
                         }
                     }
                 } catch (e: Exception) {
@@ -160,18 +160,14 @@ class LGOPack {
         val sharedInstance = LGOPack()
         val sharedDownloader = LGOPackDownloader()
 
-        var sharedServer: LGOPackServer? = null
-            private set
-
         var serverPort = 10000
             private set
 
         var sharedPublicKeys: HashMap<String, String> = hashMapOf()
 
         init {
-            startService()
-            if (!LGOCore.whiteList.contains("localhost")) {
-                LGOCore.whiteList.add("localhost")
+            if (!LGOCore.whiteList.contains("com.opensource.legosdk.webview.pack.contents")) {
+                LGOCore.whiteList.add("com.opensource.legosdk.webview.pack.contents")
             }
             LGOWebViewHooker.WebViewClient.addHook(LGOWebViewHooker.HookEntity("shouldOverrideUrlLoading", null, { p0, p1, p2, p3 ->
                 val view = p0 as? LGOWebView ?: return@HookEntity null
@@ -223,20 +219,6 @@ class LGOPack {
                 return@HookEntity null
             }))
 
-        }
-
-        fun startService() {
-            if (serverPort > 11000) {
-                return
-            }
-            try {
-                sharedServer = LGOPackServer(null, serverPort)
-                sharedServer?.start()
-            } catch (e: Exception) {
-                sharedServer = null
-                serverPort++
-                startService()
-            }
         }
 
         fun setPublicKey(publicKey: String, uri: String) {

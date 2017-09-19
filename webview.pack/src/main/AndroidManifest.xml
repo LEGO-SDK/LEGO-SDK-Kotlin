@@ -4,6 +4,10 @@
     <application android:allowBackup="true" android:label="@string/app_name"
         android:supportsRtl="true">
 
+        <provider
+            android:authorities="com.opensource.legosdk.webview.pack.contents"
+            android:name=".LGOPackContentProvider" />
+
     </application>
 
 </manifest>
