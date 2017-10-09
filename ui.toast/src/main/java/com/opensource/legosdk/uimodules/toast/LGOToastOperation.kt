@@ -45,7 +45,7 @@ class LGOToastOperation(val request: LGOToastRequest): LGORequestable() {
                     val scale = activity.resources.displayMetrics.density
                     val container = object: FrameLayout(activity) {
                         override fun onTouchEvent(event: MotionEvent?): Boolean {
-                            return true
+                            return request.masked
                         }
                     }
                     sharedContainer = container
@@ -57,7 +57,9 @@ class LGOToastOperation(val request: LGOToastRequest): LGORequestable() {
                             toastView.y = ((view.height - 120 * scale) / 2.0).toFloat()
                         }
                     }
-                    activity.addContentView(container, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+                    if (! request.style.equals("text")) {
+                        activity.addContentView(container, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+                    }
                     sharedTimer.cancel()
                     sharedTimer.purge()
                     sharedTimer = Timer()

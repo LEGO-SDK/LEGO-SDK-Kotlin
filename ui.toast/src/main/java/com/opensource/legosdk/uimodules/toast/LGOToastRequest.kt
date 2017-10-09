@@ -7,10 +7,7 @@ import android.util.Base64
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import com.opensource.legosdk.core.LGORequest
 import com.opensource.legosdk.core.LGORequestContext
 import java.io.ByteArrayInputStream
@@ -18,7 +15,7 @@ import java.io.ByteArrayInputStream
 /**
  * Created by cuiminghui on 2017/6/12.
  */
-class LGOToastRequest(val opt: String, val style: String, val title: String, val timeout: Int, context: LGORequestContext?) : LGORequest(context) {
+class LGOToastRequest(val opt: String, val style: String, val title: String, val timeout: Int, val masked: Boolean, context: LGORequestContext?) : LGORequest(context) {
 
     fun toastView(): View? {
         context?.requestContentContext()?.let { context ->
@@ -62,13 +59,18 @@ class LGOToastRequest(val opt: String, val style: String, val title: String, val
                 }
             }
             if (title.length > 0) {
-                val titleLabel = TextView(context)
-                titleLabel.textSize = 16f
-                titleLabel.setTextColor(0xe0ffffff.toInt())
-                titleLabel.gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
-                titleLabel.text = title
-                titleLabel.y = 80 * context.resources.displayMetrics.density
-                toast.addView(titleLabel, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (30 * context.resources.displayMetrics.density).toInt()))
+                if (style.equals("text")) {
+                    Toast.makeText(context, title, Toast.LENGTH_SHORT).show()
+                } else {
+                    val titleLabel = TextView(context)
+                    titleLabel.textSize = 16f
+                    titleLabel.setTextColor(0xe0ffffff.toInt())
+                    titleLabel.gravity = Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL
+                    titleLabel.text = title
+                    titleLabel.y = 80 * context.resources.displayMetrics.density
+                    toast.addView(titleLabel, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (30 * context.resources.displayMetrics.density).toInt()))
+
+                }
             }
             return toast
         }

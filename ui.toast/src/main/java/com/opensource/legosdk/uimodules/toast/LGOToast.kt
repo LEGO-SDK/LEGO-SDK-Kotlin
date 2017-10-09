@@ -13,7 +13,11 @@ class LGOToast: LGOModule() {
         val style = obj.optString("style") ?: return LGORequestable.reject("UI.Toast", -1, "style required.")
         val title = obj.optString("title") ?: return LGORequestable.reject("UI.Toast", -1, "title required.")
         val timeout = Math.min(10, obj.optInt("timeout", 10))
-        return LGOToastOperation(LGOToastRequest(opt, style, title, timeout, context))
+        var masked = true
+        if (obj.has("masked")) {
+            masked = obj.optBoolean("masked")
+        }
+        return LGOToastOperation(LGOToastRequest(opt, style, title, timeout, masked, context))
     }
 
     override fun buildWithRequest(request: LGORequest): LGORequestable? {
