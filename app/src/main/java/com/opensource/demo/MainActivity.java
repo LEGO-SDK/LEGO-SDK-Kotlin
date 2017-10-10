@@ -16,20 +16,13 @@ public class MainActivity extends LGOWebViewActivity {
     @Nullable
     @Override
     public String getUrlString() {
-        return "https://raw.githubusercontent.com/LEGO-SDK/LEGO-SDK-OC/master/Resources/weui.zip";
+        return "http://webpage.yy.com/s/lego-sdk/orz.html?20171010";
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        try {
-            LGOPack.Companion.setPublicKey(getAssets().open("weui.zip.pub"), "https://raw.githubusercontent.com/LEGO-SDK/");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         LGOWebViewActivity.Companion.setNavigationBarDrawable(new ColorDrawable(0xff277de2));
-        LGOCore.Companion.getWhiteList().add("githubusercontent.com");
-        LGOCore.Companion.getWhiteList().add("google.com.hk");
-        LGOCore.Companion.getWhiteList().add("duowan.cn");
+        LGOCore.Companion.getWhiteList().add("webpage.yy.com");
         super.onCreate(savedInstanceState);
     }
 

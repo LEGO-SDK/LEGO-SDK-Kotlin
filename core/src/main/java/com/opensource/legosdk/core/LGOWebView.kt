@@ -2,11 +2,14 @@ package com.opensource.legosdk.core
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.util.AttributeSet
 import android.util.Base64
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.webkit.ConsoleMessage
 import android.webkit.WebView
 import org.json.JSONObject
 
@@ -54,6 +57,16 @@ open class LGOWebView @JvmOverloads constructor(
     var primaryUrl: String? = null
         private set
     private val webClient = object : LGOWebViewHooker.WebViewClient() {
+        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                url?.let { url ->
+                    if (!LGOWatchDog.checkURL(url) || !LGOWatchDog.checkSSL(url)) {
+                        deleteJavascriptInterface()
+                    }
+                }
+            }
+            super.onPageStarted(view, url, favicon)
+        }
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
             LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
@@ -66,6 +79,7 @@ open class LGOWebView @JvmOverloads constructor(
         }
     }
     private val chromeClient = object : LGOWebViewHooker.WebChromeClient() {
+
         override fun onReceivedTitle(view: WebView?, title: String?) {
             super.onReceivedTitle(view, title)
             ((view?.parent as? View)?.context as? LGOWebViewActivity)?.let {
@@ -74,6 +88,7 @@ open class LGOWebView @JvmOverloads constructor(
                 }
             }
         }
+
     }
 
     init {
@@ -84,10 +99,17 @@ open class LGOWebView @JvmOverloads constructor(
         settings.allowFileAccess = false
         settings.allowFileAccessFromFileURLs = false
         settings.useWideViewPort = true
-        addJavascriptInterface(this, "JSBridge")
-        removeJavascriptInterface("searchBoxJavaBridge_")
-        removeJavascriptInterface("accessibility")
-        removeJavascriptInterface("accessibilityTraversal")
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            setupJavascriptInterface()
+        }
+        else {
+            if (LGOCore.whiteList.size == 0) {
+                System.out.println("LEGO-SDK Error >>> 在 API 14 ~ 16 系统上，必须添加白名单才能使用，详细方法请参照 https://lego-sdk.github.io/guide.html Android, 5.")
+            }
+            else {
+                setupJavascriptInterface()
+            }
+        }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && isDebug(context)) {
             setWebContentsDebuggingEnabled(true)
         }
@@ -109,10 +131,28 @@ open class LGOWebView @JvmOverloads constructor(
     }
 
     override fun loadUrl(url: String?) {
-        primaryUrl = url
+        url?.let { url ->
+            if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("contents://")) {
+                primaryUrl = url
+            }
+        }
         if (!webClient.shouldOverrideUrlLoading(this, url)) {
             super.loadUrl(url)
         }
+    }
+
+    private fun setupJavascriptInterface() {
+        addJavascriptInterface(this, "JSBridge")
+        removeJavascriptInterface("searchBoxJavaBridge_")
+        removeJavascriptInterface("accessibility")
+        removeJavascriptInterface("accessibilityTraversal")
+    }
+
+    private fun deleteJavascriptInterface() {
+        removeJavascriptInterface("JSBridge")
+        removeJavascriptInterface("searchBoxJavaBridge_")
+        removeJavascriptInterface("accessibility")
+        removeJavascriptInterface("accessibilityTraversal")
     }
 
     @android.webkit.JavascriptInterface
@@ -142,7 +182,7 @@ open class LGOWebView @JvmOverloads constructor(
         }
     }
 
-    fun callback(callbackID: Int, metaData: HashMap<String, Any>, resData: HashMap<String, Any>) {
+    private fun callback(callbackID: Int, metaData: HashMap<String, Any>, resData: HashMap<String, Any>) {
         val base64MetaString = toBase64(toJSONString(metaData))
         val base64ResString = toBase64(toJSONString(resData))
         val script = "(function(){var JSONMetaString = " +
@@ -165,7 +205,7 @@ open class LGOWebView @JvmOverloads constructor(
         }
     }
 
-    fun toJSONString(map: HashMap<String, Any>): String {
+    private fun toJSONString(map: HashMap<String, Any>): String {
         val obj = JSONObject()
         map.forEach {
             try {
@@ -175,7 +215,7 @@ open class LGOWebView @JvmOverloads constructor(
         return obj.toString(0)
     }
 
-    fun toBase64(str: String): String {
+    private fun toBase64(str: String): String {
         val data = Uri.encode(str).toByteArray(Charsets.UTF_8)
         return Base64.encodeToString(data, 0).replace("\n", "")
     }
@@ -195,14 +235,14 @@ open class LGOWebView @JvmOverloads constructor(
         "undefined){return JSSynchronizeResponses[this.moduleName]}}}}};" + argsScript() + syncScript()
     }
 
-    fun argsScript(): String {
+    private fun argsScript(): String {
         (activity as? LGOWebViewActivity)?.args?.let {
             return "window._args = {}; try { window._args = JSON.parse(decodeURIComponent(atob('" + toBase64(it.toString()) + "'))); }catch(e){}"
         }
         return ""
     }
 
-    fun syncScript(): String {
+    private fun syncScript(): String {
         return LGOCore.modules.items.mapNotNull {
             val moduleName = it.key
             it.value.synchronizeResponse(LGORequestContext(this))?.let {
@@ -212,7 +252,7 @@ open class LGOWebView @JvmOverloads constructor(
         }.joinToString(";")
     }
 
-    fun isDebug(context: Context): Boolean {
+    private fun isDebug(context: Context): Boolean {
         try {
             val clazz = Class.forName(context.packageName + ".BuildConfig")
             val field = clazz.getField("DEBUG")
