@@ -14,7 +14,7 @@ class LGOCore {
         var context: Context? = null
             private set
 
-        val SDKVersion = "0.3.0"
+        val SDKVersion = "1.0.3"
 
         var whiteList: MutableList<String> = mutableListOf()
 

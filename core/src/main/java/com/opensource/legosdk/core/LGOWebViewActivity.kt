@@ -1,6 +1,7 @@
 package com.opensource.legosdk.core
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -16,7 +17,15 @@ import org.json.JSONObject
 open class LGOWebViewActivity : Activity() {
 
     companion object {
+
         var navigationBarDrawable: Drawable? = null
+
+        fun openURL(context: Context, url: String) {
+            val intent = Intent(context, LGOWebViewActivity::class.java)
+            intent.putExtra("LGONavigationController.RequestPath", url)
+            context.startActivity(intent)
+        }
+
     }
 
     var contentView: ViewGroup? = null
