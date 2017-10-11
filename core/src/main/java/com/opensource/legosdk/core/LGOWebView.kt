@@ -16,15 +16,13 @@ import org.json.JSONObject
 /**
  * Created by PonyCui_Home on 2017/4/16.
  */
-open class LGOWebView @JvmOverloads constructor(
+class LGOWebView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : WebView(context, attrs, defStyleAttr) {
 
     companion object {
 
-        var poolSize = 2
-
-        var pool: List<LGOWebView> = listOf()
+        var afterCreate: ((webView: LGOWebView) -> Unit)? = null
 
         fun requestWebViewFromPool(context: Context): LGOWebView? {
             return if (pool.isNotEmpty()) {
@@ -40,6 +38,9 @@ open class LGOWebView @JvmOverloads constructor(
             }
         }
 
+        private var poolSize = 2
+        private var pool: List<LGOWebView> = listOf()
+
         private fun refillPool(context: Context) {
             if (poolSize - pool.size > 0) {
                 val mutable = pool.toMutableList()
@@ -53,8 +54,8 @@ open class LGOWebView @JvmOverloads constructor(
     var activity: Activity? = null
     var fragment: LGOWebViewFragment? = null
         internal set
-    var primaryUrl: String? = null
-        private set
+    private var primaryUrl: String? = null
+
     private val webClient = object : LGOWebViewHooker.WebViewClient() {
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -114,7 +115,7 @@ open class LGOWebView @JvmOverloads constructor(
         }
         isFocusable = true
         isFocusableInTouchMode = true
-
+        afterCreate?.invoke(this)
     }
 
     override fun onDetachedFromWindow() {
