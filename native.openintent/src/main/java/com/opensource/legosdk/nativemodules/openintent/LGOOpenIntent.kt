@@ -21,14 +21,6 @@ class LGOOpenIntent: LGOModule() {
         return LGOOpenIntentOperation(request)
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("Native.OpenIntent", LGOOpenIntent())
-        }
-
-    }
-
     inner class LGOOpenIntentOperation(val request: LGOOpenIntentRequest): LGORequestable() {
 
         override fun requestSynchronize(): LGOResponse {

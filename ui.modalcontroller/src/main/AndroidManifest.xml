@@ -4,6 +4,8 @@
     <application android:allowBackup="true" android:label="@string/app_name"
         android:supportsRtl="true">
 
+        <meta-data android:name="LGOModule.UI.ModalController" android:value="com.opensource.legosdk.uimodules.modalcontroller.LGOModalController" />
+
     </application>
 
 </manifest>

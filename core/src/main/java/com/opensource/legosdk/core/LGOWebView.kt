@@ -27,21 +27,20 @@ open class LGOWebView @JvmOverloads constructor(
         var pool: List<LGOWebView> = listOf()
 
         fun requestWebViewFromPool(context: Context): LGOWebView? {
-            if (pool.size > 0) {
+            return if (pool.isNotEmpty()) {
                 val mutable = pool.toMutableList()
                 val webView = mutable.first()
                 mutable.removeAt(0)
                 pool = mutable.toList()
                 refillPool(context)
-                return webView
-            }
-            else {
+                webView
+            } else {
                 refillPool(context)
-                return null
+                null
             }
         }
 
-        fun refillPool(context: Context) {
+        private fun refillPool(context: Context) {
             if (poolSize - pool.size > 0) {
                 val mutable = pool.toMutableList()
                 mutable.add(LGOWebView(context))

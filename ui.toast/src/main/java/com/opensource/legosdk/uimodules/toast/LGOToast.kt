@@ -27,12 +27,4 @@ class LGOToast: LGOModule() {
         return null
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("UI.Toast", LGOToast())
-        }
-
-    }
-
 }

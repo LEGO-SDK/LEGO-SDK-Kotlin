@@ -8,6 +8,8 @@
             android:authorities="com.opensource.legosdk.webview.pack.contents.${applicationId}"
             android:name=".LGOPackContentProvider" />
 
+        <meta-data android:name="LGOModule.WebView.Pack" android:value="com.opensource.legosdk.webview.pack.LGOPack" />
+
     </application>
 
 </manifest>

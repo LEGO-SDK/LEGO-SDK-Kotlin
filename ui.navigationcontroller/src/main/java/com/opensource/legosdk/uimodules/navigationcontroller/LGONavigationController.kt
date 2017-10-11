@@ -23,12 +23,4 @@ class LGONavigationController: LGOModule() {
         return LGONavigationOperation(request)
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("UI.NavigationController", LGONavigationController())
-        }
-
-    }
-
 }

@@ -88,12 +88,4 @@ class LGOPicker: LGOModule() {
         return LGOPickerOperation(request)
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("UI.Picker", LGOPicker())
-        }
-
-    }
-
 }

@@ -148,12 +148,4 @@ class LGOPage: LGOModule() {
         }
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("UI.Page", LGOPage())
-        }
-
-    }
-
 }

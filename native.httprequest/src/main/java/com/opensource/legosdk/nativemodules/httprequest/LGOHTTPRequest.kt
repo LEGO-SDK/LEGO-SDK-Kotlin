@@ -24,12 +24,4 @@ class LGOHTTPRequest: LGOModule() {
         return null
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("Native.HTTPRequest", LGOHTTPRequest())
-        }
-
-    }
-
 }

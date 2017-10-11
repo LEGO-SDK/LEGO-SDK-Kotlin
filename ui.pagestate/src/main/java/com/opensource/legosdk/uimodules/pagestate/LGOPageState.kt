@@ -41,12 +41,4 @@ class LGOPageState: LGOModule() {
         return LGOPageStateOperation(LGORequest(context))
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("UI.PageState", LGOPageState())
-        }
-
-    }
-
 }

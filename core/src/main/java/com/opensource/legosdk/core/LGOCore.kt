@@ -1,6 +1,7 @@
 package com.opensource.legosdk.core
 
 import android.content.Context
+import android.content.pm.PackageManager
 import dalvik.system.DexFile
 
 /**
@@ -27,19 +28,23 @@ class LGOCore {
             private set
 
         fun loadModules(context: Context) {
-            this.context = context
             if (moduleLoaded) {
                 return
             }
-            try {
-                DexFile(context.packageCodePath)?.let {
-                    for (item in it.entries()) {
-                        if (item.startsWith("com.opensource.legosdk.")) {
-                            Class.forName(item)
-                        }
+            val applicationInfo = context.packageManager.getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
+            applicationInfo.metaData.keySet().forEach { moduleName ->
+                if (moduleName.startsWith("LGOModule.")) {
+                    applicationInfo.metaData.getString(moduleName)?.let {
+                        try {
+                            val clazz = Class.forName(it)
+                            (clazz.getDeclaredConstructor().newInstance() as? LGOModule)?.let {
+                                modules.addModule(moduleName.replaceFirst("LGOModule.", ""), it)
+                                System.out.println("LGOModule '$moduleName' Loaded.")
+                            }
+                        } catch (e: Exception) {}
                     }
                 }
-            } catch (e: Exception) {}
+            }
             moduleLoaded = true
         }
 

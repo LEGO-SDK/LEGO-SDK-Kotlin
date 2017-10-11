@@ -34,10 +34,6 @@ class LGOPreload: LGOModule() {
 
         val pool: HashMap<String, LGOWebView> = hashMapOf()
 
-        init {
-            LGOCore.modules.addModule("WebView.Preload", LGOPreload())
-        }
-
     }
 
 }

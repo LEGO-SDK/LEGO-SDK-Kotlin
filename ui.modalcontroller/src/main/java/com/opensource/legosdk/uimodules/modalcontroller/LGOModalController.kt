@@ -35,12 +35,4 @@ class LGOModalController: LGOModule() {
         return LGOModalOperation(request)
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("UI.ModalController", LGOModalController())
-        }
-
-    }
-
 }

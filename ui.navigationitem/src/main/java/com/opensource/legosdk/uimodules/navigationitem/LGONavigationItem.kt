@@ -18,12 +18,4 @@ class LGONavigationItem: LGOModule() {
         return LGONavigationItemOperation(request)
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("UI.NavigationItem", LGONavigationItem())
-        }
-
-    }
-
 }

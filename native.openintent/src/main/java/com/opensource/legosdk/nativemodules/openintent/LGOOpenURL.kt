@@ -22,14 +22,6 @@ class LGOOpenURL: LGOModule() {
         return LGOOpenURLOperation(request)
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("Native.OpenURL", LGOOpenURL())
-        }
-
-    }
-
     inner class LGOOpenURLRequest(val URL: String, context: LGORequestContext?): LGORequest(context)
 
     inner class LGOOpenURLOperation(val request: LGOOpenURLRequest): LGORequestable() {

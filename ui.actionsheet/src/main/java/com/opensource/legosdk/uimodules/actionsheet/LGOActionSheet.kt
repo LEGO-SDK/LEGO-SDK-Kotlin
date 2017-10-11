@@ -26,12 +26,4 @@ class LGOActionSheet: LGOModule() {
         return LGOActionSheetOperation(request)
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("UI.ActionSheet", LGOActionSheet())
-        }
-
-    }
-
 }

@@ -12,7 +12,7 @@ class LGOAlertView: LGOModule() {
         val buttonTitles = mutableListOf<String>()
         obj.optJSONArray("buttonTitles")?.let {
             val length = it.length()
-            (0..length - 1).mapTo(buttonTitles) { i -> it.optString(i, "") }
+            (0 until length).mapTo(buttonTitles) { i -> it.optString(i, "") }
         }
         return LGOAlertViewOperation(LGOAlertViewRequest(
                 obj.optString("title"),
@@ -25,14 +25,6 @@ class LGOAlertView: LGOModule() {
     override fun buildWithRequest(request: LGORequest): LGORequestable? {
         val request = request as? LGOAlertViewRequest ?: return null
         return LGOAlertViewOperation(request)
-    }
-
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("UI.AlertView", LGOAlertView())
-        }
-
     }
 
 }

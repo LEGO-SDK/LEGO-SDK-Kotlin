@@ -20,12 +20,4 @@ class LGOCheck: LGOModule() {
         return LGOCheckOperation().requestSynchronize()
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("Native.Check", LGOCheck())
-        }
-
-    }
-
 }

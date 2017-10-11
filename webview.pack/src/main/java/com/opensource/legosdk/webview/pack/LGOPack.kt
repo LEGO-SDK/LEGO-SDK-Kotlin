@@ -2,10 +2,7 @@ package com.opensource.legosdk.webview.pack
 
 import android.os.Build
 import android.webkit.WebResourceRequest
-import com.opensource.legosdk.core.LGOCore
-import com.opensource.legosdk.core.LGOWatchDog
-import com.opensource.legosdk.core.LGOWebView
-import com.opensource.legosdk.core.LGOWebViewHooker
+import com.opensource.legosdk.core.*
 import java.io.*
 import java.net.URI
 import java.security.MessageDigest
@@ -14,7 +11,11 @@ import java.util.zip.ZipInputStream
 /**
  * Created by cuiminghui on 2017/5/17.
  */
-class LGOPack {
+class LGOPack: LGOModule() {
+
+    init {
+        LGOPack.addHook()
+    }
 
     fun isLocalCached(url: String): Boolean {
         try {
@@ -165,7 +166,7 @@ class LGOPack {
 
         var sharedPublicKeys: HashMap<String, String> = hashMapOf()
 
-        init {
+        fun addHook() {
             LGOWebViewHooker.WebViewClient.addHook(LGOWebViewHooker.HookEntity("shouldOverrideUrlLoading", null, { p0, p1, p2, p3 ->
                 val view = p0 as? LGOWebView ?: return@HookEntity null
                 (p1 as? String)?.let { url ->

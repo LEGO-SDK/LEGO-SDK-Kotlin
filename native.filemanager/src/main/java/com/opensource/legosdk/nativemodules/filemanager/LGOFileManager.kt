@@ -26,12 +26,4 @@ class LGOFileManager: LGOModule() {
         return LGOFileOperation(request)
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("Native.FileManager", LGOFileManager())
-        }
-
-    }
-
 }

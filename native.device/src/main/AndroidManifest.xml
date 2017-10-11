@@ -4,6 +4,8 @@
     <application android:allowBackup="true" android:label="@string/app_name"
         android:supportsRtl="true">
 
+        <meta-data android:name="LGOModule.Native.Device" android:value="com.opensource.legosdk.nativemodules.device.LGODevice" />
+
     </application>
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />

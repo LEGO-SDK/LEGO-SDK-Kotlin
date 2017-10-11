@@ -29,12 +29,4 @@ class LGOUserDefaults: LGOModule() {
         return null
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("Native.UserDefaults", LGOUserDefaults())
-        }
-
-    }
-
 }

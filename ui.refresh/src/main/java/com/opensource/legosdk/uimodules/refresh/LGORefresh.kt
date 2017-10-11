@@ -17,12 +17,4 @@ class LGORefresh: LGOModule() {
         return LGORefreshOperation(request)
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("UI.Refresh", LGORefresh())
-        }
-
-    }
-
 }

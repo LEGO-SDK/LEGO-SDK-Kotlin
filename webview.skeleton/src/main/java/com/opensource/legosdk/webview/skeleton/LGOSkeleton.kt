@@ -119,12 +119,4 @@ class LGOSkeleton: LGOModule() {
         return LGORequestable()
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("WebView.Skeleton", LGOSkeleton())
-        }
-
-    }
-
 }

@@ -23,10 +23,6 @@ class LGODevice : LGOModule() {
 
     companion object {
 
-        init {
-            LGOCore.modules.addModule("Native.Device", LGODevice())
-        }
-
         val custom: HashMap<String, Any> = hashMapOf()
 
     }

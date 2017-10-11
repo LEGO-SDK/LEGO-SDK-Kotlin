@@ -19,12 +19,4 @@ class LGOPasteboard: LGOModule() {
         return null
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("Native.Pasteboard", LGOPasteboard())
-        }
-
-    }
-
 }

@@ -24,12 +24,4 @@ class LGONotification: LGOModule() {
         return null
     }
 
-    companion object {
-
-        init {
-            LGOCore.modules.addModule("Native.Notification", LGONotification())
-        }
-
-    }
-
 }
