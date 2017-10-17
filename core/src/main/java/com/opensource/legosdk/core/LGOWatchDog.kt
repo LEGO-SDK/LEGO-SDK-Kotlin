@@ -13,6 +13,9 @@ class LGOWatchDog {
             if (LGOCore.whiteList.count() == 0) {
                 return true
             }
+            if (url.startsWith("file:///android_asset/")) {
+                return true
+            }
             try {
                 val uri = URI(url)
                 uri.host?.let { host ->
@@ -29,6 +32,9 @@ class LGOWatchDog {
 
         fun checkSSL(url: String): Boolean {
             if (LGOCore.whiteList.count() == 0) {
+                return true
+            }
+            if (url.startsWith("file:///android_asset/")) {
                 return true
             }
             try {
@@ -54,6 +60,9 @@ class LGOWatchDog {
             try {
                 val uri = URI(url)
                 if (uri.host == null && LGOCore.whiteList.count() == 0) {
+                    return true
+                }
+                if (url.startsWith("file:///android_asset/")) {
                     return true
                 }
                 else if (uri.host != null) {

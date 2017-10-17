@@ -132,7 +132,7 @@ class LGOWebView @JvmOverloads constructor(
 
     override fun loadUrl(url: String?) {
         url?.let { url ->
-            if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("contents://")) {
+            if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("contents://") || url.startsWith("file:///android_asset/")) {
                 primaryUrl = url
             }
         }
