@@ -1,5 +1,6 @@
 package com.opensource.legosdk.uimodules.refresh
 
+import android.graphics.Color
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.ViewGroup
 import android.webkit.WebView
@@ -13,31 +14,23 @@ class LGORefreshOperation(val request: LGORefreshRequest): LGORequestable() {
 
     override fun requestAsynchronize(callbackBlock: (LGOResponse) -> Unit) {
         request.context?.runOnMainThread {
-            request.context?.requestContentContext()?.let {
-                when (request.opt) {
-                    "create" -> {
-                        (request.context?.sender as? WebView)?.let {
-                            val webViewParent = it.parent
-                            if (webViewParent is SwipeRefreshLayout) {
-                                webViewParent.isEnabled = true
-                                webViewParent.setOnRefreshListener { callbackBlock(LGOResponse().accept(null)) }
-                                return@runOnMainThread
-                            }
-                            (webViewParent as ViewGroup).removeView(it)
-                            val swipeRefreshLayout = SwipeRefreshLayout(it.context)
-                            swipeRefreshLayout.setOnRefreshListener { callbackBlock(LGOResponse().accept(null)) }
-                            swipeRefreshLayout.addView(it, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-                            webViewParent.addView(swipeRefreshLayout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            when (request.opt) {
+                "create" -> {
+                    (request.context?.sender as? WebView)?.let {
+                        (it.parent as? SwipeRefreshLayout)?.let {
+                            it.isEnabled = true
+                            it.setOnRefreshListener { callbackBlock(LGOResponse().accept(null)) }
                         }
                     }
-                    "complete" -> {
-                        (request.context?.sender as? WebView)?.let {
-                            val webViewParent = it.parent
-                            if (webViewParent is SwipeRefreshLayout) webViewParent.isRefreshing = false
-                        }
-                    }
-                    else -> { }
                 }
+                "complete" -> {
+                    (request.context?.sender as? WebView)?.let {
+                        (it.parent as? SwipeRefreshLayout)?.let {
+                            it.isRefreshing = false
+                        }
+                    }
+                }
+                else -> { }
             }
         }
     }
