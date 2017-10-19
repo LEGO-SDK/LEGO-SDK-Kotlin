@@ -22,6 +22,7 @@ open class LGOWebViewActivity : Activity() {
     companion object {
 
         var navigationBarDrawable: Drawable? = null
+        var afterCreate: ((activity: LGOWebViewActivity) -> Unit)? = null
 
         fun openURL(context: Context, url: String) {
             val intent = Intent(context, LGOWebViewActivity::class.java)
@@ -83,6 +84,7 @@ open class LGOWebViewActivity : Activity() {
         }
         resetLayouts()
         hooks["onCreate"]?.forEach { it.invoke() }
+        afterCreate?.invoke(this)
     }
 
     fun resetLayouts() {
