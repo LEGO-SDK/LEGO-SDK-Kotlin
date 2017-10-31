@@ -97,7 +97,9 @@ class LGOWebView @JvmOverloads constructor(
         setWebChromeClient(chromeClient)
         settings.javaScriptEnabled = true
         settings.allowFileAccess = false
-        settings.allowFileAccessFromFileURLs = false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            settings.allowFileAccessFromFileURLs = false
+        }
         settings.useWideViewPort = true
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
             setupJavascriptInterface()

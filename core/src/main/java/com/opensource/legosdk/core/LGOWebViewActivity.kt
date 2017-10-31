@@ -27,6 +27,7 @@ open class LGOWebViewActivity : Activity() {
         fun openURL(context: Context, url: String) {
             val intent = Intent(context, LGOWebViewActivity::class.java)
             intent.putExtra("LGONavigationController.RequestPath", url)
+            intent.putExtra("LGONavigationController.Class", true)
             context.startActivity(intent)
         }
 
