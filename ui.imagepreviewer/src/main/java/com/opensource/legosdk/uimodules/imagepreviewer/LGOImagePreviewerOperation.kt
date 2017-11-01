@@ -37,7 +37,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType
 class LGOImagePreviewerOperation(val request: LGOImagePreviewerRequest): LGORequestable() {
 
     override fun requestSynchronize(): LGOResponse {
-        request.context?.requestContentContext()?.let {
+        request.context?.requestActivity()?.let {
             val intent = Intent(it, LGOImagePreviewerFragmentActivity::class.java)
             intent.putExtra("URLs", request.URLs.toTypedArray())
             request.currentURL?.let {

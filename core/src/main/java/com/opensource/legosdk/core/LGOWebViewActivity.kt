@@ -77,7 +77,7 @@ open class LGOWebViewActivity : Activity() {
                 } catch (e: Exception) {}
             }
         }
-        webView = preloadWebView ?: LGOWebView.requestWebViewFromPool(this) ?: LGOWebView(this)
+        webView = preloadWebView ?: LGOWebView.requestWebViewFromPool(this.applicationContext) ?: LGOWebView(this.applicationContext)
         webView.activity = this
         urlString?.let {
             webView.loadUrl(it)
