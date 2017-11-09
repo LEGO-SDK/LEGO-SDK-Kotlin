@@ -28,6 +28,7 @@ class LGOCore {
             private set
 
         fun loadModules(context: Context) {
+            this.context = context
             if (moduleLoaded) {
                 return
             }
