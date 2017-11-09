@@ -24,7 +24,7 @@ class LGOModalOperation(val request: LGOModalRequest): LGORequestable() {
     }
 
     override fun requestSynchronize(): LGOResponse {
-        request.context?.requestContentContext()?.let {
+        request.context?.requestActivity()?.let {
             when (request.opt) {
                 "present" -> {
                     request.context?.runOnMainThread {

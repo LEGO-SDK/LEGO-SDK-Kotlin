@@ -3,8 +3,11 @@ package com.opensource.legosdk.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
+import android.util.TypedValue
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -19,10 +22,12 @@ open class LGOWebViewActivity : Activity() {
     companion object {
 
         var navigationBarDrawable: Drawable? = null
+        var afterCreate: ((activity: LGOWebViewActivity) -> Unit)? = null
 
         fun openURL(context: Context, url: String) {
             val intent = Intent(context, LGOWebViewActivity::class.java)
             intent.putExtra("LGONavigationController.RequestPath", url)
+            intent.putExtra("LGONavigationController.Class", true)
             context.startActivity(intent)
         }
 
@@ -72,7 +77,7 @@ open class LGOWebViewActivity : Activity() {
                 } catch (e: Exception) {}
             }
         }
-        webView = preloadWebView ?: LGOWebView.requestWebViewFromPool(this) ?: LGOWebView(this)
+        webView = preloadWebView ?: LGOWebView.requestWebViewFromPool(this.applicationContext) ?: LGOWebView(this.applicationContext)
         webView.activity = this
         urlString?.let {
             webView.loadUrl(it)
@@ -80,6 +85,7 @@ open class LGOWebViewActivity : Activity() {
         }
         resetLayouts()
         hooks["onCreate"]?.forEach { it.invoke() }
+        afterCreate?.invoke(this)
     }
 
     fun resetLayouts() {
@@ -88,8 +94,11 @@ open class LGOWebViewActivity : Activity() {
             if (navigationBar.statusBarTranslucent) {
                 window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 val layout = RelativeLayout(this)
+                val refreshLayout = SwipeRefreshLayout(this)
+                refreshLayout.isEnabled = false
+                refreshLayout.addView(webView)
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
-                layout.addView(webView, webViewParams)
+                layout.addView(refreshLayout, webViewParams)
                 LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
                     try {
                         module::class.java.getDeclaredMethod("attachSkeleton", ViewGroup::class.java, ViewGroup.LayoutParams::class.java, String::class.java)?.let {
@@ -104,9 +113,12 @@ open class LGOWebViewActivity : Activity() {
             else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 val layout = RelativeLayout(this)
+                val refreshLayout = SwipeRefreshLayout(this)
+                refreshLayout.isEnabled = false
+                refreshLayout.addView(webView)
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 webViewParams.topMargin = (48 * resources.displayMetrics.density).toInt()
-                layout.addView(webView, webViewParams)
+                layout.addView(refreshLayout, webViewParams)
                 LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
                     try {
                         module::class.java.getDeclaredMethod("attachSkeleton", ViewGroup::class.java, ViewGroup.LayoutParams::class.java, String::class.java)?.let {
@@ -123,8 +135,11 @@ open class LGOWebViewActivity : Activity() {
             if (navigationBar.statusBarTranslucent) {
                 window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 val layout = RelativeLayout(this)
+                val refreshLayout = SwipeRefreshLayout(this)
+                refreshLayout.isEnabled = false
+                refreshLayout.addView(webView)
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
-                layout.addView(webView, webViewParams)
+                layout.addView(refreshLayout, webViewParams)
                 LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
                     try {
                         module::class.java.getDeclaredMethod("attachSkeleton", ViewGroup::class.java, ViewGroup.LayoutParams::class.java, String::class.java)?.let {
@@ -137,7 +152,10 @@ open class LGOWebViewActivity : Activity() {
             else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 val layout = RelativeLayout(this)
-                layout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                val refreshLayout = SwipeRefreshLayout(this)
+                refreshLayout.isEnabled = false
+                refreshLayout.addView(webView)
+                layout.addView(refreshLayout, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
                 LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
                     try {
                         module::class.java.getDeclaredMethod("attachSkeleton", ViewGroup::class.java, ViewGroup.LayoutParams::class.java, String::class.java)?.let {

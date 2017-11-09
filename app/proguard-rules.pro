@@ -15,3 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keep public class * extends com.opensource.legosdk.core.LGOModule
+-keepclassmembers public class * extends com.opensource.legosdk.core.LGOModule {
+    public *;
+}

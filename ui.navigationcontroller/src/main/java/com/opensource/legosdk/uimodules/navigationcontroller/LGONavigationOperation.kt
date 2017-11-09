@@ -24,7 +24,7 @@ class LGONavigationOperation(val request: LGONavigationRequest): LGORequestable(
     }
 
     override fun requestSynchronize(): LGOResponse {
-        request.context?.requestContentContext()?.let {
+        request.context?.requestActivity()?.let {
             when (request.opt) {
                 "push" -> {
                     request.context?.runOnMainThread {
