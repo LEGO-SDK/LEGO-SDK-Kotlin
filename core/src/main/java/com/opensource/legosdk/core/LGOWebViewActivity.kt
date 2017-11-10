@@ -90,6 +90,7 @@ open class LGOWebViewActivity : Activity() {
 
     fun resetLayouts() {
         contentView?.removeAllViews()
+        (webView?.parent as? ViewGroup)?.removeView(webView)
         if (!navigationBar.hidden) {
             if (navigationBar.statusBarTranslucent) {
                 window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
