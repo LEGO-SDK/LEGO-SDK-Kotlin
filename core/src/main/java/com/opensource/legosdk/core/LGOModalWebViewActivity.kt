@@ -1,6 +1,7 @@
 package com.opensource.legosdk.core
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -63,6 +64,13 @@ class LGOModalWebViewActivity : LGOWebViewActivity() {
                         attrs.dimAmount = if (intent.getBooleanExtra("LGOModalController.clearMask", false) || intent.getBooleanExtra("LGOModalController.nonMask", false)) 0.0f else 0.5f
                         window.attributes = attrs
                     }
+                }
+            }
+            intent.getBooleanExtra("LGOModalController.clearWebView", false)?.let { clearWebView ->
+                if (clearWebView) {
+                    webView.setBackgroundColor(Color.TRANSPARENT)
+                } else {
+                    webView.setBackgroundColor(Color.WHITE)
                 }
             }
         }

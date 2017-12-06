@@ -41,6 +41,7 @@ class LGOModalOperation(val request: LGOModalRequest): LGORequestable() {
                         intent.putExtra("LGOModalController.ModalHeight", request.modalStyle.modalHeight)
                         intent.putExtra("LGOModalController.clearMask", request.clearMask)
                         intent.putExtra("LGOModalController.nonMask", request.nonMask)
+                        intent.putExtra("LGOModalController.clearWebView", request.clearWebView)
                         request.preloadToken?.let {
                             intent.putExtra("LGOModalController.preloadToken", it)
                         }
