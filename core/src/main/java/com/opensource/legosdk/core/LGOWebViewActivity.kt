@@ -97,7 +97,7 @@ open class LGOWebViewActivity : Activity() {
                 val layout = RelativeLayout(this)
                 val refreshLayout = SwipeRefreshLayout(this)
                 refreshLayout.isEnabled = false
-                refreshLayout.addView(webView)
+                refreshLayout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 layout.addView(refreshLayout, webViewParams)
                 LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
@@ -116,7 +116,7 @@ open class LGOWebViewActivity : Activity() {
                 val layout = RelativeLayout(this)
                 val refreshLayout = SwipeRefreshLayout(this)
                 refreshLayout.isEnabled = false
-                refreshLayout.addView(webView)
+                refreshLayout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 webViewParams.topMargin = (48 * resources.displayMetrics.density).toInt()
                 layout.addView(refreshLayout, webViewParams)
@@ -138,7 +138,7 @@ open class LGOWebViewActivity : Activity() {
                 val layout = RelativeLayout(this)
                 val refreshLayout = SwipeRefreshLayout(this)
                 refreshLayout.isEnabled = false
-                refreshLayout.addView(webView)
+                refreshLayout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 layout.addView(refreshLayout, webViewParams)
                 LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
@@ -155,7 +155,7 @@ open class LGOWebViewActivity : Activity() {
                 val layout = RelativeLayout(this)
                 val refreshLayout = SwipeRefreshLayout(this)
                 refreshLayout.isEnabled = false
-                refreshLayout.addView(webView)
+                refreshLayout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
                 layout.addView(refreshLayout, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
                 LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
                     try {
