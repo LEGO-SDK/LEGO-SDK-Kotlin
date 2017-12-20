@@ -71,10 +71,16 @@ class LGOHTTPRequestOperation(private val request: LGOHTTPRequestObject): LGOReq
                             request.data?.let {
                                 if (it.isNotEmpty()) {
                                     try {
-                                        val os = conn.outputStream
-                                        os.write(Base64.decode(it.toByteArray(), 0))
-                                        os.close()
-                                    } catch (e: IllegalArgumentException) {
+                                        if (checkBase64(it)) {
+                                            val os = conn.outputStream
+                                            os.write(Base64.decode(it, Base64.DEFAULT))
+                                            os.close()
+                                        } else {
+                                            val os = conn.outputStream
+                                            os.write(it.toByteArray())
+                                            os.close()
+                                        }
+                                    } catch (e: Exception) {
                                         val os = conn.outputStream
                                         os.write(it.toByteArray())
                                         os.close()
@@ -129,6 +135,29 @@ class LGOHTTPRequestOperation(private val request: LGOHTTPRequestObject): LGOReq
         } catch (e: CharacterCodingException) {
             false
         }
+    }
+
+    fun checkBase64(str: String): Boolean {
+        if (str.length % 4 != 0) {
+            return false
+        }
+        val charArray = str.toCharArray()
+        for (i in charArray.indices) {
+            if (charArray[i] >= 'A' && charArray[i] <= 'Z') {
+                continue
+            }
+            if (charArray[i] >= 'a' && charArray[i] <= 'z') {
+                continue
+            }
+            if (charArray[i] >= '0' && charArray[i] <= '9') {
+                continue
+            }
+            if (charArray[i] == '+' || charArray[i] == '\\' || charArray[i] == '=') {
+                continue
+            }
+            return false
+        }
+        return true
     }
 
 }
