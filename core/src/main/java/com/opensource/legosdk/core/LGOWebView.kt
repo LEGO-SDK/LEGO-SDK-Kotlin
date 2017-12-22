@@ -2,6 +2,7 @@ package com.opensource.legosdk.core
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -10,6 +11,7 @@ import android.util.Base64
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.ConsoleMessage
+import android.webkit.ValueCallback
 import android.webkit.WebView
 import org.json.JSONObject
 
@@ -55,6 +57,9 @@ class LGOWebView @JvmOverloads constructor(
     var fragment: LGOWebViewFragment? = null
         internal set
     private var primaryUrl: String? = null
+    var uploadFileChooseCallback: ValueCallback<Array<Uri>>? = null
+    var uploadFileChooseTitle: String = "打开方式"
+    var uploadFileChooseRequestCode: Int = 999
 
     private val webClient = object : LGOWebViewHooker.WebViewClient() {
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -87,6 +92,15 @@ class LGOWebView @JvmOverloads constructor(
                     it.title = view?.title
                 }
             }
+        }
+
+        override fun onShowFileChooser(webView: WebView?, filePathCallback: ValueCallback<Array<Uri>>?, fileChooserParams: FileChooserParams?): Boolean {
+            uploadFileChooseCallback = filePathCallback
+            val imageIntent = Intent(Intent.ACTION_GET_CONTENT)
+            imageIntent.addCategory(Intent.CATEGORY_OPENABLE)
+            imageIntent.setType("*/*")
+            activity?.startActivityForResult(Intent.createChooser(imageIntent, uploadFileChooseTitle), uploadFileChooseRequestCode)
+            return true
         }
 
     }
