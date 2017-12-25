@@ -4,13 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Base64
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.webkit.ConsoleMessage
 import android.webkit.ValueCallback
 import android.webkit.WebView
 import org.json.JSONObject
@@ -99,10 +100,27 @@ class LGOWebView @JvmOverloads constructor(
             val imageIntent = Intent(Intent.ACTION_GET_CONTENT)
             imageIntent.addCategory(Intent.CATEGORY_OPENABLE)
             imageIntent.setType("*/*")
-            activity?.startActivityForResult(Intent.createChooser(imageIntent, uploadFileChooseTitle), uploadFileChooseRequestCode)
+            activity?.let {
+                it.startActivityForResult(Intent.createChooser(imageIntent, uploadFileChooseTitle), uploadFileChooseRequestCode)
+                return true
+            }
+            fragment?.let {
+                it.startActivityForResult(Intent.createChooser(imageIntent, uploadFileChooseTitle), uploadFileChooseRequestCode)
+                return true
+            }
             return true
+
         }
 
+        override fun getDefaultVideoPoster(): Bitmap {
+            activity?.let {
+                return Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565)
+            }
+            fragment?.let {
+                return Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565)
+            }
+            return super.getDefaultVideoPoster()
+        }
     }
 
     init {
