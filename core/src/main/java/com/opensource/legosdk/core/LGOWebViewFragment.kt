@@ -1,5 +1,7 @@
 package com.opensource.legosdk.core
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -138,6 +140,27 @@ open class LGOWebViewFragment: Fragment() {
                 val layout = RelativeLayout(context)
                 layout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
                 contentView?.addView(layout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == webView.uploadFileChooseRequestCode) {
+            if (resultCode == Activity.RESULT_OK) {
+                data?.data?.let { uri ->
+                    webView.uploadFileChooseCallback?.let {
+                        it.onReceiveValue(arrayOf(uri))
+                        return
+                    }
+                }
+                webView.uploadFileChooseCallback?.let {
+                    it.onReceiveValue(null)
+                }
+            } else {
+                webView.uploadFileChooseCallback?.let {
+                    it.onReceiveValue(null)
+                }
             }
         }
     }

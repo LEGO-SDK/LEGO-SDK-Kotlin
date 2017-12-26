@@ -100,11 +100,11 @@ class LGOWebView @JvmOverloads constructor(
             val imageIntent = Intent(Intent.ACTION_GET_CONTENT)
             imageIntent.addCategory(Intent.CATEGORY_OPENABLE)
             imageIntent.setType("*/*")
-            activity?.let {
+            fragment?.let {
                 it.startActivityForResult(Intent.createChooser(imageIntent, uploadFileChooseTitle), uploadFileChooseRequestCode)
                 return true
             }
-            fragment?.let {
+            activity?.let {
                 it.startActivityForResult(Intent.createChooser(imageIntent, uploadFileChooseTitle), uploadFileChooseRequestCode)
                 return true
             }

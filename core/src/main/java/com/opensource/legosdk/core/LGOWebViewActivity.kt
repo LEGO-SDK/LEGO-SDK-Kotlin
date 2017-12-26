@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.util.TypedValue
@@ -221,4 +222,24 @@ open class LGOWebViewActivity : Activity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == webView.uploadFileChooseRequestCode) {
+            if (resultCode == RESULT_OK) {
+                data?.data?.let { uri ->
+                    webView.uploadFileChooseCallback?.let {
+                        it.onReceiveValue(arrayOf(uri))
+                        return
+                    }
+                }
+                webView.uploadFileChooseCallback?.let {
+                    it.onReceiveValue(null)
+                }
+            } else {
+                webView.uploadFileChooseCallback?.let {
+                    it.onReceiveValue(null)
+                }
+            }
+        }
+    }
 }
