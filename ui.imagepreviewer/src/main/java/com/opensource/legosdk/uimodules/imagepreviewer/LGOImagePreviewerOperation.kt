@@ -1,35 +1,39 @@
 package com.opensource.legosdk.uimodules.imagepreviewer
 
-import android.content.Context
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
-import android.content.res.TypedArray
-import com.opensource.legosdk.core.LGORequestable
-import com.opensource.legosdk.core.LGOResponse
-import android.os.Parcelable
-import android.view.View.GONE
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.widget.Toast
-import com.nostra13.universalimageloader.core.assist.FailReason
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener
-import com.nostra13.universalimageloader.core.ImageLoader
-import android.widget.ProgressBar
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer
-import com.nostra13.universalimageloader.core.assist.ImageScaleType
-import com.nostra13.universalimageloader.core.DisplayImageOptions
-import android.support.v4.view.PagerAdapter
+import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.provider.MediaStore
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentActivity
+import android.support.v4.content.ContextCompat
+import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
-import android.view.*
+import android.view.Gravity
+import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator
+import com.nostra13.universalimageloader.core.DisplayImageOptions
+import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
+import com.nostra13.universalimageloader.core.assist.FailReason
+import com.nostra13.universalimageloader.core.assist.ImageScaleType
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType
-
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener
+import com.opensource.legosdk.core.LGORequestable
+import com.opensource.legosdk.core.LGOResponse
 
 /**
  * Created by cuiminghui on 2017/4/22.
@@ -55,10 +59,15 @@ class LGOImagePreviewerFragmentActivity: FragmentActivity() {
 
     var URLs: Array<String>? = null
     var currentURL: String? = null
+    private var permissionRequestCode = -1
+    private var permissionOpt: (() -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, SYSTEM_UI_FLAG_FULLSCREEN)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = Color.BLACK
+        }
         URLs = intent.getStringArrayExtra("URLs")
         currentURL = intent.getStringExtra("currentURL")
         initImageLoader()
@@ -90,6 +99,48 @@ class LGOImagePreviewerFragmentActivity: FragmentActivity() {
                 val frameLayout = FrameLayout(this@LGOImagePreviewerFragmentActivity)
                 val imageView = ImageView(this@LGOImagePreviewerFragmentActivity)
                 imageView.adjustViewBounds = true
+                imageView.setOnLongClickListener {
+                    val dialogBuilder = AlertDialog.Builder(this@LGOImagePreviewerFragmentActivity)
+                    dialogBuilder.setItems(listOf("保存图片", "取消").toTypedArray(), { _, idx ->
+                        if (idx == 0) {
+                            (imageView.drawable as? BitmapDrawable)?.let {
+                                if (ContextCompat.checkSelfPermission(this@LGOImagePreviewerFragmentActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                    this@LGOImagePreviewerFragmentActivity.permissionRequestCode = (Math.random() * 1000).toInt()
+                                    this@LGOImagePreviewerFragmentActivity.permissionOpt = {
+                                        MediaStore.Images.Media.insertImage(contentResolver, it.bitmap, "", null)?.let {
+                                            Toast.makeText(this@LGOImagePreviewerFragmentActivity, "已保存到系统相册", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                    if (ActivityCompat.shouldShowRequestPermissionRationale(this@LGOImagePreviewerFragmentActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                        AlertDialog.Builder(this@LGOImagePreviewerFragmentActivity)
+                                                .setTitle("请允许应用使用存储权限")
+                                                .setCancelable(true)
+                                                .setNegativeButton("禁止", { _, _ -> })
+                                                .setPositiveButton("好的", { _, _ ->
+                                                    ActivityCompat.requestPermissions(this@LGOImagePreviewerFragmentActivity, listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE).toTypedArray(), this@LGOImagePreviewerFragmentActivity.permissionRequestCode)
+                                                })
+                                                .create()
+                                                .show()
+                                    }
+                                    else {
+                                        ActivityCompat.requestPermissions(this@LGOImagePreviewerFragmentActivity, listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE).toTypedArray(), this@LGOImagePreviewerFragmentActivity.permissionRequestCode)
+                                    }
+                                }
+                                else {
+                                    MediaStore.Images.Media.insertImage(contentResolver, it.bitmap, "", null)?.let {
+                                        Toast.makeText(this@LGOImagePreviewerFragmentActivity, "已保存到系统相册", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                        }
+                    })
+                    dialogBuilder.setCancelable(true)
+                    val dialog = dialogBuilder.create()
+                    dialog.window.setGravity(Gravity.BOTTOM)
+                    dialog.show()
+                    println(true)
+                    return@setOnLongClickListener true
+                }
                 frameLayout.addView(imageView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER))
                 val options = DisplayImageOptions.Builder()
                         .resetViewBeforeLoading(true)
@@ -130,6 +181,13 @@ class LGOImagePreviewerFragmentActivity: FragmentActivity() {
         config.diskCacheSize(50 * 1024 * 1024)
         config.tasksProcessingOrder(QueueProcessingType.LIFO)
         ImageLoader.getInstance().init(config.build())
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == this.permissionRequestCode && grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
+            this.permissionOpt?.invoke()
+        }
     }
 
 }
