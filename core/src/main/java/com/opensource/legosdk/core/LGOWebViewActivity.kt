@@ -3,18 +3,13 @@ package com.opensource.legosdk.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
-import android.util.TypedValue
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import org.json.JSONObject
 
@@ -224,22 +219,28 @@ open class LGOWebViewActivity : Activity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == webView.uploadFileChooseRequestCode) {
+        if (requestCode == webView.RESULT_FROM_GALLERY) {
             if (resultCode == RESULT_OK) {
                 data?.data?.let { uri ->
                     webView.uploadFileChooseCallback?.let {
                         it.onReceiveValue(arrayOf(uri))
-                        return
+                        webView.uploadFileChooseCallback = null
                     }
                 }
-                webView.uploadFileChooseCallback?.let {
-                    it.onReceiveValue(null)
-                }
-            } else {
-                webView.uploadFileChooseCallback?.let {
-                    it.onReceiveValue(null)
+            }
+        }
+        else if (requestCode == webView.RESULT_TAKE_PHOTO) {
+            if (resultCode == RESULT_OK) {
+                webView.uploadFile?.let { uploadFile ->
+                    webView.uploadFileChooseCallback?.let {
+                        it.onReceiveValue(arrayOf(Uri.fromFile(uploadFile)))
+                        webView.uploadFileChooseCallback = null
+                    }
                 }
             }
+        }
+        webView.uploadFileChooseCallback?.let {
+            it.onReceiveValue(null)
         }
     }
 }

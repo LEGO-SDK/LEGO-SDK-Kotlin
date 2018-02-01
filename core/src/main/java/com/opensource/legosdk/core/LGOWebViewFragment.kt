@@ -3,6 +3,7 @@ package com.opensource.legosdk.core
 import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -146,22 +147,28 @@ open class LGOWebViewFragment: Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == webView.uploadFileChooseRequestCode) {
+        if (requestCode == webView.RESULT_FROM_GALLERY) {
             if (resultCode == Activity.RESULT_OK) {
                 data?.data?.let { uri ->
                     webView.uploadFileChooseCallback?.let {
                         it.onReceiveValue(arrayOf(uri))
-                        return
+                        webView.uploadFileChooseCallback = null
                     }
                 }
-                webView.uploadFileChooseCallback?.let {
-                    it.onReceiveValue(null)
-                }
-            } else {
-                webView.uploadFileChooseCallback?.let {
-                    it.onReceiveValue(null)
+            }
+        }
+        else if (requestCode == webView.RESULT_TAKE_PHOTO) {
+            if (resultCode == Activity.RESULT_OK) {
+                webView.uploadFile?.let { uploadFile ->
+                    webView.uploadFileChooseCallback?.let {
+                        it.onReceiveValue(arrayOf(Uri.fromFile(uploadFile)))
+                        webView.uploadFileChooseCallback = null
+                    }
                 }
             }
+        }
+        webView.uploadFileChooseCallback?.let {
+            it.onReceiveValue(null)
         }
     }
 

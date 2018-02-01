@@ -1,20 +1,30 @@
 package com.opensource.legosdk.core
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.AttributeSet
 import android.util.Base64
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.webkit.ValueCallback
 import android.webkit.WebView
 import org.json.JSONObject
+import java.io.File
+import android.os.Environment.DIRECTORY_PICTURES
+import android.support.v4.content.FileProvider
+import java.text.SimpleDateFormat
+import java.util.*
+import android.R.attr.path
+
+
+
 
 /**
  * Created by PonyCui_Home on 2017/4/16.
@@ -58,9 +68,11 @@ class LGOWebView @JvmOverloads constructor(
     var fragment: LGOWebViewFragment? = null
         internal set
     private var primaryUrl: String? = null
+
     var uploadFileChooseCallback: ValueCallback<Array<Uri>>? = null
-    var uploadFileChooseTitle: String = "打开方式"
-    var uploadFileChooseRequestCode: Int = 999
+    var uploadFile: File? = null
+    var RESULT_TAKE_PHOTO: Int = 998
+    var RESULT_FROM_GALLERY: Int = 999
 
     private val webClient = object : LGOWebViewHooker.WebViewClient() {
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -96,20 +108,51 @@ class LGOWebView @JvmOverloads constructor(
         }
 
         override fun onShowFileChooser(webView: WebView?, filePathCallback: ValueCallback<Array<Uri>>?, fileChooserParams: FileChooserParams?): Boolean {
-            uploadFileChooseCallback = filePathCallback
-            val imageIntent = Intent(Intent.ACTION_GET_CONTENT)
-            imageIntent.addCategory(Intent.CATEGORY_OPENABLE)
-            imageIntent.setType("*/*")
-            fragment?.let {
-                it.startActivityForResult(Intent.createChooser(imageIntent, uploadFileChooseTitle), uploadFileChooseRequestCode)
-                return true
-            }
-            activity?.let {
-                it.startActivityForResult(Intent.createChooser(imageIntent, uploadFileChooseTitle), uploadFileChooseRequestCode)
-                return true
-            }
+            AlertDialog.Builder(fragment?.activity ?: activity)
+                .setItems(arrayOf("拍摄", "从手机相册选择"), { _, idx ->
+                    when (idx) {
+                        0 -> {
+                            uploadFileChooseCallback = filePathCallback
+                            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                            (fragment?.activity ?: activity)?.let {
+                                val path = it.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                                val image = File.createTempFile(
+                                        System.currentTimeMillis().toString(),
+                                        ".jpg",
+                                        path
+                                )
+                                uploadFile = image
+                                try {
+                                    path.mkdirs()
+                                    val uri = FileProvider.getUriForFile(it, "com.opensource.legosdk." + it.packageName + ".sharedprovider", image)
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                                    intent.resolveActivity(it.packageManager)?.let {
+                                        fragment?.let {
+                                            it.startActivityForResult(intent, RESULT_TAKE_PHOTO)
+                                        }
+                                        activity?.let {
+                                            it.startActivityForResult(intent, RESULT_TAKE_PHOTO)
+                                        }
+                                    }
+                                } catch (e: Exception) { e.printStackTrace() }
+                            }
+                        }
+                        1 -> {
+                            uploadFileChooseCallback = filePathCallback
+                            val intent = Intent(Intent.ACTION_GET_CONTENT)
+                            intent.addCategory(Intent.CATEGORY_OPENABLE)
+                            intent.type = "*/*"
+                            fragment?.let {
+                                it.startActivityForResult(Intent.createChooser(intent, ""), RESULT_FROM_GALLERY)
+                            }
+                            activity?.let {
+                                it.startActivityForResult(Intent.createChooser(intent, ""), RESULT_FROM_GALLERY)
+                            }
+                        }
+                    }
+                })
+                .create().show()
             return true
-
         }
 
         override fun getDefaultVideoPoster(): Bitmap {
