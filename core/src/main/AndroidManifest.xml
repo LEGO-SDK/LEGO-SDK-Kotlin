@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.opensource.legosdk.core">
 
     <application
@@ -10,11 +11,11 @@
         <activity android:name=".LGOModalWebViewActivity" android:theme="@style/ModalActivity" android:screenOrientation="portrait" android:hardwareAccelerated="true"></activity>
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.opensource.legosdk.${applicationId}.sharedprovider"
+            android:name=".LGOFileProvider"
+            android:authorities="com.opensource.legosdk.${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/lego_file_paths"></meta-data>
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/lego_file_paths" tools:node="merge"></meta-data>
         </provider>
 
     </application>

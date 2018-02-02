@@ -124,7 +124,7 @@ class LGOWebView @JvmOverloads constructor(
                                 uploadFile = image
                                 try {
                                     path.mkdirs()
-                                    val uri = FileProvider.getUriForFile(it, "com.opensource.legosdk." + it.packageName + ".sharedprovider", image)
+                                    val uri = FileProvider.getUriForFile(it, "com.opensource.legosdk." + it.packageName + ".fileprovider", image)
                                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
                                     intent.resolveActivity(it.packageManager)?.let {
                                         fragment?.let {
