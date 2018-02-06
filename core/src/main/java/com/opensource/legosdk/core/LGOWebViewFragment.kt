@@ -26,7 +26,7 @@ open class LGOWebViewFragment: Fragment() {
     var args: JSONObject? = null
     private var hooks: Map<String, List<() -> Unit>> = hashMapOf()
     lateinit var navigationBar: LGONavigationBar
-    lateinit var webView: LGOWebView
+    var webView: LGOWebView? = null
 
     fun addHook(hookBlock: () -> Unit, forMethod: String) {
         val mutableHooks = hooks.toMutableMap()
@@ -42,8 +42,8 @@ open class LGOWebViewFragment: Fragment() {
         navigationItems.fragment = this
         navigationBar.reload()
         webView = LGOWebView.requestWebViewFromPool(context) ?:LGOWebView(context)
-        webView.fragment = this
-        webView.activity = this.activity
+        webView?.fragment = this
+        webView?.activity = this.activity
         resetLayouts()
         hooks["onCreate"]?.forEach { it.invoke() }
         return contentView
@@ -66,6 +66,7 @@ open class LGOWebViewFragment: Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        webView = null
         hooks["onDestroy"]?.forEach { it.invoke() }
     }
 
@@ -79,7 +80,7 @@ open class LGOWebViewFragment: Fragment() {
         set(value) {
             field = value
             value?.let {
-                webView.loadUrl(it)
+                webView?.loadUrl(it)
                 applyPageSetting()
             }
         }
@@ -111,7 +112,9 @@ open class LGOWebViewFragment: Fragment() {
                 activity.window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 val layout = RelativeLayout(context)
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
-                layout.addView(webView, webViewParams)
+                webView?.let {
+                    layout.addView(it, webViewParams)
+                }
                 val navigationBarParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (68 * resources.displayMetrics.density).toInt())
                 layout.addView(navigationBar, navigationBarParams)
                 contentView?.addView(layout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
@@ -121,7 +124,9 @@ open class LGOWebViewFragment: Fragment() {
                 val layout = RelativeLayout(context)
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 webViewParams.topMargin = (48 * resources.displayMetrics.density).toInt()
-                layout.addView(webView, webViewParams)
+                webView?.let {
+                    layout.addView(it, webViewParams)
+                }
                 val navigationBarParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (48 * resources.displayMetrics.density).toInt())
                 layout.addView(navigationBar, navigationBarParams)
                 contentView?.addView(layout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
@@ -132,13 +137,17 @@ open class LGOWebViewFragment: Fragment() {
                 activity.window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 val layout = RelativeLayout(context)
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
-                layout.addView(webView, webViewParams)
+                webView?.let {
+                    layout.addView(it, webViewParams)
+                }
                 contentView?.addView(layout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
             }
             else {
                 activity.window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 val layout = RelativeLayout(context)
-                layout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                webView?.let {
+                    layout.addView(it, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                }
                 contentView?.addView(layout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
             }
         }
@@ -146,20 +155,22 @@ open class LGOWebViewFragment: Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == webView.uploadFileChooseRequestCode) {
-            if (resultCode == Activity.RESULT_OK) {
-                data?.data?.let { uri ->
-                    webView.uploadFileChooseCallback?.let {
-                        it.onReceiveValue(arrayOf(uri))
-                        return
+        webView?.let { webView ->
+            if (requestCode == webView.uploadFileChooseRequestCode) {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.data?.let { uri ->
+                        webView.uploadFileChooseCallback?.let {
+                            it.onReceiveValue(arrayOf(uri))
+                            return
+                        }
                     }
-                }
-                webView.uploadFileChooseCallback?.let {
-                    it.onReceiveValue(null)
-                }
-            } else {
-                webView.uploadFileChooseCallback?.let {
-                    it.onReceiveValue(null)
+                    webView.uploadFileChooseCallback?.let {
+                        it.onReceiveValue(null)
+                    }
+                } else {
+                    webView.uploadFileChooseCallback?.let {
+                        it.onReceiveValue(null)
+                    }
                 }
             }
         }

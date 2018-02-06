@@ -61,7 +61,7 @@ class LGOPage: LGOModule() {
     fun apply(activity: LGOWebViewActivity) {
         activity.runOnUiThread {
             if (!activity.usingCustomPageSetting) {
-                activity.webView.url?.let {
+                activity.webView?.url?.let {
                     val url = it
                     settings.entries.forEach {
                         val request = it.value
@@ -83,7 +83,7 @@ class LGOPage: LGOModule() {
             (activity.pageSetting as? LGOPageRequest)?.let {
                 activity.title = it.title
                 it.backgroundColor?.takeIf(String::isNotEmpty)?.let {
-                    activity.webView.setBackgroundColor(Color.parseColor(it))
+                    activity.webView?.setBackgroundColor(Color.parseColor(it))
                 }
                 if (it.statusBarHidden) {
                     activity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -106,7 +106,7 @@ class LGOPage: LGOModule() {
     fun apply(fragment: LGOWebViewFragment) {
         fragment.activity.runOnUiThread {
             if (!fragment.usingCustomPageSetting) {
-                fragment.webView.url?.let {
+                fragment.webView?.url?.let {
                     val url = it
                     settings.entries.forEach {
                         val request = it.value
@@ -128,7 +128,7 @@ class LGOPage: LGOModule() {
             (fragment.pageSetting as? LGOPageRequest)?.let {
                 fragment.title = it.title
                 it.backgroundColor?.takeIf(String::isNotEmpty)?.let {
-                    fragment.webView.setBackgroundColor(Color.parseColor(it))
+                    fragment.webView?.setBackgroundColor(Color.parseColor(it))
                 }
                 if (it.statusBarHidden) {
                     fragment.activity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)

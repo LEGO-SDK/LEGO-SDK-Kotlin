@@ -68,9 +68,9 @@ class LGOModalWebViewActivity : LGOWebViewActivity() {
             }
             intent.getBooleanExtra("LGOModalController.clearWebView", false)?.let { clearWebView ->
                 if (clearWebView) {
-                    webView.setBackgroundColor(Color.TRANSPARENT)
+                    webView?.setBackgroundColor(Color.TRANSPARENT)
                 } else {
-                    webView.setBackgroundColor(Color.WHITE)
+                    webView?.setBackgroundColor(Color.WHITE)
                 }
             }
         }

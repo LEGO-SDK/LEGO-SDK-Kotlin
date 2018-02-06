@@ -42,7 +42,7 @@ open class LGOWebViewActivity : Activity() {
     var args: JSONObject? = null
     private var hooks: Map<String, List<() -> Unit>> = hashMapOf()
     lateinit var navigationBar: LGONavigationBar
-    lateinit var webView: LGOWebView
+    var webView: LGOWebView? = null
 
     fun addHook(hookBlock: () -> Unit, forMethod: String) {
         val mutableHooks = hooks.toMutableMap()
@@ -79,9 +79,9 @@ open class LGOWebViewActivity : Activity() {
             }
         }
         webView = preloadWebView ?: LGOWebView.requestWebViewFromPool(this.applicationContext) ?: LGOWebView(this.applicationContext)
-        webView.activity = this
+        webView?.activity = this
         urlString?.let {
-            webView.loadUrl(it)
+            webView?.loadUrl(it)
             applyPageSetting()
         }
         resetLayouts()
@@ -91,14 +91,18 @@ open class LGOWebViewActivity : Activity() {
 
     fun resetLayouts() {
         contentView?.removeAllViews()
-        (webView?.parent as? ViewGroup)?.removeView(webView)
+        webView?.let {
+            (it?.parent as? ViewGroup)?.removeView(it)
+        }
         if (!navigationBar.hidden) {
             if (navigationBar.statusBarTranslucent) {
                 window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 val layout = RelativeLayout(this)
                 val refreshLayout = SwipeRefreshLayout(this)
                 refreshLayout.isEnabled = false
-                refreshLayout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                webView?.let {
+                    refreshLayout.addView(it, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                }
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 layout.addView(refreshLayout, webViewParams)
                 LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
@@ -117,7 +121,9 @@ open class LGOWebViewActivity : Activity() {
                 val layout = RelativeLayout(this)
                 val refreshLayout = SwipeRefreshLayout(this)
                 refreshLayout.isEnabled = false
-                refreshLayout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                webView?.let {
+                    refreshLayout.addView(it, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                }
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 webViewParams.topMargin = (48 * resources.displayMetrics.density).toInt()
                 layout.addView(refreshLayout, webViewParams)
@@ -139,7 +145,9 @@ open class LGOWebViewActivity : Activity() {
                 val layout = RelativeLayout(this)
                 val refreshLayout = SwipeRefreshLayout(this)
                 refreshLayout.isEnabled = false
-                refreshLayout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                webView?.let {
+                    refreshLayout.addView(it, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                }
                 val webViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
                 layout.addView(refreshLayout, webViewParams)
                 LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
@@ -156,7 +164,9 @@ open class LGOWebViewActivity : Activity() {
                 val layout = RelativeLayout(this)
                 val refreshLayout = SwipeRefreshLayout(this)
                 refreshLayout.isEnabled = false
-                refreshLayout.addView(webView, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                webView?.let {
+                    refreshLayout.addView(it, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
+                }
                 layout.addView(refreshLayout, RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT))
                 LGOCore.modules.moduleWithName("WebView.Skeleton")?.let { module ->
                     try {
@@ -194,6 +204,7 @@ open class LGOWebViewActivity : Activity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        webView = null
         hooks["onDestroy"]?.forEach { it.invoke() }
     }
 
@@ -224,19 +235,19 @@ open class LGOWebViewActivity : Activity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == webView.uploadFileChooseRequestCode) {
+        if (requestCode == webView?.uploadFileChooseRequestCode) {
             if (resultCode == RESULT_OK) {
                 data?.data?.let { uri ->
-                    webView.uploadFileChooseCallback?.let {
+                    webView?.uploadFileChooseCallback?.let {
                         it.onReceiveValue(arrayOf(uri))
                         return
                     }
                 }
-                webView.uploadFileChooseCallback?.let {
+                webView?.uploadFileChooseCallback?.let {
                     it.onReceiveValue(null)
                 }
             } else {
-                webView.uploadFileChooseCallback?.let {
+                webView?.uploadFileChooseCallback?.let {
                     it.onReceiveValue(null)
                 }
             }
