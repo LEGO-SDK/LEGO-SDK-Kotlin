@@ -21,7 +21,6 @@ import android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.Toast
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator
 import com.nostra13.universalimageloader.core.DisplayImageOptions
@@ -97,7 +96,7 @@ class LGOImagePreviewerFragmentActivity: FragmentActivity() {
 
             override fun instantiateItem(container: ViewGroup?, position: Int): Any {
                 val frameLayout = FrameLayout(this@LGOImagePreviewerFragmentActivity)
-                val imageView = ImageView(this@LGOImagePreviewerFragmentActivity)
+                val imageView = PinchImageView(this@LGOImagePreviewerFragmentActivity)
                 imageView.adjustViewBounds = true
                 imageView.setOnLongClickListener {
                     val dialogBuilder = AlertDialog.Builder(this@LGOImagePreviewerFragmentActivity)
@@ -141,7 +140,7 @@ class LGOImagePreviewerFragmentActivity: FragmentActivity() {
                     println(true)
                     return@setOnLongClickListener true
                 }
-                frameLayout.addView(imageView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER))
+                frameLayout.addView(imageView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.CENTER))
                 val options = DisplayImageOptions.Builder()
                         .resetViewBeforeLoading(true)
                         .cacheOnDisk(true)
