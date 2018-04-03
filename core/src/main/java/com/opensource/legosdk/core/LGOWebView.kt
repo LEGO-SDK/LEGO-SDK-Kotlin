@@ -108,8 +108,8 @@ class LGOWebView @JvmOverloads constructor(
         }
 
         override fun onShowFileChooser(webView: WebView?, filePathCallback: ValueCallback<Array<Uri>>?, fileChooserParams: FileChooserParams?): Boolean {
-            AlertDialog.Builder(fragment?.activity ?: activity)
-                .setItems(arrayOf("拍摄", "从手机相册选择"), { _, idx ->
+            val alertDialog = AlertDialog.Builder(fragment?.activity ?: activity)
+                .setItems(arrayOf("拍摄", "从手机相册选择", "取消"), { _, idx ->
                     when (idx) {
                         0 -> {
                             uploadFileChooseCallback = filePathCallback
@@ -149,9 +149,15 @@ class LGOWebView @JvmOverloads constructor(
                                 it.startActivityForResult(Intent.createChooser(intent, ""), RESULT_FROM_GALLERY)
                             }
                         }
+                        2 -> {
+                            filePathCallback?.onReceiveValue(null)
+                        }
                     }
                 })
-                .create().show()
+                .create()
+            alertDialog.setCanceledOnTouchOutside(false)
+            alertDialog.setCancelable(false)
+            alertDialog.show()
             return true
         }
 
