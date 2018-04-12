@@ -9,12 +9,14 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.util.Base64
 import android.view.Gravity
 import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -33,6 +35,10 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener
 import com.opensource.legosdk.core.LGORequestable
 import com.opensource.legosdk.core.LGOResponse
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.util.*
 
 /**
  * Created by cuiminghui on 2017/4/22.
@@ -149,6 +155,30 @@ class LGOImagePreviewerFragmentActivity: FragmentActivity() {
                         .considerExifParams(true)
                         .displayer(FadeInBitmapDisplayer(300))
                         .build()
+                val imageUri = URLs[position]
+                val BASE64_DATA_PREFIX = "base64,"
+                if (imageUri.indexOf(BASE64_DATA_PREFIX) >= 0) {
+                    val dataStartIndex = imageUri.indexOf(BASE64_DATA_PREFIX) + BASE64_DATA_PREFIX.length
+                    val base64 = imageUri.substring(dataStartIndex)
+                    if (base64.length > 0) {
+                        val bytes = Base64.decode(base64, Base64.DEFAULT)
+                        val path = Environment.getExternalStorageDirectory().absoluteFile.toString() + "/UILBase64Image/"
+                        val dir = File(path)
+                        if (!dir.exists()) dir.mkdirs()
+                        val file = File(dir.getPath(), UUID.randomUUID().toString() + ".jpg")
+                        try {
+                            file.createNewFile()
+                            val fos = FileOutputStream(file)
+                            val bos = BufferedOutputStream(fos)
+                            bos.write(bytes)
+                            bos.flush()
+                            bos.close()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                        URLs[position] = "file://" + file.getAbsolutePath()
+                    }
+                }
                 ImageLoader.getInstance().displayImage(URLs[position], imageView, options, object: SimpleImageLoadingListener() {
                     override fun onLoadingFailed(imageUri: String?, view: View?, failReason: FailReason?) {
                         val message = "Load image failed."
