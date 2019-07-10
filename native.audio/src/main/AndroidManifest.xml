@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.opensource.legosdk.nativemodules.audio">
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <application android:allowBackup="true" android:label="@string/app_name"
+        android:supportsRtl="true">
+
+        <meta-data android:name="LGOModule.Native.Audio" android:value="com.opensource.legosdk.nativemodules.audio.LGOAudio" />
+
+    </application>
+
+</manifest>
