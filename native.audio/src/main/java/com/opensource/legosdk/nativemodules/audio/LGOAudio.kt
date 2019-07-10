@@ -8,21 +8,8 @@ import org.json.JSONObject
  */
 class LGOAudio: LGOModule() {
     override fun buildWithJSONObject(obj: JSONObject, context: LGORequestContext): LGORequestable? {
-
-        val userInfoObject = obj.optJSONObject("userInfo")
-        val userInfoMap = HashMap<String, String>()
-        userInfoObject.keys()?.let {
-            var key: String
-            var value: String
-            while (it.hasNext()) {
-                key = it.next()
-                value = userInfoObject.get(key).toString()
-                userInfoMap.put(key, value)
-            }
-        }
         return LGOAudioOperation(LGOAudioRequest(
-                obj.optString(("methodName")),
-                userInfoMap,
+                obj.optString(("type")),
                 context))
     }
 
