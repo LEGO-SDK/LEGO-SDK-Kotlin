@@ -49,6 +49,26 @@ class LGOHTTPRequestOperation(private val request: LGOHTTPRequestObject): LGOReq
                     callbackBlock(LGOResponse().reject("Native.HTTPRequest", -404, e.localizedMessage))
                 }
                 return@runOnMainThread
+            } else if (URLString.startsWith("file:///android_asset")) {
+                request.context.requestContentContext()?.assets?.let {
+                    val inputStream = it.open("oa_A002/css/base.css")
+                    val outputStream = ByteArrayOutputStream()
+                    val buffer = ByteArray(BUFFER_SIZE)
+                    var count: Int
+                    while (true) {
+                        count = inputStream.read(buffer, 0, BUFFER_SIZE)
+                        if (count == -1) {
+                            break
+                        }
+                        outputStream.write(buffer, 0, count)
+                    }
+                    val response = LGOHTTPResponseObject()
+                    response.responseText = if(isValidUTF8(outputStream.toByteArray())) String(outputStream.toByteArray(), Charsets.UTF_8) else ""
+                    response.responseData = outputStream.toByteArray()
+                    response.statusCode = 200
+                    callbackBlock(response.accept(null))
+                    inputStream.close()
+                }
             }
             val thread = Thread({
                 var statusCode = 0
@@ -120,7 +140,7 @@ class LGOHTTPRequestOperation(private val request: LGOHTTPRequestObject): LGOReq
     private fun requestURL(): String? {
         var relativeURL = request.URL ?: return null
         val webView = request.context?.sender as? WebView ?: return null
-        if (!relativeURL.startsWith("http://") && !relativeURL.startsWith("https://") && !relativeURL.startsWith("content://")) {
+        if (!relativeURL.startsWith("http://") && !relativeURL.startsWith("https://") && !relativeURL.startsWith("content://")&& !relativeURL.startsWith("file://")) {
             val uri = URI(webView.url)
             relativeURL = uri.resolve(relativeURL).toString()
         }
