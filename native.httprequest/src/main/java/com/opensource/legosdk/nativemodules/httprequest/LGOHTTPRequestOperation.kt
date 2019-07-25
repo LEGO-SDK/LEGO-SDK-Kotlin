@@ -51,7 +51,9 @@ class LGOHTTPRequestOperation(private val request: LGOHTTPRequestObject): LGOReq
                 return@runOnMainThread
             } else if (URLString.startsWith("file:///android_asset")) {
                 request.context.requestContentContext()?.assets?.let {
-                    val inputStream = it.open("oa_A002/css/base.css")
+
+                    val path = URLString.replace("file:///android_asset/", "", true)
+                    val inputStream = it.open(path)
                     val outputStream = ByteArrayOutputStream()
                     val buffer = ByteArray(BUFFER_SIZE)
                     var count: Int
