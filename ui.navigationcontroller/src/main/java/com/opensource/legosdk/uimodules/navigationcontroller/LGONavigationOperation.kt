@@ -34,7 +34,7 @@ class LGONavigationOperation(val request: LGONavigationRequest): LGORequestable(
                         intent.putExtra("LGONavigationController.Class", true)
                         request.args?.let {
                             intent.putExtra("LGONavigationController.args", it.toString())
-                            it.get("customID")?.let {
+                            it.optString("customID")?.let {
                                 intent.putExtra("LGONavigationController.customID", it.toString())
                             }
                         }
