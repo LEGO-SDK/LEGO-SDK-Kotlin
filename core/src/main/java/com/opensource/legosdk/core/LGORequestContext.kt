@@ -2,6 +2,7 @@ package com.opensource.legosdk.core
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -12,6 +13,9 @@ import android.webkit.WebView
  */
 
 open class LGORequestContext(val sender: Any?) {
+    companion object {
+        private var childViewControllers = ArrayList<Activity>()
+    }
 
     fun runOnMainThread(action: () -> Unit) {
         Handler(requestContentContext()?.mainLooper).post(action)
@@ -37,6 +41,10 @@ open class LGORequestContext(val sender: Any?) {
             return (it.parent as? View)?.context as? Activity
         }
         return null
+    }
+
+    fun requestChildViewControllers(): ArrayList<Activity> {
+        return childViewControllers
     }
 
     fun requestWebView(): LGOWebView? {

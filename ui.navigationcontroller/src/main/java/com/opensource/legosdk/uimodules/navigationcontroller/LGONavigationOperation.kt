@@ -6,7 +6,6 @@ import com.opensource.legosdk.core.LGORequestable
 import com.opensource.legosdk.core.LGOResponse
 import com.opensource.legosdk.core.LGOWebViewActivity
 import java.net.URI
-import java.net.URL
 
 /**
  * Created by cuiminghui on 2017/4/24.
@@ -35,16 +34,38 @@ class LGONavigationOperation(val request: LGONavigationRequest): LGORequestable(
                         intent.putExtra("LGONavigationController.Class", true)
                         request.args?.let {
                             intent.putExtra("LGONavigationController.args", it.toString())
+                            it.get("customID")?.let {
+                                intent.putExtra("LGONavigationController.customID", it.toString())
+                            }
                         }
                         request.preloadToken?.let {
                             intent.putExtra("LGONavigationController.preloadToken", it)
                         }
+                        request.context.requestChildViewControllers().add(it)
                         it.startActivity(intent)
                     }
                     return LGOResponse().accept(null)
                 }
                 "pop" -> {
                     request.context.requestActivity()?.finish()
+                    request.args?.get("customID")?.let {
+                        val customID = it.toString()
+                        var childs = request.context.requestChildViewControllers()
+                        var resChilds = childs.reversed()
+                        val listIterator = resChilds.listIterator()
+                        while (listIterator.hasNext()) {
+                            val activity = listIterator.next()
+                            val intent = activity.intent
+                            val cID = intent.getStringExtra("LGONavigationController.customID")
+                            if (cID == null || cID.equals(customID)) {
+                                childs.clear()
+                                break
+                            } else {
+                                childs.remove(activity)
+                                activity.finish()
+                            }
+                        }
+                    }
                 }
                 else -> {
                     return LGOResponse().reject("UI.NavigationController", -2, "invalid opt.")
