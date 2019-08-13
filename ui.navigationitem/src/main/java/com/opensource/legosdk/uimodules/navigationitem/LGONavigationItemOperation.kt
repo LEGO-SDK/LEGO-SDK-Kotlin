@@ -1,5 +1,6 @@
 package com.opensource.legosdk.uimodules.navigationitem
 
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -69,6 +70,10 @@ class LGONavigationItemOperation(private val request: LGONavigationItemRequest):
             }
             return true
         }
+        if(url.equals("default")){
+            val bitmap = BitmapFactory.decodeResource(Resources.getSystem() , R.drawable.ico_back)
+            completionBlock(bitmap)
+        }
         return false
     }
 
@@ -80,12 +85,12 @@ class LGONavigationItemOperation(private val request: LGONavigationItemRequest):
                 }
                 val activity = request.context?.requestActivity() as? LGOWebViewActivity ?: return@let
                 if (!requestBitmap(leftItem, { bitmap ->
-                    activity.runOnUiThread {
-                        activity.navigationItems.leftBarButtonItem = LGONavigationItem.LGOBarButtonItem(null, bitmap, {
-                            callbackBlock(LGONavigationItemResponse(true, false).accept(null))
-                        })
-                    }
-                })) {
+                            activity.runOnUiThread {
+                                activity.navigationItems.leftBarButtonItem = LGONavigationItem.LGOBarButtonItem(null, bitmap, {
+                                    callbackBlock(LGONavigationItemResponse(true, false).accept(null))
+                                })
+                            }
+                        })) {
                     activity.navigationItems.leftBarButtonItem = LGONavigationItem.LGOBarButtonItem(leftItem, null, {
                         callbackBlock(LGONavigationItemResponse(true, false).accept(null))
                     })
@@ -97,12 +102,12 @@ class LGONavigationItemOperation(private val request: LGONavigationItemRequest):
                 }
                 val activity = request.context?.requestActivity() as? LGOWebViewActivity ?: return@let
                 if (!requestBitmap(rightItem, { bitmap ->
-                    activity.runOnUiThread {
-                        activity.navigationItems.rightBarButtonItem = LGONavigationItem.LGOBarButtonItem(null, bitmap, {
-                            callbackBlock(LGONavigationItemResponse(false, true).accept(null))
-                        })
-                    }
-                })) {
+                            activity.runOnUiThread {
+                                activity.navigationItems.rightBarButtonItem = LGONavigationItem.LGOBarButtonItem(null, bitmap, {
+                                    callbackBlock(LGONavigationItemResponse(false, true).accept(null))
+                                })
+                            }
+                        })) {
                     activity.navigationItems.rightBarButtonItem = LGONavigationItem.LGOBarButtonItem(rightItem, null, {
                         callbackBlock(LGONavigationItemResponse(false, true).accept(null))
                     })
