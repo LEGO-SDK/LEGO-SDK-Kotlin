@@ -5,10 +5,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.webkit.WebView
+import com.opensource.legosdk.core.*
+import com.opensource.legosdk.core.LGOCore.Companion.context
 import com.opensource.legosdk.core.LGONavigationItem
-import com.opensource.legosdk.core.LGORequestable
-import com.opensource.legosdk.core.LGOResponse
-import com.opensource.legosdk.core.LGOWebViewActivity
 import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
@@ -71,8 +70,8 @@ class LGONavigationItemOperation(private val request: LGONavigationItemRequest):
             return true
         }
         if(url.equals("default")){
-            val bitmap = BitmapFactory.decodeResource(Resources.getSystem() , R.drawable.ico_back)
-            completionBlock(bitmap)
+            completionBlock(requestBackButton2Bitmap())
+            return true
         }
         return false
     }
