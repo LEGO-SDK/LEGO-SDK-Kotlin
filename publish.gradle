@@ -1,0 +1,128 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+group = "com.github.LEGO-SDK.LEGO-SDK-Kotlin"
+
+def isReleaseBuild() {
+    return version.contains("SNAPSHOT") == false
+}
+
+def getReleaseRepositoryUrl() {
+    return hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
+            : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+}
+
+def getSnapshotRepositoryUrl() {
+    return hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
+            : "https://oss.sonatype.org/content/repositories/snapshots/"
+}
+
+def getRepositoryUsername() {
+    return hasProperty('NEXUS_USERNAME') ? NEXUS_USERNAME : ""
+}
+
+def getRepositoryPassword() {
+    return hasProperty('NEXUS_PASSWORD') ? NEXUS_PASSWORD : ""
+}
+
+//task androidJavadocs(type: Javadoc) {
+//    source = android.sourceSets.main.java.srcDirs
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//    exclude '**/*.so'
+//}
+//
+//task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+//    classifier = 'javadoc'
+//    from androidJavadocs.destinationDir
+//}
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    if (project.hasProperty("android")) {
+        from android.sourceSets.main.java.sourceFiles
+    }
+}
+
+task androidNativeJar(type: Jar) {
+    classifier = 'so'
+    from(new File(buildDir, 'libs'))
+    include("**/*.so")
+}
+
+task androidNativeZip(type: Zip) {
+    classifier = 'so'
+    from(new File(buildDir, 'libs'))
+    include("**/*.so")
+}
+
+//task gradlePluginJar(type: Copy) {
+//
+//    println "gradle plugin from: ${bs.list()}"
+//    include("**/*.jar")
+//
+//    from(bs)
+//}
+
+publishing {
+    repositories {
+        maven {
+            credentials {
+                username = getRepositoryUsername()
+                password = getRepositoryPassword()
+            }
+
+            if (isReleaseBuild()) {
+                url getReleaseRepositoryUrl()
+            } else {
+                url getSnapshotRepositoryUrl()
+            }
+        }
+    }
+}
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.github.LEGO-SDK.LEGO-SDK-Kotlin'
+            artifactId project.name
+            // Tell maven to prepare the generated "*.aar" file for publishing
+            artifact("$buildDir/outputs/aar/${project.getName()}-release.aar") {
+                builtBy assembleRelease
+            }
+            artifact androidSourcesJar
+
+            pom.withXml {
+                //Creating additional node for dependencies
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                //Defining configuration names from which dependencies will be taken (debugCompile or releaseCompile and compile)
+                def configurationNames = ["releaseCompile", 'compile', 'api', "implementation"]
+                configurationNames.each { configurationName ->
+                    if (!configurations.names.contains(configurationName)) {
+                        return
+                    }
+                    configurations[configurationName].allDependencies.each {
+                        if (it.group != null && it.name != null) {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+
+                            //If there are any exclusions in dependency
+                            if (it.excludeRules.size() > 0) {
+                                def exclusionsNode = dependencyNode.appendNode('exclusions')
+                                it.excludeRules.each { rule ->
+                                    def exclusionNode = exclusionsNode.appendNode('exclusion')
+                                    exclusionNode.appendNode('groupId', rule.group)
+                                    exclusionNode.appendNode('artifactId', rule.module)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}

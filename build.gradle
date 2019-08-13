@@ -1,5 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+import java.io.File
+
 buildscript {
     ext.kotlin_version = '1.1.2-4'
     repositories {
@@ -23,4 +25,15 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+tasks.create("cleanEx") {
+    doFirst {
+        project.allprojects {
+            if (it.buildDir.exists()) {
+                def flag = delete it.buildDir
+                println "cleanEx dir = ${it.buildDir}, result = $flag"
+            }
+        }
+    }
 }
