@@ -21,6 +21,7 @@ public class AppApplication extends Application {
         super.onCreate();
         LGOWebViewActivity.Companion.setNavigationBarDrawable(new ColorDrawable(0xff277de2));
         LGOCore.Companion.getWhiteList().add("webpage.yy.com");
+        LGOCore.Companion.getWhiteList().add("legox.yy.com");
     }
 
 }

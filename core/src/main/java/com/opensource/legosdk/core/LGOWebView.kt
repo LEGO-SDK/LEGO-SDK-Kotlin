@@ -305,7 +305,11 @@ class LGOWebView @JvmOverloads constructor(
 
     @android.webkit.JavascriptInterface
     fun bridgeScript(): String {
-        if (primaryUrl == null || !LGOWatchDog.checkURL(primaryUrl!!) || !LGOWatchDog.checkSSL(primaryUrl!!)) {
+
+        val flag1 = !LGOWatchDog.checkURL(primaryUrl!!)
+        val flag2 = !LGOWatchDog.checkSSL(primaryUrl!!)
+
+        if (primaryUrl == null || flag1 || flag2) {
             return ""
         }
         return "window.JSMessageCallbacks=[];window.JSSynchronizeResponses={};window." +
