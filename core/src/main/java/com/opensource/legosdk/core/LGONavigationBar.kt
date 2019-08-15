@@ -279,7 +279,11 @@ class LGONavigationBar @JvmOverloads constructor(
     fun resetTitleView(): View? {
         activity?.let { activity ->
             ((titleView as? TextView) ?: TextView(activity))?.let { contentView ->
-                contentView.text = activity?.title
+                if (activity?.title == null || activity?.title.contains(".com") || activity?.title.contains(".html")) {
+                    contentView.text = " "
+                } else {
+                    contentView.text = activity?.title
+                }
                 contentView.setSingleLine(true)
                 contentView.ellipsize = TextUtils.TruncateAt.END
                 contentView.setPadding(if (activity.navigationItems.leftBarButtonItem != null) 0 else (12 * (activity.resources.displayMetrics.density)).toInt(), 0, 0, 0)
@@ -292,7 +296,11 @@ class LGONavigationBar @JvmOverloads constructor(
         }
         fragment?.let { fragment ->
             ((titleView as? TextView) ?: TextView(fragment.context))?.let { contentView ->
-                contentView.text = fragment.title
+                if (fragment.title == null) {
+                    contentView.text = " "
+                } else {
+                    contentView.text = fragment.title
+                }
                 contentView.setSingleLine(true)
                 contentView.ellipsize = TextUtils.TruncateAt.END
                 contentView.setPadding(if (fragment.navigationItems.leftBarButtonItem != null) 0 else (12 * (fragment.resources.displayMetrics.density)).toInt(), 0, 0, 0)
