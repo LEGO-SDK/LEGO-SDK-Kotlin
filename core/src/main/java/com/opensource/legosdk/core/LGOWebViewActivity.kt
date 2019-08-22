@@ -12,6 +12,9 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.RelativeLayout
 import org.json.JSONObject
+import java.lang.Error
+
+
 
 open class LGOWebViewActivity : Activity() {
 
@@ -197,7 +200,42 @@ open class LGOWebViewActivity : Activity() {
         hooks["onStop"]?.forEach { it.invoke() }
     }
 
+    fun setConfigCallback(windowManager: WindowManager?) {
+        try {
+            var field = LGOWebView.javaClass.getDeclaredField("mWebViewCore")
+            field = field.getType().getDeclaredField("mBrowserFrame")
+            field = field.getType().getDeclaredField("sConfigCallback")
+            field.setAccessible(true)
+
+            val configCallback = field.get(null)
+            if (configCallback == null) {
+                return
+            }
+            field = field.getType().getDeclaredField("mWindowManager")
+            field.setAccessible(true);
+            field.set(configCallback, windowManager)
+        } catch (e: Exception) {}
+    }
+
+    fun destoryWebview() {
+        webView?.let {
+            val parent = it.parent
+            if (parent != null) {
+                (parent as ViewGroup).removeView(it)
+            }
+            it.stopLoading()
+            // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
+            it.getSettings().setJavaScriptEnabled(false)
+            it.clearHistory()
+            it.clearView()
+            it.removeAllViews()
+            it.destroy()
+        }
+    }
+
     override fun onDestroy() {
+        setConfigCallback(null)
+        destoryWebview()
         super.onDestroy()
         webView = null
         hooks["onDestroy"]?.forEach { it.invoke() }
